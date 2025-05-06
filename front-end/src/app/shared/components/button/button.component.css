@@ -1,0 +1,95 @@
+.btn {
+  padding: 10px 20px;
+  border: none;
+  font-weight: normal;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid;
+  border-color: var(--black);
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.btn-primary {
+  background-color: var(--green-1);
+  color: var(--black);
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+  background-color: var(--green-2);
+}
+
+.btn-secondary {
+  background-color: var(--green-2);
+  color: var(--black);
+}
+
+.btn-secondary:hover,
+.btn-secondary:active {
+  background-color: var(--green-3);
+}
+
+.btn-informative {
+  background-color: var(--blue-1);
+  color: var(--black);
+}
+
+.btn-informative:hover,
+.btn-informative:active {
+  background-color: var(--blue-2);
+}
+
+.btn-warning {
+  background-color: var(--yellow-1);
+  color: var(--black);
+}
+
+.btn-warning:hover,
+.btn-warning:active {
+  background-color: var(--yellow-2);
+}
+
+.btn-danger {
+  background-color: var(--red-1);
+  color: var(--black);
+}
+
+.btn-danger:hover,
+.btn-danger:active {
+  background-color: var(--red-2);
+}
+
+.btn-default {
+  background-color: var(--background);
+  color: var(--green-1);
+}
+
+.btn-default:hover,
+.btn-default:active {
+  background-color: var(--black);
+}
+
+.btn-small {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.btn-medium {
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+.btn-large {
+  font-size: 18px;
+  padding: 14px 28px;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.font-normal {
+  font-weight: normal;
+}

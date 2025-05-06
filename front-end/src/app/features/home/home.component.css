@@ -1,0 +1,79 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 200px;
+  width: 100%;
+  height: 70vh;
+  font-size: 1.1rem;
+}
+
+.main-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+}
+
+header {
+  font-size: 5rem;
+  font-weight: 1000;
+}
+
+.main-right {
+  flex: 1;
+  text-align: center;
+}
+
+.image-fade-container {
+  position: relative;
+  width: 750px; /* Adjust as needed */
+  height: auto;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.image-fade-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Left fade */
+.image-fade-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px; /* fade size */
+  height: 100%;
+  background: linear-gradient(to right, var(--background), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bottom fade */
+.image-fade-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to top, var(--background), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Top fade - using an extra inner element */
+.image-fade-container .fade-top {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to bottom, var(--background), transparent);
+  pointer-events: none;
+  z-index: 1;
+}

@@ -1,0 +1,10 @@
+<div [ngClass]="'container'">
+  <div><img [src]="logoUrl" /></div>
+  <nav [ngClass]="'navBar'">
+    @for (link of links; track $index) {
+    <div>
+      <a [routerLink]="link.url">{{ link.name }}</a>
+    </div>
+    }
+  </nav>
+</div>

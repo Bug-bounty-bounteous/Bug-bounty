@@ -1,0 +1,32 @@
+<div>
+  <app-nav-bar />
+  <div [ngClass]="'main'">
+    <div [ngClass]="'main-left'">
+      <header>Bug Bounty</header>
+      <div>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, nulla
+          enim iste dolor modi est sunt aut ad quidem eius magni ipsum dolorem!
+          Obcaecati iure iusto, ipsum vitae facere repellendus corporis autem
+          tenetur accusamus corrupti praesentium quibusdam recusandae quidem
+          expedita!
+        </p>
+      </div>
+      <div>
+        <app-button
+          (onClicked)="clickButtonTest($event)"
+          type="primary"
+          size="large"
+          fontWeight="bold"
+          >Get Started >></app-button
+        >
+      </div>
+    </div>
+    <div [ngClass]="'main-right'">
+      <div [ngClass]="'image-fade-container'">
+        <img [src]="imageUrl" alt="Fading Image" />
+        <div [ngClass]="'fade-top'"></div>
+      </div>
+    </div>
+  </div>
+</div>
