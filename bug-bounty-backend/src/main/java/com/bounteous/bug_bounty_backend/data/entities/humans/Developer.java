@@ -15,15 +15,17 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @SuperBuilder
-//@ToString(callSuper = true)
+@ToString(callSuper = true)
 @Entity
 public class Developer extends User {
     private String username;
     private Float rating;
     @Builder.Default
-    @OneToMany(mappedBy = "developer")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "developer")
     private List<BugClaim> bugClaims = new ArrayList<>();
     @Builder.Default
-    @OneToMany(mappedBy = "developer")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "developer")
     private List<Solution> solutions = new ArrayList<>();
 }

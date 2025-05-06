@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Builder
 @Entity
+@ToString
 public class TechStack {
     @Id
     @GeneratedValue
@@ -22,6 +23,7 @@ public class TechStack {
     private String name;
     private String category;
     @Builder.Default
+    @ToString.Exclude
     @ManyToMany
     private List<Bug> bugs = new ArrayList<>();
 }

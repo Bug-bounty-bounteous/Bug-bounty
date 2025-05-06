@@ -15,19 +15,22 @@ import java.util.List;
 @Setter
 @Getter
 @RequiredArgsConstructor
-//@ToString(callSuper = true)
+@ToString(callSuper = true)
 @SuperBuilder
 @Entity
 public class Company extends User {
     private String companyName;
 
     @Builder.Default
-    @OneToMany(mappedBy = "publisher")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "publisher")
     private List<Bug> bugs = new ArrayList<>();
     @Builder.Default
-    @OneToMany(mappedBy = "publisher")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "publisher")
     private List<LearningResource> resources = new ArrayList<>();
     @Builder.Default
-    @OneToMany(mappedBy = "company")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "company")
     private List<Feedback> feedbacks = new ArrayList<>();
 }

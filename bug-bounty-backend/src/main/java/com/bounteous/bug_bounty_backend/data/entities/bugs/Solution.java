@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Builder
 @Entity
+@ToString
 public class Solution {
     @Id
     @GeneratedValue
@@ -24,13 +25,16 @@ public class Solution {
     private LocalDate submittedAt;
     private LocalDate reviewedAt;
 
-    @ManyToOne
+    @ToString.Exclude
+	@ManyToOne
     private Developer developer;
 
-    @ManyToOne
+    @ToString.Exclude
+	@ManyToOne
     private Bug bug;
 
     @Builder.Default
-    @OneToMany(mappedBy = "solution")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "solution")
     private List<Feedback> feedbacks = new ArrayList<>();
 }

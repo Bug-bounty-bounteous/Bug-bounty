@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Getter
 @RequiredArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class BugClaimId implements Serializable {
     private Long developer;
     private Long bug;

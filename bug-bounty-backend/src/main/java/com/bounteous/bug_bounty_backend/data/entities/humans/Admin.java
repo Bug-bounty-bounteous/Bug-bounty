@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @Getter
 @RequiredArgsConstructor
-//@ToString(callSuper = true)
+@ToString(callSuper = true)
 @SuperBuilder
 @Entity
 public class Admin extends User {
