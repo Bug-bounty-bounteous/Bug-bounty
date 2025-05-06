@@ -1,14 +1,16 @@
-package com.bounteous.bug_bounty_backend.entities.bugs;
+package com.bounteous.bug_bounty_backend.data.entities.bugs;
 
-import com.bounteous.bug_bounty_backend.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
+@AllArgsConstructor
 @Setter
+@Getter
+@RequiredArgsConstructor
+@Builder
 @Entity
 @IdClass(BugClaimId.class)
 public class BugClaim {

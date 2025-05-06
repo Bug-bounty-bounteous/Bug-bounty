@@ -1,16 +1,18 @@
-package com.bounteous.bug_bounty_backend.entities.bugs;
+package com.bounteous.bug_bounty_backend.data.entities.bugs;
 
-import com.bounteous.bug_bounty_backend.entities.humans.Company;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@AllArgsConstructor
 @Setter
+@Getter
+@RequiredArgsConstructor
+@Builder
 @Entity
 public class Bug {
     @Id
@@ -25,10 +27,13 @@ public class Bug {
     private LocalDate updatedAt;
     @ManyToOne
     private Company publisher;
+    @Builder.Default
     @ManyToMany(mappedBy = "bugs")
     private List<TechStack> stack = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "bug")
     private List<BugClaim> bugClaims = new ArrayList<>();
+    @Builder.Default
     @OneToMany(mappedBy = "bug")
     private List<Solution> solutions = new ArrayList<>();
 }
