@@ -1,1 +1,40 @@
-<p>login works!</p>
+<div>
+  <app-nav-bar />
+  <div [ngClass]="'main'">
+    <div [ngClass]="'form'">
+      <div [ngClass]="'form-title'">
+        <h2>Bug Bounty</h2>
+      </div>
+      <div [ngClass]="'form-body'">
+        <div [ngClass]="'tab-title'">Login</div>
+        <div [ngClass]="'tab-body'">
+          <div
+            class="error"
+            [style.visibility]="hasError ? 'visible' : 'hidden'"
+          >
+            Invalid username or password
+          </div>
+          <div [ngClass]="'tab-content'">
+            <app-input-bar
+              label="Username"
+              [value]="username"
+              (valueChange)="OnUsernameChange($event)"
+              [hasError]="hasError"
+            />
+            <app-input-bar
+              label="Password"
+              [value]="password"
+              type="password"
+              (valueChange)="OnPasswordChange($event)"
+              [hasError]="hasError"
+            />
+          </div>
+        </div>
+        <div [ngClass]="'tab-buttons'">
+          <app-button>Sign Up</app-button>
+          <app-button type="primary">Login</app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
