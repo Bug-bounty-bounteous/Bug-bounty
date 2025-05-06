@@ -1,1 +1,111 @@
-/* You can add global styles to this file, and also import other style files */
+/* Pre-defined varaiables*/
+:root {
+  --background: #222;
+  --background-section: #000;
+  --background-section-hover: #3c3c3c;
+
+  --outline: #444;
+  --background-tech-stack: #333;
+
+  --black: #000;
+
+  --green-1: #00ff00;
+  --green-2: #00cc00;
+  --green-3: #00b300;
+  --green-4: #38b000;
+  --green-5: #009900;
+  --green-6: #003300;
+
+  --yellow-1: #f4ff00;
+  --yellow-2: #c3cc00;
+  --blue-1: #3366cc;
+  --blue-2: #2952a3;
+
+  --red-1: #ff0000;
+  --red-2: #c00;
+  --red-outline: #dd0000;
+}
+
+/* Reset some default browser styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set a base font size and family */
+html {
+  font-size: 16px;
+  font-family: "Source Code Pro", monospace;
+}
+
+/* Ensure body takes full height and width */
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  background-color: var(--background);
+  color: var(--green-2);
+}
+
+/* Make images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Remove default list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Anchor tag styles */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Basic styling for common elements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* Utility classes for spacing */
+.mt-1 {
+  margin-top: 1rem;
+}
+.mb-1 {
+  margin-bottom: 1rem;
+}
+.mt-2 {
+  margin-top: 2rem;
+}
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+button {
+  all: unset;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  line-height: normal;
+}
