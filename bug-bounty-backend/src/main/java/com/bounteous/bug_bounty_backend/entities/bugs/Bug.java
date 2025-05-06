@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,11 +20,15 @@ public class Bug {
     private String description;
     private Difficulty difficulty;
     private double reward;
-    private Status status;
+    private BugStatus bugStatus;
     private LocalDate creationAt;
     private LocalDate updatedAt;
     @ManyToOne
     private Company publisher;
     @ManyToMany(mappedBy = "bugs")
-    private List<TechStack> stack;
+    private List<TechStack> stack = new ArrayList<>();
+    @OneToMany(mappedBy = "bug")
+    private List<BugClaim> bugClaims = new ArrayList<>();
+    @OneToMany(mappedBy = "bug")
+    private List<Solution> solutions = new ArrayList<>();
 }
