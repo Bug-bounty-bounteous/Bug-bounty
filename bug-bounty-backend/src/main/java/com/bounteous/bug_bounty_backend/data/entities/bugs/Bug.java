@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Builder
 @Entity
+@ToString
 public class Bug {
     @Id
     @GeneratedValue
@@ -25,15 +26,19 @@ public class Bug {
     private BugStatus bugStatus;
     private LocalDate creationAt;
     private LocalDate updatedAt;
+    @ToString.Exclude
     @ManyToOne
     private Company publisher;
     @Builder.Default
+    @ToString.Exclude
     @ManyToMany(mappedBy = "bugs")
     private List<TechStack> stack = new ArrayList<>();
     @Builder.Default
-    @OneToMany(mappedBy = "bug")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "bug")
     private List<BugClaim> bugClaims = new ArrayList<>();
     @Builder.Default
-    @OneToMany(mappedBy = "bug")
+    @ToString.Exclude
+	@OneToMany(mappedBy = "bug")
     private List<Solution> solutions = new ArrayList<>();
 }

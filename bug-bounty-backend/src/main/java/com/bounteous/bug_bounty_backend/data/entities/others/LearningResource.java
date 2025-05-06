@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Getter
 @RequiredArgsConstructor
 @Builder
+@ToString
 @Entity
 public class LearningResource {
     @Id
@@ -25,6 +26,7 @@ public class LearningResource {
     private RessourceType ressourceType;
     private LocalDate date;
     private boolean reported;
-    @ManyToOne
+    @ToString.Exclude
+	@ManyToOne
     private Company publisher;
 }

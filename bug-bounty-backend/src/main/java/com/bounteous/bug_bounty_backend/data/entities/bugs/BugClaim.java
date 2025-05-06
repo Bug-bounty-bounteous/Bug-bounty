@@ -13,13 +13,16 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @IdClass(BugClaimId.class)
+@ToString
 public class BugClaim {
     @Id
-    @ManyToOne
+    @ToString.Exclude
+	@ManyToOne
     private Developer developer;
 
     @Id
-    @ManyToOne
+    @ToString.Exclude
+	@ManyToOne
     private Bug bug;
 
     private LocalDate date;

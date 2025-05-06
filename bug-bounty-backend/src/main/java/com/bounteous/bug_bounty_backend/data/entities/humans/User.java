@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @SuperBuilder
-//@ToString
+@ToString
 @MappedSuperclass
 public class User {
     @Id

@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Builder
 @Entity
+@ToString
 public class Feedback {
     @Id
     @GeneratedValue
@@ -24,9 +25,11 @@ public class Feedback {
     private boolean flagged;
     private LocalDate date;
 
-    @ManyToOne
+    @ToString.Exclude
+	@ManyToOne
     private Solution solution;
 
-    @ManyToOne
+	@ToString.Exclude
+	@ManyToOne
     private Company company;
 }
