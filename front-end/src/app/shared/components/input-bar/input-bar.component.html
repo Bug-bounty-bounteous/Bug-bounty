@@ -1,0 +1,11 @@
+<div [ngClass]="'container'">
+  <label [for]="inputId">{{ label }}</label>
+  <input
+    [id]="inputId"
+    [type]="type"
+    [value]="value"
+    (input)="onInputChange($event)"
+    [class.input-error]="hasError"
+    [placeholder]="placeholder"
+  />
+</div>
