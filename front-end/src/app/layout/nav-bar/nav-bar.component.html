@@ -1,5 +1,9 @@
 <div [ngClass]="'container'">
-  <div><img [src]="logoUrl" /></div>
+  <div>
+    <a routerLink="/">
+      <img [src]="logoUrl" alt="logo" />
+    </a>
+  </div>
   <nav [ngClass]="'navBar'">
     @for (link of links; track $index) {
     <div>
