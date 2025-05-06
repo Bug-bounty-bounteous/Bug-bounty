@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,5 +16,5 @@ public class TechStack {
     private String name;
     private String category;
     @ManyToMany
-    private List<Bug> bugs;
+    private List<Bug> bugs = new ArrayList<>();
 }
