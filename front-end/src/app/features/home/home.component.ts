@@ -15,7 +15,7 @@ export class HomeComponent {
 
   constructor(private router: Router) {}
 
-  clickButtonTest(e: MouseEvent) {
+  goToLogin(e: MouseEvent) {
     this.router.navigate(['/login']);
   }
 }

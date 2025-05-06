@@ -2,9 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 200px;
+  padding: 0px 5% 0 7.5%;
   width: 100%;
-  height: 70vh;
+  height: 75vh;
   font-size: 1.1rem;
 }
 
@@ -27,7 +27,7 @@ header {
 
 .image-fade-container {
   position: relative;
-  width: 750px; /* Adjust as needed */
+  width: 100%; /* Adjust as needed */
   height: auto;
   display: inline-block;
   overflow: hidden;
