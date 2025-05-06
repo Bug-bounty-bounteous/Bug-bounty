@@ -1,16 +1,18 @@
-package com.bounteous.bug_bounty_backend.entities.bugs;
+package com.bounteous.bug_bounty_backend.data.entities.bugs;
 
-import com.bounteous.bug_bounty_backend.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@AllArgsConstructor
 @Setter
+@Getter
+@RequiredArgsConstructor
+@Builder
 @Entity
 public class Solution {
     @Id
@@ -28,6 +30,7 @@ public class Solution {
     @ManyToOne
     private Bug bug;
 
+    @Builder.Default
     @OneToMany(mappedBy = "solution")
     private List<Feedback> feedbacks = new ArrayList<>();
 }

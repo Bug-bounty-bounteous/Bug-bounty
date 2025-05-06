@@ -1,17 +1,19 @@
-package com.bounteous.bug_bounty_backend.entities.bugs;
+package com.bounteous.bug_bounty_backend.data.entities.bugs;
 
-import com.bounteous.bug_bounty_backend.entities.humans.Company;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
+@AllArgsConstructor
 @Setter
+@Getter
+@RequiredArgsConstructor
+@Builder
 @Entity
 public class Feedback {
     @Id

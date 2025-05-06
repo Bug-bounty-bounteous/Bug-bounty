@@ -1,15 +1,17 @@
-package com.bounteous.bug_bounty_backend.entities.humans;
+package com.bounteous.bug_bounty_backend.data.entities.humans;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
+@SuperBuilder
+//@ToString
 @MappedSuperclass
 public class User {
     @Id
