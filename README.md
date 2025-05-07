@@ -1,16 +1,77 @@
-# 🐞 Bug Bounty
+# Bug Bounty Platform
 
-**Bug Bounty** is a collaborative platform where developers of all levels can find and solve real-world bugs submitted by companies. It serves as a marketplace that incentivizes learning and contribution through a challenge-based reward system.
+A marketplace where developers can find and solve real-world bugs in various applications.
 
-## 🚀 Overview
+## Prerequisites
 
-Bug Bounty connects developers eager to grow their skills with companies seeking to crowdsource bug resolutions. Developers can browse, claim, and solve bugs for rewards, while companies gain access to a talented pool of problem-solvers.
+### Backend (Spring Boot)
+- Java 17+
+- MySQL 8.0+
+- Gradle
 
-## 📄 License
+### Frontend (Angular)
+- Node.js 16+
+- Angular CLI 16+
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+## Project Setup
 
-## 📬 Contact
+### Database Configuration
+1. Make sure MySQL is running
+2. Database will be created automatically on first run
+3. Check connection settings in `./project/bug-bounty-backend/src/main/resources/application.properties`
 
-For questions, ideas, or bug submissions, feel free to open an issue or contact the maintainers.
+### Backend (Spring Boot)
 
+1. Open a terminal and navigate to the backend folder:
+   ```
+   cd ./project/bug-bounty-backend
+   ```
+
+2. Run the project with Gradle:
+   ```
+   gradlew bootRun
+   ```
+   
+3. The server will start on `http://localhost:8080`
+
+### Frontend (Angular)
+
+1. Open a new terminal and navigate to the frontend folder:
+   ```
+   cd ./project/front-end
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Start the development server:
+   ```
+   ng serve
+   ```
+
+4. Access the application at `http://localhost:4200`
+
+## VSCode Configuration
+
+### Recommended Extensions
+- **Backend**: Extension Pack for Java, Spring Boot Extension Pack
+- **Frontend**: Angular Language Service, ESLint
+
+## Troubleshooting
+
+### Backend Issues
+- Make sure MySQL is running
+- Check connection settings in `application.properties`
+- Verify all Java files are in their correct packages
+
+### Frontend Issues
+- Make sure Node.js and Angular CLI are installed
+- Check for CORS issues if API calls fail
+- Try `npm install` if module errors occur
+
+### If Everything Fails
+- Reset the project to a clean state
+- Follow the setup steps carefully again
+- Make sure all prerequisites are installed correctly
