@@ -1,0 +1,69 @@
+<div>
+  <app-nav-bar />
+  <div [ngClass]="'main'">
+    <div [ngClass]="'form'">
+      <div [ngClass]="'form-title'">
+        <h2>Bug Bounty</h2>
+      </div>
+      <div [ngClass]="'form-body'">
+        <div [ngClass]="'tab-title'">Sign Up</div>
+        <div [ngClass]="'tab-body'">
+          <div>
+            <div
+              class="error"
+              [style.visibility]="invalidEmail ? 'visible' : 'hidden'"
+            >
+              Email is invalid or already registered
+            </div>
+            <app-input-bar
+              label="Email"
+              [(ngModel)]="email"
+              type="email"
+              (valueChange)="OnChangeEmail($event)"
+              [hasError]="invalidEmail"
+            />
+          </div>
+          <div>
+            <div
+              class="error"
+              [style.visibility]="invalidPassword ? 'visible' : 'hidden'"
+            >
+              Password format is invalid
+            </div>
+            <app-input-bar
+              label="Password"
+              [(ngModel)]="password"
+              type="password"
+              (valueChange)="OnChangePassword($event)"
+              [hasError]="invalidPassword"
+            />
+          </div>
+          <div>
+            <div
+              class="error"
+              [style.visibility]="invalidConfirmPassword ? 'visible' : 'hidden'"
+            >
+              Password doesn't match
+            </div>
+            <app-input-bar
+              label="Confirm Password"
+              [(ngModel)]="confirmPassword"
+              type="password"
+              (valueChange)="OnChangeConfirmPassword($event)"
+              [hasError]="invalidConfirmPassword"
+            />
+          </div>
+          <div [ngClass]="'role'">
+            <label for="role">Sign Up As Company?</label>
+            <input id="role" type="checkbox" [(ngModel)]="isCompany" />
+          </div>
+        </div>
+        <div [ngClass]="'tab-buttons'">
+          <app-button type="primary" (onClicked)="OnClickSignUp($event)"
+            >Sign Up</app-button
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

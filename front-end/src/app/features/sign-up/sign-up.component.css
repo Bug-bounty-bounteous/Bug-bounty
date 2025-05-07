@@ -1,0 +1,63 @@
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 85vh;
+}
+.form {
+  background-color: var(--background-section);
+  width: 50%;
+
+  display: flex;
+  flex-direction: column;
+  padding: 4%;
+  row-gap: 10px;
+}
+
+.form-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 0;
+  }
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding: 0 50px;
+}
+
+.tab-title {
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--white);
+  padding: 0.66rem 1rem;
+}
+
+.tab-body {
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-buttons {
+  display: flex;
+  justify-content: end;
+  column-gap: 10px;
+  padding-right: 1rem;
+}
+
+.error {
+  color: var(--red-1);
+  font-size: 0.8rem;
+}
+
+.role {
+  padding-top: 0.5rem;
+  display: flex;
+  column-gap: 1.5rem;
+}
