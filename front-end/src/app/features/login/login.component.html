@@ -17,22 +17,24 @@
           <div [ngClass]="'tab-content'">
             <app-input-bar
               label="Username"
-              [value]="username"
               (valueChange)="OnUsernameChange($event)"
               [hasError]="hasError"
+              [(ngModel)]="username"
             />
             <app-input-bar
               label="Password"
-              [value]="password"
               type="password"
               (valueChange)="OnPasswordChange($event)"
               [hasError]="hasError"
+              [(ngModel)]="password"
             />
           </div>
         </div>
         <div [ngClass]="'tab-buttons'">
-          <app-button>Sign Up</app-button>
-          <app-button type="primary">Login</app-button>
+          <app-button (onClicked)="goToSignUp($event)">Sign Up</app-button>
+          <app-button type="primary" (onClicked)="OnClickLogin($event)"
+            >Login</app-button
+          >
         </div>
       </div>
     </div>
