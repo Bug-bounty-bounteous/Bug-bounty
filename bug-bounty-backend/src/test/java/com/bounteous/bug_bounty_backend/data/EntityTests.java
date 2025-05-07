@@ -23,7 +23,7 @@ import java.util.List;
 @DataJpaTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:testdb",
         "spring.jpa.hibernate.ddl-auto=create-drop"
-})
+}, showSql = false)
 public class EntityTests {
     @Autowired
     private BugClaimRepository bugClaimRepository;
@@ -87,7 +87,7 @@ public class EntityTests {
         //                  "Turn off the machine"
         //                  Morgan Stanley gives feedback:
         //                      "Oh"
-        //
+
         // entities
         Developer imad = Developer.builder()
                 .name("Imad").build();
@@ -98,8 +98,8 @@ public class EntityTests {
         Developer priyanshi = Developer.builder()
                 .name("Priyanshi").build();
 
-        Company bounteous = Company.builder().name("Bounteous").build();
-        Company morgan = Company.builder().name("Morgan Stanley").build();
+        Company bounteous = Company.builder().companyName("Bounteous").build();
+        Company morgan = Company.builder().companyName("Morgan Stanley").build();
 
         LearningResource springResource = LearningResource.builder().description("Spring Boot debugging").build();
         LearningResource hibernate = LearningResource.builder().description("Hibernate").build();
@@ -129,48 +129,79 @@ public class EntityTests {
         Feedback mtp = Feedback.builder().feedbackText("Oh").build();
 
         // relationships
+        //      Company - Resource
         springResource.setPublisher(bounteous);
         hibernate.setPublisher(bounteous);
+        bounteous.setResources(List.of(springResource, hibernate));
 
+        //      TechStack - Bug
         springBoot.setBugs(List.of(springBootVulnerability));
         fortran.setBugs(List.of(freeMoneyMachine));
         python.setBugs(List.of(freeMoneyMachine));
+        springBootVulnerability.setStack(List.of(springBoot));
+        freeMoneyMachine.setStack(List.of(fortran, python));
 
+        //      Company - Bug
         springBootVulnerability.setPublisher(bounteous);
         freeMoneyMachine.setPublisher(morgan);
         strategyLeak.setPublisher(morgan);
+        bounteous.setBugs(List.of(springBootVulnerability));
+        morgan.setBugs(List.of(freeMoneyMachine, strategyLeak));
 
+        //      Developer - Claim - Bug
         imadfmm.setDeveloper(imad);
         imadfmm.setBug(freeMoneyMachine);
         imadsbv.setDeveloper(imad);
         imadsbv.setBug(springBootVulnerability);
         imadsl.setDeveloper(imad);
         imadsl.setBug(strategyLeak);
+        imad.setBugClaims(List.of(imadfmm, imadsbv, imadsl));
 
         ericsbv.setDeveloper(eric);
         ericsbv.setBug(springBootVulnerability);
+        eric.setBugClaims(List.of(ericsbv));
 
         hadisl.setDeveloper(hadi);
         hadisl.setBug(strategyLeak);
         hadisbv.setDeveloper(hadi);
         hadisbv.setBug(springBootVulnerability);
+        hadi.setBugClaims(List.of(hadisl, hadisbv));
 
         priyanshifmm.setDeveloper(priyanshi);
         priyanshifmm.setBug(freeMoneyMachine);
+        priyanshi.setBugClaims(List.of(priyanshifmm));
 
+        freeMoneyMachine.setBugClaims(List.of(imadfmm, priyanshifmm));
+        springBootVulnerability.setBugClaims(List.of(hadisbv,ericsbv,imadsbv));
+        strategyLeak.setBugClaims(List.of(hadisl, imadsl));
+
+        //      Developer - Sol - Bug
         ericsbvSol.setDeveloper(eric);
         ericsbvSol.setBug(springBootVulnerability);
+        eric.setSolutions(List.of(ericsbvSol));
         hadislSol.setDeveloper(hadi);
         hadislSol.setBug(strategyLeak);
+        hadi.setSolutions(List.of(hadislSol));
         priyanshifmmSol.setDeveloper(priyanshi);
         priyanshifmmSol.setBug(freeMoneyMachine);
+        priyanshi.setSolutions(List.of(priyanshifmmSol));
 
+        springBootVulnerability.setSolutions(List.of(ericsbvSol));
+        freeMoneyMachine.setSolutions(List.of(priyanshifmmSol));
+        strategyLeak.setSolutions(List.of(hadislSol));
+
+        //      Company - Feedback - Sol
         bte1.setSolution(ericsbvSol);
         bte1.setCompany(bounteous);
         bte2.setSolution(ericsbvSol);
         bte2.setCompany(bounteous);
+        ericsbvSol.setFeedbacks(List.of(bte1, bte2));
         mtp.setSolution(priyanshifmmSol);
         mtp.setCompany(morgan);
+        priyanshifmmSol.setFeedbacks(List.of(mtp));
+        bounteous.setFeedbacks(List.of(bte1, bte2));
+        morgan.setFeedbacks(List.of(mtp));
+
         // save
         developerRepository.saveAll(List.of(imad, eric, hadi, priyanshi));
         companyRepository.saveAll(List.of(bounteous, morgan));
@@ -185,9 +216,71 @@ public class EntityTests {
     @Test
     public void checkDevs() {
         List<Developer> devs = developerRepository.findAll();
-        System.out.println(devs);
         Assertions.assertEquals(4, devs.size());
     }
 
+    @Test
+    public void checkCompanies() {
+        List<Company> companies = companyRepository.findAll();
+        Assertions.assertEquals(2, companies.size());
+    }
 
+    @Test
+    public void checkLearningResources() {
+        List<LearningResource> resources = learningResourceRepository.findAll();
+        Assertions.assertEquals(2, resources.size());
+    }
+
+    @Test
+    public void checkBugs() {
+        List<Bug> bugs = bugRepository.findAll();
+        Assertions.assertEquals(3, bugs.size());
+    }
+
+    @Test
+    public void checkTechStacks() {
+        List<TechStack> stacks = techStackRepository.findAll();
+        Assertions.assertEquals(3, stacks.size());
+    }
+
+    @Test
+    public void checkClaims() {
+        List<BugClaim> claims = bugClaimRepository.findAll();
+        Assertions.assertEquals(7, claims.size());
+    }
+
+    @Test
+    public void checkSolutions() {
+        List<Solution> solutions = solutionRepository.findAll();
+        Assertions.assertEquals(3, solutions.size());
+    }
+
+    @Test
+    public void checkFeedback() {
+        List<Feedback> feedbacks = feedbackRepository.findAll();
+        Assertions.assertEquals(3, feedbacks.size());
+    }
+
+    @Test
+    public void checkCompanyOfBug() {
+        bugRepository.findByDescription("Spring Boot Vulnerability").ifPresentOrElse(
+                bug -> {
+                    Company company = bug.getPublisher();
+                    System.out.println(company);
+                    Assertions.assertNotNull(company);
+                    },
+                ( ) -> {Assertions.fail("Couldn't get bug");}
+        );
+    }
+
+    @Test
+    public void checkBugsByCompany() {
+        companyRepository.findByCompanyName("Bounteous")
+                .ifPresentOrElse(
+                        company1 -> {
+                            List<Bug> bugs = company1.getBugs();
+                            Assertions.assertEquals(1, bugs.size());
+                        },
+                        () -> {Assertions.fail("Couldn't get Bounteous bugs");});
+    }
 }

@@ -27,4 +27,5 @@ public class BugClaim {
 
     private LocalDate date;
     private ClaimStatus claimStatus;
+
 }
