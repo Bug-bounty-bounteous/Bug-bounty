@@ -21,6 +21,7 @@ public class User {
     private String email;
     // Refer to v for why the following are a needed
     // https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/#4-1-java-pbkdf2withhmacsha1-hash-example
+    // Look into Spring Security instead tho
     private String hashedPassword;
     private String salt;
     private int passwordNumIteration;

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -41,4 +42,5 @@ public class Bug {
     @ToString.Exclude
 	@OneToMany(mappedBy = "bug")
     private List<Solution> solutions = new ArrayList<>();
+
 }
