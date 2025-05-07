@@ -4,37 +4,37 @@ import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@Setter
-@Getter
-@RequiredArgsConstructor
-@Builder
 @Entity
-@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Solution {
     @Id
     @GeneratedValue
     private Long id;
+    
     private String description;
     private String codeLink;
+    
+    @Enumerated(EnumType.STRING)
     private SolutionStatus status;
-    private LocalDate submittedAt;
-    private LocalDate reviewedAt;
+    
+    private LocalDateTime submittedAt;
+    private LocalDateTime reviewedAt;
 
-    @ToString.Exclude
-	@ManyToOne
+    @ManyToOne
     private Developer developer;
 
-    @ToString.Exclude
-	@ManyToOne
+    @ManyToOne
     private Bug bug;
-
+    
+    @OneToMany(mappedBy = "solution")
     @Builder.Default
-    @ToString.Exclude
-	@OneToMany(mappedBy = "solution")
     private List<Feedback> feedbacks = new ArrayList<>();
 }

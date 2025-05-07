@@ -5,32 +5,34 @@ import com.bounteous.bug_bounty_backend.data.entities.bugs.Feedback;
 import com.bounteous.bug_bounty_backend.data.entities.others.LearningResource;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@Setter
-@Getter
-@RequiredArgsConstructor
-@ToString(callSuper = true)
-@SuperBuilder
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class Company extends User {
     private String companyName;
 
-    @Builder.Default
-    @ToString.Exclude
-	@OneToMany(mappedBy = "publisher")
+    @OneToMany(mappedBy = "publisher")
+    @Builder.Default 
     private List<Bug> bugs = new ArrayList<>();
-    @Builder.Default
-    @ToString.Exclude
-	@OneToMany(mappedBy = "publisher")
+
+    @OneToMany(mappedBy = "publisher")
+    @Builder.Default 
     private List<LearningResource> resources = new ArrayList<>();
-    @Builder.Default
-    @ToString.Exclude
-	@OneToMany(mappedBy = "company")
+
+    @OneToMany(mappedBy = "company")
+    @Builder.Default 
     private List<Feedback> feedbacks = new ArrayList<>();
 }

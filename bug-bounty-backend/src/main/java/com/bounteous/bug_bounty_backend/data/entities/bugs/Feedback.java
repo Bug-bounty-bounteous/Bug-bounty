@@ -1,35 +1,31 @@
 package com.bounteous.bug_bounty_backend.data.entities.bugs;
 
 import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@Setter
-@Getter
-@RequiredArgsConstructor
-@Builder
+// Feedback entity for solutions
 @Entity
-@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Feedback {
     @Id
     @GeneratedValue
     private Long id;
+    
     private int rating;
     private String feedbackText;
     private boolean flagged;
-    private LocalDate date;
+    private LocalDateTime date;
 
-    @ToString.Exclude
-	@ManyToOne
+    @ManyToOne
     private Solution solution;
 
-	@ToString.Exclude
-	@ManyToOne
+    @ManyToOne
     private Company company;
 }

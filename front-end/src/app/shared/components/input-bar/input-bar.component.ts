@@ -10,6 +10,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-input-bar',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './input-bar.component.html',
   styleUrl: './input-bar.component.css',

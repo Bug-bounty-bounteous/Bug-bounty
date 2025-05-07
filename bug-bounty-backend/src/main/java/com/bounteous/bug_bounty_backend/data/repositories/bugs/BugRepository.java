@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface BugRepository extends JpaRepository<Bug, Long> {
     Optional<Bug> findByDescription(String description);
+    // Other repository methods
 }

@@ -4,28 +4,27 @@ import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@Setter
-@Getter
-@RequiredArgsConstructor
-@Builder
+// Links bugs to developers who claimed them
 @Entity
 @IdClass(BugClaimId.class)
-@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BugClaim {
     @Id
-    @ToString.Exclude
-	@ManyToOne
+    @ManyToOne
     private Developer developer;
 
     @Id
-    @ToString.Exclude
-	@ManyToOne
+    @ManyToOne
     private Bug bug;
 
-    private LocalDate date;
+    private LocalDateTime date;
+    
+    @Enumerated(EnumType.STRING)
     private ClaimStatus claimStatus;
-
 }

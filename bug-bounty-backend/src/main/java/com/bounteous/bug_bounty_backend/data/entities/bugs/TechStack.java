@@ -1,29 +1,30 @@
 package com.bounteous.bug_bounty_backend.data.entities.bugs;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@Setter
-@Getter
-@RequiredArgsConstructor
-@Builder
 @Entity
-@ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TechStack {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
     private String category;
-    @Builder.Default
-    @ToString.Exclude
+
     @ManyToMany
+    @JoinTable(
+        name = "bug_tech_stack",
+        joinColumns = @JoinColumn(name = "tech_stack_id"),
+        inverseJoinColumns = @JoinColumn(name = "bug_id")
+    )
+    @Builder.Default
     private List<Bug> bugs = new ArrayList<>();
 }

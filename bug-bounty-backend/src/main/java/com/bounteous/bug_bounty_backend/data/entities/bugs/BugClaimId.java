@@ -4,12 +4,12 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
-@Setter
+// Composite key for BugClaim entity
 @Getter
-@RequiredArgsConstructor
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class BugClaimId implements Serializable {
     private Long developer;
     private Long bug;

@@ -3,6 +3,7 @@ import { SidebarLayoutComponent } from '../../layout/sidebar-layout/sidebar-layo
 
 @Component({
   selector: 'app-marketplace',
+  standalone: true,
   imports: [SidebarLayoutComponent],
   templateUrl: './marketplace.component.html',
   styleUrl: './marketplace.component.css',

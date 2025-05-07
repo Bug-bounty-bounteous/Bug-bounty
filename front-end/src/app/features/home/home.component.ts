@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [CommonModule, NavBarComponent, ButtonComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
