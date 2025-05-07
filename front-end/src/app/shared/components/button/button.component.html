@@ -1,5 +1,8 @@
 <div>
-  <button [ngClass]="buttonClass" (click)="OnClickButton($event)">
-    <ng-content></ng-content>
+  <button [ngClass]="buttonClass" 
+          (click)="OnClickButton($event)"
+          [disabled]="disabled || isLoading">
+    <div *ngIf="isLoading" class="spinner"></div>
+    <ng-content *ngIf="!isLoading"></ng-content>
   </button>
 </div>

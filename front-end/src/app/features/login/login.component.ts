@@ -1,45 +1,77 @@
-import { Component } from '@angular/core';
-import { NavBarComponent } from '../../layout/nav-bar/nav-bar.component';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { TokenStorageService } from '../../core/auth/token.storage';
+import { NavBarComponent } from '../../layout/nav-bar/nav-bar.component';
 import { InputBarComponent } from '../../shared/components/input-bar/input-bar.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    NavBarComponent,
     CommonModule,
+    ReactiveFormsModule,
+    NavBarComponent,
+    RouterLink,
     InputBarComponent,
-    ButtonComponent,
-    FormsModule,
+    ButtonComponent
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-
-  hasError: boolean = false;
-
-  constructor(private router: Router) {}
-
-  goToSignUp(event: MouseEvent) {
-    this.router.navigate(['/signup']);
+  loginForm!: FormGroup;
+  isSubmitting = false;
+  errorMessage = '';
+  
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private tokenStorage: TokenStorageService,
+    private router: Router
+  ) {
+    this.createForm();
   }
 
-  OnUsernameChange(value: string) {
-    this.username = value;
+  createForm(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
   }
 
-  OnPasswordChange(value: string) {
-    this.password = value;
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      return;
+    }
+    
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (response) => {
+        this.tokenStorage.saveToken(response.token);
+        this.tokenStorage.saveUser({
+          id: response.id,
+          username: response.username,
+          email: response.email,
+          role: response.role
+        });
+        
+        this.isSubmitting = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Login failed. Please check your credentials.';
+        this.isSubmitting = false;
+      }
+    });
   }
 
-  OnClickLogin(event: MouseEvent) {
-    console.log('Login logic here...');
+  onRegister(): void {
+    this.router.navigate(['/register']);
   }
 }

@@ -1,49 +1,95 @@
-import { Component } from '@angular/core';
-import { NavBarComponent } from '../../layout/nav-bar/nav-bar.component';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
+import { TokenStorageService } from '../../core/auth/token.storage';
+import { NavBarComponent } from '../../layout/nav-bar/nav-bar.component';
 import { InputBarComponent } from '../../shared/components/input-bar/input-bar.component';
-import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [
-    NavBarComponent,
     CommonModule,
+    ReactiveFormsModule,
+    NavBarComponent,
+    RouterLink,
     InputBarComponent,
-    FormsModule,
-    ButtonComponent,
+    ButtonComponent
   ],
   templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.css',
+  styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent {
-  invalidEmail: boolean = false;
-  invalidPassword: boolean = false;
-  invalidConfirmPassword: boolean = false;
-
-  email: string = '';
-  password: string = '';
-  confirmPassword: string = '';
-  isCompany: boolean = false;
-
-  OnChangeEmail(value: string) {
-    this.email = value;
-    this.invalidEmail = false;
+  registrationForm!: FormGroup;
+  isSubmitting = false;
+  errorMessage = '';
+  
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private tokenStorage: TokenStorageService,
+    private router: Router
+  ) {
+    this.createForm();
   }
 
-  OnChangePassword(value: string) {
-    this.password = value;
-    this.invalidPassword = false;
+  createForm(): void {
+    this.registrationForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    }, {
+      validator: this.passwordMatchValidator
+    });
   }
 
-  OnChangeConfirmPassword(value: string) {
-    this.confirmPassword = value;
-    this.invalidConfirmPassword = false;
+  passwordMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
+    
+    if (password !== confirmPassword) {
+      formGroup.get('confirmPassword')?.setErrors({ mismatch: true });
+    }
+    return null;
   }
 
-  OnClickSignUp(event: MouseEvent) {
-    console.log('Submit Sign Up form logic here...');
+  onSubmit(): void {
+    if (this.registrationForm.invalid) {
+      return;
+    }
+    
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    
+    const { confirmPassword, ...registrationData } = this.registrationForm.value;
+    
+    this.authService.register(registrationData).subscribe({
+      next: (response) => {
+        this.tokenStorage.saveToken(response.token);
+        this.tokenStorage.saveUser({
+          id: response.id,
+          username: response.username,
+          email: response.email,
+          role: response.role
+        });
+        
+        this.isSubmitting = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  onLogin(): void {
+    this.router.navigate(['/login']);
   }
 }

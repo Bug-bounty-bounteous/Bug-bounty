@@ -1,17 +1,33 @@
 export interface User {
-    id: number;
-    name: string;
+    id?: number;
+    username?: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    userType: string;
+    role?: string;
+    rating?: number;
+    points?: number;
   }
   
-  export interface Developer extends User {
+  export interface AuthResponse {
+    token: string;
+    type: string;
+    id: number;
     username: string;
-    rating: number;
-    points: number;
+    email: string;
+    role: string;
   }
   
-  export interface Company extends User {
-    companyName: string;
+  export interface LoginRequest {
+    email: string;
+    password: string;
+  }
+  
+  export interface RegisterRequest {
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    password: string;
   }
   

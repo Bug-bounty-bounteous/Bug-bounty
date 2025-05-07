@@ -1,15 +1,20 @@
 package com.bounteous.bug_bounty_backend.data.dto.responses.auth;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-// DTO for JWT authentication response
 @Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class JwtResponse {
     private String token;
-    private String type;
+    @Builder.Default
+    private String type = "Bearer";
     private Long id;
+    private String username;
     private String email;
-    private String userType;
+    private String role;
 }

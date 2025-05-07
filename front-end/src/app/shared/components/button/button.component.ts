@@ -1,46 +1,42 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+type ButtonType = 'default' | 'primary' | 'secondary' | 'informative' | 'warning' | 'danger' | 'submit';
 
 @Component({
   selector: 'app-button',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './button.component.html',
-  styleUrl: './button.component.css',
+  styleUrls: ['./button.component.css']
 })
 export class ButtonComponent {
-  @Input() type:
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'informative'
-    | 'warning'
-    | 'danger' = 'default';
-
-  @Input() size: 'small' | 'medium' | 'large' = 'medium';
-
-  @Input() fontWeight: 'normal' | 'bold' = 'normal';
-
+  @Input() type: ButtonType = 'primary';
+  @Input() disabled: boolean = false;
+  @Input() isLoading: boolean = false;
+  @Input() fullWidth: boolean = false;
+  
+  // Support for the two events
   @Output() onClicked = new EventEmitter<MouseEvent>();
-
-  OnClickButton(event: MouseEvent) {
-    this.onClicked.emit(event);
+  @Output() btnClick = new EventEmitter<void>();
+  
+  OnClickButton(event: MouseEvent): void {
+    if (!this.disabled && !this.isLoading) {
+      this.onClicked.emit(event);
+      this.btnClick.emit();
+    }
+    
+    if (this.type !== 'submit') {
+      event.preventDefault();
+    }
   }
-
-  get buttonClass() {
-    return {
-      btn: true,
-      'btn-default': this.type === 'default',
-      'btn-primary': this.type === 'primary',
-      'btn-secondary': this.type === 'secondary',
-      'btn-informative': this.type === 'informative',
-      'btn-warning': this.type === 'warning',
-      'btn-danger': this.type === 'danger',
-      'btn-small': this.size === 'small',
-      'btn-medium': this.size === 'medium',
-      'btn-large': this.size === 'large',
-      'font-bold': this.fontWeight === 'bold',
-      'font-normal': this.fontWeight === 'normal',
-    };
+  
+  get buttonClass(): string {
+    const classes = ['btn'];
+    classes.push(`btn-${this.type}`);
+    if (this.fullWidth) {
+      classes.push('btn-full-width');
+    }
+    return classes.join(' ');
   }
 }

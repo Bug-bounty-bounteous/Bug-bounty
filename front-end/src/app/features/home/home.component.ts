@@ -1,22 +1,22 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgClass } from '@angular/common';
 import { NavBarComponent } from '../../layout/nav-bar/nav-bar.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NavBarComponent, ButtonComponent],
+  imports: [NavBarComponent, ButtonComponent, NgClass],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
   imageUrl: string = 'assets/images/coding.jpg';
 
   constructor(private router: Router) {}
-
-  goToLogin(e: MouseEvent) {
+  
+  goToLogin(e: Event): void {
     this.router.navigate(['/login']);
   }
 }
