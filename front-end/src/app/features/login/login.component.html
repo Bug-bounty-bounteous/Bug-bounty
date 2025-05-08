@@ -29,12 +29,11 @@
               [(ngModel)]="password"
             />
           </div>
-        </div>
         <div [ngClass]="'tab-buttons'">
           <app-button (onClicked)="goToSignUp($event)">Sign Up</app-button>
-          <app-button type="primary" (onClicked)="OnClickLogin($event)"
-            >Login</app-button
-          >
+          <app-button type="primary" (onClicked)="OnClickLogin($event)">
+            Login
+          </app-button>
         </div>
       </div>
     </div>
