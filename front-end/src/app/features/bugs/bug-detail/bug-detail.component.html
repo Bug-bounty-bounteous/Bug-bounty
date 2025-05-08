@@ -1,5 +1,106 @@
-<div class="bug-detail-container">
-    <h2>Bug Details</h2>
-    <!-- Content will be added here -->
-  </div>
-  
+<app-sidebar-layout activeSection="Bug Marketplace">
+    <div class="bug-detail-container">
+      <!-- Back button -->
+      <div class="back-link">
+        <a (click)="goBack()">← Back to Bug List</a>
+      </div>
+      
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      
+      <!-- Loading indicator -->
+      <app-loader 
+        *ngIf="isLoading" 
+        [isLoading]="isLoading" 
+        message="Loading bug details..."
+      ></app-loader>
+      
+      <div *ngIf="!isLoading && bug" class="bug-content">
+        <div class="bug-header">
+          <h1 class="bug-title">{{ bug.title }}</h1>
+          <div class="bug-meta">
+            <span class="bug-difficulty" [ngClass]="getDifficultyClass()">
+              {{ bug.difficulty }}
+            </span>
+            <span class="bug-status" [ngClass]="getStatusClass()">
+              {{ bug.status }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="bug-info-grid">
+          <div class="info-card bug-description-card">
+            <h3>Description</h3>
+            <div class="description-content">
+              {{ bug.description }}
+            </div>
+          </div>
+          
+          <div class="info-card bug-details-card">
+            <h3>Details</h3>
+            <div class="details-list">
+              <div class="detail-item">
+                <span class="detail-label">Reward:</span>
+                <span class="detail-value reward">{{ bug.reward | currency }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Posted by:</span>
+                <span class="detail-value">{{ bug.publisher?.name || 'Unknown' }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Created:</span>
+                <span class="detail-value">{{ bug.createdAt | dateFormat }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Updated:</span>
+                <span class="detail-value">{{ bug.updatedAt | dateFormat }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Verification:</span>
+                <span class="detail-value">{{ bug.verificationStatus || 'Not Verified' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-card bug-tech-card">
+            <h3>Technology Stack</h3>
+            <div class="tech-stack-chips">
+              <div *ngIf="bug.techStacks.length === 0" class="no-tech">
+                No specific technologies
+              </div>
+              <div 
+                *ngFor="let tech of bug.techStacks" 
+                class="tech-chip"
+              >
+                {{ tech.name }}
+                <span *ngIf="tech.category" class="tech-category">({{ tech.category }})</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-card bug-actions-card">
+            <h3>Actions</h3>
+            <div class="actions-container">
+              <app-button 
+                *ngIf="isClaimable() && !isOwnedByCurrentUser()" 
+                type="primary" 
+                (onClicked)="claimBug()"
+              >
+                Claim this Bug
+              </app-button>
+              
+              <div *ngIf="!isClaimable()" class="action-message">
+                This bug is currently {{ bug.status.toLowerCase() }} and cannot be claimed.
+              </div>
+              
+              <div *ngIf="isOwnedByCurrentUser()" class="action-message">
+                You cannot claim your own bugs.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-sidebar-layout>

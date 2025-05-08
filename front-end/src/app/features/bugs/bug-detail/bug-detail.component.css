@@ -1,4 +1,211 @@
 .bug-detail-container {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
   
+  .back-link {
+    margin-bottom: 1.5rem;
+  }
+  
+  .back-link a {
+    color: var(--blue-1);
+    cursor: pointer;
+  }
+  
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+  
+  .error-message {
+    padding: 1rem;
+    background-color: rgba(255, 0, 0, 0.1);
+    color: var(--red-1);
+    border: 1px solid var(--red-outline);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+  }
+  
+  .bug-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--outline);
+    padding-bottom: 1rem;
+  }
+  
+  .bug-title {
+    color: var(--green-1);
+    margin: 0;
+    font-size: 2rem;
+  }
+  
+  .bug-meta {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .bug-difficulty, .bug-status {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  
+  .difficulty-easy {
+    background-color: rgba(0, 204, 0, 0.2);
+    color: var(--green-2);
+  }
+  
+  .difficulty-medium {
+    background-color: rgba(244, 255, 0, 0.2);
+    color: var(--yellow-1);
+  }
+  
+  .difficulty-hard {
+    background-color: rgba(255, 128, 0, 0.2);
+    color: #ff8000;
+  }
+  
+  .difficulty-expert {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: var(--red-1);
+  }
+  
+  .status-open {
+    background-color: rgba(0, 204, 0, 0.2);
+    color: var(--green-2);
+  }
+  
+  .status-claimed, .status-in_progress {
+    background-color: rgba(51, 102, 204, 0.2);
+    color: var(--blue-1);
+  }
+  
+  .status-submitted {
+    background-color: rgba(244, 255, 0, 0.2);
+    color: var(--yellow-1);
+  }
+  
+  .status-resolved {
+    background-color: rgba(153, 153, 153, 0.2);
+    color: #999;
+  }
+  
+  .bug-info-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .info-card {
+    background-color: var(--background-section);
+    border: 1px solid var(--outline);
+    border-radius: 5px;
+    padding: 1.5rem;
+  }
+  
+  .info-card h3 {
+    margin-top: 0;
+    color: var(--green-1);
+    border-bottom: 1px solid var(--outline);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .bug-description-card {
+    grid-column: span 8;
+  }
+  
+  .bug-details-card {
+    grid-column: span 4;
+  }
+  
+  .bug-tech-card {
+    grid-column: span 6;
+  }
+  
+  .bug-actions-card {
+    grid-column: span 6;
+  }
+  
+  .description-content {
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+  
+  .details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .detail-label {
+    color: var(--green-2);
+    font-weight: bold;
+  }
+  
+  .detail-value.reward {
+    color: var(--yellow-1);
+    font-weight: bold;
+  }
+  
+  .tech-stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .tech-chip {
+    background-color: var(--background-tech-stack);
+    border: 1px solid var(--outline);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .tech-category {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+  
+  .no-tech {
+    font-style: italic;
+    color: #999;
+  }
+  
+  .actions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .action-message {
+    color: #999;
+    font-style: italic;
+  }
+  
+  @media (max-width: 992px) {
+    .bug-info-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .bug-description-card,
+    .bug-details-card,
+    .bug-tech-card,
+    .bug-actions-card {
+      grid-column: 1;
+    }
+    
+    .bug-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }

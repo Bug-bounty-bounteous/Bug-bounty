@@ -1,11 +1,69 @@
 package com.bounteous.bug_bounty_backend.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.bounteous.bug_bounty_backend.data.dto.responses.bug.BugResponse;
+import com.bounteous.bug_bounty_backend.data.entities.bugs.Difficulty;
+import com.bounteous.bug_bounty_backend.services.BugService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-// Handles bug-related endpoints
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/bugs")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class BugController {
-    // Controller methods will be added here
+    
+    private final BugService bugService;
+    
+    /**
+     * Get all bugs with optional filtering
+     * @param difficulty Filter by difficulty level
+     * @param techStackIds Filter by technology stack IDs (comma-separated)
+     * @param status Filter by bug status
+     * @param query Search query for title or description
+     * @param pageable Pagination information
+     * @return List of bugs matching criteria
+     */
+    @GetMapping
+    public ResponseEntity<Page<BugResponse>> getAllBugs(
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) List<Long> techStackIds,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String query,
+            Pageable pageable) {
+        
+        return ResponseEntity.ok(bugService.findBugs(difficulty, techStackIds, status, query, pageable));
+    }
+    
+    /**
+     * Get a specific bug by ID
+     * @param id Bug ID
+     * @return Bug details
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<BugResponse> getBugById(@PathVariable Long id) {
+        return ResponseEntity.ok(bugService.getBugById(id));
+    }
+    
+    /**
+     * Get all available difficulty levels
+     * @return List of difficulty levels
+     */
+    @GetMapping("/difficulties")
+    public ResponseEntity<List<String>> getAllDifficulties() {
+        return ResponseEntity.ok(bugService.getAllDifficulties());
+    }
+    
+    /**
+     * Get all available tech stacks
+     * @return List of tech stacks
+     */
+    @GetMapping("/tech-stacks")
+    public ResponseEntity<List<BugResponse.TechStackInfo>> getAllTechStacks() {
+        return ResponseEntity.ok(bugService.getAllTechStacks());
+    }
 }

@@ -6,6 +6,7 @@ export interface Bug {
     reward: number;
     status: string;
     createdAt: string;
+    updatedAt: string;
     publisher: any;
     techStacks: any[];
     verificationStatus: string;

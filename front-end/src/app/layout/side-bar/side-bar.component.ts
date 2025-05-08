@@ -18,7 +18,7 @@ export class SideBarComponent {
     {
       name: 'Bug Marketplace',
       iconUrl: 'assets/images/bug.png',
-      link: '/marketplace',
+      link: '/bugs', // Updated to point to the new bug list component
     },
     {
       name: 'Resources',
@@ -28,7 +28,7 @@ export class SideBarComponent {
     {
       name: 'User Space',
       iconUrl: 'assets/images/user.png',
-      link: '/userspace',
+      link: '/dashboard',
     },
     {
       name: 'Leaderboard',

@@ -1,5 +1,122 @@
 <div class="bug-list-container">
-    <h2>Bug Marketplace</h2>
-    <!-- Content will be added here -->
+    <h2 class="title">Bug Marketplace</h2>
+    
+    <!-- Search and filters -->
+    <div class="filters-section">
+      <div class="search-bar">
+        <input 
+          type="text" 
+          placeholder="Search for bugs..." 
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="applyFilters()"
+        />
+        <button class="search-btn" (click)="applyFilters()">Search</button>
+      </div>
+      
+      <div class="filters">
+        <div class="filter-group">
+          <label>Difficulty:</label>
+          <select [(ngModel)]="selectedDifficulty" (change)="applyFilters()">
+            <option value="">All Difficulties</option>
+            <option *ngFor="let difficulty of difficulties" [value]="difficulty">
+              {{difficulty}}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Status:</label>
+          <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+            <option value="">All Statuses</option>
+            <option value="OPEN">Open</option>
+            <option value="CLAIMED">Claimed</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="SUBMITTED">Submitted</option>
+            <option value="RESOLVED">Resolved</option>
+          </select>
+        </div>
+        
+        <div class="filter-group tech-stack-filter">
+          <label>Tech Stacks:</label>
+          <div class="tech-stack-chips">
+            <div 
+              *ngFor="let tech of techStacks" 
+              class="tech-chip" 
+              [class.selected]="isTechStackSelected(tech.id)"
+              (click)="toggleTechStack(tech.id)"
+            >
+              {{ tech.name }}
+            </div>
+          </div>
+        </div>
+        
+        <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <!-- Loading indicator -->
+    <app-loader 
+      *ngIf="isLoading" 
+      [isLoading]="isLoading" 
+      message="Loading bugs..."
+    ></app-loader>
+    
+    <!-- Empty state -->
+    <div *ngIf="!isLoading && bugs.length === 0" class="empty-state">
+      <p>No bugs found matching your criteria.</p>
+    </div>
+    
+    <!-- Bug cards -->
+    <div class="bug-grid" *ngIf="!isLoading && bugs.length > 0">
+      <div class="bug-card" *ngFor="let bug of bugs" (click)="navigateToBugDetail(bug.id)">
+        <div class="bug-header">
+          <h3 class="bug-title">{{ bug.title }}</h3>
+          <span class="bug-difficulty" [class]="'difficulty-' + bug.difficulty.toLowerCase()">
+            {{ bug.difficulty }}
+          </span>
+        </div>
+        
+        <div class="bug-description">
+          {{ bug.description | slice:0:150 }}{{ bug.description.length > 150 ? '...' : '' }}
+        </div>
+        
+        <div class="bug-info">
+          <div class="bug-reward">💰 {{ bug.reward | currency }}</div>
+          <div class="bug-status" [class]="'status-' + bug.status.toLowerCase()">
+            {{ bug.status }}
+          </div>
+        </div>
+        
+        <div class="bug-tech-stacks">
+          <div class="tech-label">Tech:</div>
+          <div class="tech-stack-list">
+            <span *ngFor="let tech of bug.techStacks" class="tech-tag">
+              {{ tech.name }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="bug-footer">
+          <div class="bug-publisher" *ngIf="bug.publisher">
+            Posted by: {{ bug.publisher.name }}
+          </div>
+          <div class="bug-date">
+            {{ bug.createdAt | dateFormat }}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pagination -->
+    <app-pagination 
+      *ngIf="totalPages > 1"
+      [currentPage]="currentPage + 1"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
   </div>
-  

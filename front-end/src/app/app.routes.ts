@@ -20,6 +20,16 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'bugs',
+    loadComponent: () => import('./features/bugs/bug-list/bug-list.component').then(m => m.BugListComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'bugs/:id',
+    loadComponent: () => import('./features/bugs/bug-detail/bug-detail.component').then(m => m.BugDetailComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'dashboard',
     loadComponent: () => import('./features/user/dashboard/dashboard.component').then(m => m.DashboardComponent),
     canActivate: [AuthGuard]
