@@ -5,10 +5,12 @@
     </a>
   </div>
   <nav [ngClass]="'navBar'">
-    @for (link of links; track $index) {
-    <div>
-      <a [routerLink]="link.url">{{ link.name }}</a>
-    </div>
-    }
+    <ul>
+      @for (link of links; track $index) {
+      <li>
+        <a [routerLink]="link.url">{{ link.name }}</a>
+      </li>
+      }
+    </ul>
   </nav>
 </div>

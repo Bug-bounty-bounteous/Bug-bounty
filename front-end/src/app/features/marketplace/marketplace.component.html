@@ -1,0 +1,47 @@
+<app-sidebar-layout activeSection="Bug Marketplace">
+  <div [ngClass]="'main'">
+    <div [ngClass]="'search-bar'">
+      <app-search-bar
+        [(ngModel)]="searchQuery"
+        (valueChange)="OnQueryChange($event)"
+      />
+    </div>
+    <div [ngClass]="'bug-list'">
+      <ul>
+        @for (bug of paginatedBugList; track $index) {
+        <li [ngClass]="'bug'">
+          <div [ngClass]="'bug-left'">
+            <div [ngClass]="'bug-subtitle'">
+              <div [ngClass]="'company'">{{ bug.companyName }}</div>
+              <div [ngClass]="'date'">1 day ago</div>
+            </div>
+            <div [ngClass]="'bug-title'">{{ bug.title }}</div>
+            <div [ngClass]="'bug-ts'">
+              <ul>
+                @for (ts of bug.techStack; track $index) {
+                <li [ngClass]="'ts'">
+                  {{ ts }}
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div [ngClass]="'bug-right'">
+            <div [ngClass]="'bug-status'">{{ bug.status }}</div>
+            <div [ngClass]="'bug-reward'">{{ bug.reward }}</div>
+            <div [ngClass]="'bug-difficulty'">{{ bug.difficulty }}</div>
+          </div>
+        </li>
+        }
+      </ul>
+    </div>
+    <div>
+      <app-pagination
+        [totalItemNums]="bugList.length"
+        [itemPerPage]="bugsPerPage"
+        [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)"
+      />
+    </div>
+  </div>
+</app-sidebar-layout>

@@ -1,0 +1,26 @@
+<aside class="sidebar">
+  <nav>
+    <ul>
+      <li [ngClass]="'logo'">
+        <a routerLink="/">
+          <img [src]="logoUrl" alt="logo" />
+        </a>
+      </li>
+      @for (section of sections; track $index) {
+      <li
+        [ngClass]="'section'"
+        [class.section-active]="activeSection === section.name"
+        [routerLink]="section.link"
+      >
+        <div [ngClass]="'icon'">
+          <img [src]="section.iconUrl" alt="icon" />
+        </div>
+        <div [ngClass]="'section-title'">
+          {{ section.name }}
+        </div>
+        <div></div>
+      </li>
+      }
+    </ul>
+  </nav>
+</aside>

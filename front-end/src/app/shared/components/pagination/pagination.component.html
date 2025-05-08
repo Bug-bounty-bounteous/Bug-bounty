@@ -1,0 +1,26 @@
+<div [ngClass]="'page-list'">
+  @if (currentPage > 1) {
+  <app-button
+    type="default"
+    size="small"
+    (onClicked)="goToPage(currentPage - 1)"
+    ><</app-button
+  >
+  }@for (p of paginationRange; track p) { @if (p === '...') {
+  <div>{{ " ... " }}</div>
+  } @if ( p !== '...') {
+  <app-button
+    [type]="p === currentPage ? 'primary' : 'default'"
+    size="small"
+    (onClicked)="goToPage(toNumber(p))"
+    >{{ p }}</app-button
+  >
+  } } @if (currentPage < totalPageNum) {
+  <app-button
+    type="default"
+    size="small"
+    (onClicked)="goToPage(currentPage + 1)"
+    >></app-button
+  >
+  }
+</div>
