@@ -21,6 +21,17 @@
         <div></div>
       </li>
       }
+      
+      <!-- Ajout du bouton de déconnexion -->
+      <li [ngClass]="'section logout'" (click)="logout()">
+        <div [ngClass]="'icon'">
+          <span>⇥</span>
+        </div>
+        <div [ngClass]="'section-title'">
+          Logout
+        </div>
+        <div></div>
+      </li>
     </ul>
   </nav>
 </aside>

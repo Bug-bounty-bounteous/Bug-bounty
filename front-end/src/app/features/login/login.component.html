@@ -9,7 +9,7 @@
       <div class="tab-title">Login</div>
       <div class="tab-body">
         <div class="error" [style.visibility]="hasError ? 'visible' : 'hidden'">
-          Invalid username or password
+          {{ errorMessage }}
         </div>
         <div class="tab-content">
           <div class="input-group">
@@ -20,6 +20,7 @@
               [(ngModel)]="email" 
               (input)="OnEmailChange(email)"
               [class.input-error]="hasError"
+              [disabled]="isLocked || isSubmitting"
             />
           </div>
           
@@ -31,18 +32,38 @@
               [(ngModel)]="password" 
               (input)="OnPasswordChange(password)"
               [class.input-error]="hasError"
+              [disabled]="isLocked || isSubmitting"
             />
+          </div>
+          
+          <div class="input-group remember-me">
+            <input 
+              type="checkbox" 
+              id="rememberMe" 
+              [(ngModel)]="rememberMe" 
+              (change)="OnRememberMeChange(rememberMe)"
+              [disabled]="isLocked || isSubmitting"
+            />
+            <label for="rememberMe">Remember me</label>
+          </div>
+          
+          <div class="forgot-password">
+            <a href="javascript:void(0)" (click)="forgotPassword($event)">Forgot Password?</a>
           </div>
         </div>
       </div>
       <div class="tab-buttons">
-        <app-button (onClicked)="goToSignUp($event)">Sign Up</app-button>
+        <app-button (onClicked)="goToSignUp($event)" [disabled]="isSubmitting">Sign Up</app-button>
         <app-button 
           type="primary" 
           (onClicked)="OnClickLogin($event)" 
           [isLoading]="isSubmitting"
-          [disabled]="isSubmitting"
+          [disabled]="isSubmitting || isLocked"
         >Login</app-button>
+      </div>
+      
+      <div class="security-info" *ngIf="!isLocked">
+        <p>Your account will be temporarily locked after 5 failed login attempts.</p>
       </div>
     </div>
   </div>

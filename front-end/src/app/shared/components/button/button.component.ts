@@ -16,15 +16,19 @@ export class ButtonComponent {
   @Input() isLoading: boolean = false;
   @Input() fullWidth: boolean = false;
   
-  // Support for the two events
   @Output() onClicked = new EventEmitter<MouseEvent>();
   @Output() btnClick = new EventEmitter<void>();
   
   OnClickButton(event: MouseEvent): void {
-    if (!this.disabled && !this.isLoading) {
-      this.onClicked.emit(event);
-      this.btnClick.emit();
+    // Skip if disabled or loading
+    if (this.disabled || this.isLoading) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     }
+    
+    this.onClicked.emit(event);
+    this.btnClick.emit();
     
     if (this.type !== 'submit') {
       event.preventDefault();

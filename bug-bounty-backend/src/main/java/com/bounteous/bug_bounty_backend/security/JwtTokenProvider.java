@@ -21,6 +21,9 @@ public class JwtTokenProvider {
 
     @Value("${app.jwt.expiration}")
     private int jwtExpirationMs;
+    
+    // For "Remember me" functionality - 30 days
+    private static final int LONG_LIVED_EXPIRATION_MS = 30 * 24 * 60 * 60 * 1000;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
@@ -29,6 +32,18 @@ public class JwtTokenProvider {
     public String generateToken(String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey())
+                .compact();
+    }
+    
+    public String generateLongLivedToken(String email) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + LONG_LIVED_EXPIRATION_MS);
 
         return Jwts.builder()
                 .setSubject(email)
@@ -64,5 +79,23 @@ public class JwtTokenProvider {
         }
 
         return false;
+    }
+    
+    // Get remaining validity time of a token in milliseconds
+    public long getTokenValidityTimeRemaining(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            
+            Date expiration = claims.getExpiration();
+            Date now = new Date();
+            
+            return Math.max(0, expiration.getTime() - now.getTime());
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

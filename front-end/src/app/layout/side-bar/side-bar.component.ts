@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -35,4 +36,10 @@ export class SideBarComponent {
       link: '/leaderboard',
     },
   ];
+  
+  constructor(private authService: AuthService) {}
+  
+  logout(): void {
+    this.authService.logout();
+  }
 }

@@ -12,6 +12,8 @@ export class TokenStorageService {
   
   signOut(): void {
     window.localStorage.clear();
+    // Also clear session storage
+    window.sessionStorage.clear();
   }
   
   public saveToken(token: string): void {
@@ -47,5 +49,27 @@ export class TokenStorageService {
       return user.role;
     }
     return null;
+  }
+  
+  /**
+   * Check if token is about to expire
+   * @param thresholdMinutes Minutes before expiration to consider the token as "about to expire"
+   * @returns boolean
+   */
+  public isTokenAboutToExpire(thresholdMinutes: number = 5): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    
+    try {
+      // Get expiration from JWT
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expiration = payload.exp * 1000; // Convert to milliseconds
+      const now = Date.now();
+      
+      // Check if token will expire in less than threshold minutes
+      return expiration - now < thresholdMinutes * 60 * 1000;
+    } catch (e) {
+      return false;
+    }
   }
 }

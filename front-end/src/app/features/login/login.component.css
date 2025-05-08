@@ -74,8 +74,33 @@
   border: 1px solid #333;
 }
 
+.input-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .input-error {
   border-color: red !important;
+}
+
+.remember-me {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.remember-me input {
+  flex: 0;
+  margin-right: 10px;
+}
+
+.forgot-password {
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.forgot-password a {
+  color: var(--blue-1, #3366cc);
+  text-decoration: underline;
 }
 
 .tab-buttons {
@@ -91,6 +116,13 @@
   padding: 0 1rem;
 }
 
+.security-info {
+  font-size: 0.8rem;
+  color: var(--green-3, #00b300);
+  text-align: center;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .form {
     width: 80%;
@@ -104,5 +136,10 @@
   
   .input-group label {
     min-width: auto;
+  }
+  
+  .remember-me {
+    flex-direction: row;
+    gap: 10px;
   }
 }
