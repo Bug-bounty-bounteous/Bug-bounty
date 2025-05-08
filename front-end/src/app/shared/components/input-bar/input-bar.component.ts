@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -17,9 +17,13 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class InputBarComponent implements ControlValueAccessor {
+  @Input() label: string = '';
   @Input() type: string = 'text';
   @Input() placeholder: string = '';
-  @Input() errorMessage: string = '';
+  @Input() hasError: boolean = false;
+  @Input() errorMessage: string = ''; 
+  @Input() inputId: string = 'input-' + Math.random().toString(36).substring(2, 9);
+  @Output() valueChange = new EventEmitter<string>();
   
   value: any = '';
   disabled: boolean = false;
@@ -43,9 +47,10 @@ export class InputBarComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
   
-  onInput(event: any): void {
+  onInputChange(event: any): void {
     this.value = event.target.value;
     this.onChange(this.value);
     this.onTouched();
+    this.valueChange.emit(this.value);
   }
 }

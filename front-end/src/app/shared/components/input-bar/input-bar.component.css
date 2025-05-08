@@ -27,3 +27,9 @@
   font-size: 12px;
   margin-top: 4px;
 }
+
+.error {
+  color: var(--red-1);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}

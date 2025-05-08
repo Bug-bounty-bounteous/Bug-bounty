@@ -1,104 +1,117 @@
 <app-nav-bar></app-nav-bar>
 
-<div class="container">
-  <div class="form-container">
-    <div class="form-header">
-      <h1>Join Our Bug Bounty Platform</h1>
-      <p>Become a developer and start solving bugs</p>
+<div class="main">
+  <div class="form">
+    <div class="form-title">
+      <h2>Bug Bounty</h2>
     </div>
-
-    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="form">
-      <div class="name-row">
-        <div class="form-group">
-          <label for="firstName">First Name</label>
-          <app-input-bar
-            formControlName="firstName"
-            placeholder="First Name"
-            [errorMessage]="
-              registrationForm.get('firstName')?.hasError('required') && registrationForm.get('firstName')?.touched ? 'First name is required' :
-              registrationForm.get('firstName')?.hasError('minlength') && registrationForm.get('firstName')?.touched ? 'First name must be at least 2 characters' : ''
-            "
-          ></app-input-bar>
+    <div class="form-body">
+      <div class="tab-title">Sign Up</div>
+      <div class="tab-body">
+        <div class="tab-content">
+          <div class="input-group">
+            <label for="firstName">First Name</label>
+            <input 
+              type="text" 
+              id="firstName" 
+              [(ngModel)]="firstName" 
+              (input)="OnChangeFirstName(firstName)"
+              [class.input-error]="invalidFirstName"
+            />
+          </div>
+          <div class="error" *ngIf="invalidFirstName">
+            First name is required (min 2 characters)
+          </div>
+          
+          <div class="input-group">
+            <label for="lastName">Last Name</label>
+            <input 
+              type="text" 
+              id="lastName" 
+              [(ngModel)]="lastName" 
+              (input)="OnChangeLastName(lastName)"
+              [class.input-error]="invalidLastName"
+            />
+          </div>
+          <div class="error" *ngIf="invalidLastName">
+            Last name is required (min 2 characters)
+          </div>
+          
+          <div class="input-group">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              [(ngModel)]="username" 
+              (input)="OnChangeUsername(username)"
+              [class.input-error]="invalidUsername"
+            />
+          </div>
+          <div class="error" *ngIf="invalidUsername">
+            Username is required (min 3 characters)
+          </div>
+          
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              [(ngModel)]="email" 
+              (input)="OnChangeEmail(email)"
+              [class.input-error]="invalidEmail"
+            />
+          </div>
+          <div class="error" *ngIf="invalidEmail">
+            Email is invalid or already registered
+          </div>
+          
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              [(ngModel)]="password" 
+              (input)="OnChangePassword(password)"
+              [class.input-error]="invalidPassword"
+            />
+          </div>
+          <div class="error" *ngIf="invalidPassword">
+            Password must be at least 6 characters
+          </div>
+          
+          <div class="input-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              [(ngModel)]="confirmPassword" 
+              (input)="OnChangeConfirmPassword(confirmPassword)"
+              [class.input-error]="invalidConfirmPassword"
+            />
+          </div>
+          <div class="error" *ngIf="invalidConfirmPassword">
+            Passwords do not match
+          </div>
+          
+          <div class="input-group checkbox-group">
+            <label for="isCompany">Sign Up As Company?</label>
+            <input 
+              type="checkbox" 
+              id="isCompany" 
+              [(ngModel)]="isCompany" 
+              (change)="OnCompanyChange(isCompany)"
+            />
+          </div>
         </div>
-        
-        <div class="form-group">
-          <label for="lastName">Last Name</label>
-          <app-input-bar
-            formControlName="lastName"
-            placeholder="Last Name"
-            [errorMessage]="
-              registrationForm.get('lastName')?.hasError('required') && registrationForm.get('lastName')?.touched ? 'Last name is required' :
-              registrationForm.get('lastName')?.hasError('minlength') && registrationForm.get('lastName')?.touched ? 'Last name must be at least 2 characters' : ''
-            "
-          ></app-input-bar>
-        </div>
       </div>
-
-      <div class="form-group">
-        <label for="username">Username</label>
-        <app-input-bar
-          formControlName="username"
-          placeholder="Create a username"
-          [errorMessage]="
-            registrationForm.get('username')?.hasError('required') && registrationForm.get('username')?.touched ? 'Username is required' :
-            registrationForm.get('username')?.hasError('minlength') && registrationForm.get('username')?.touched ? 'Username must be at least 3 characters' : ''
-          "
-        ></app-input-bar>
+      <div class="tab-buttons">
+        <app-button 
+          type="primary" 
+          (onClicked)="OnClickSignUp($event)"
+          [isLoading]="isSubmitting"
+          [disabled]="isSubmitting"
+        >Sign Up</app-button>
       </div>
-
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <app-input-bar
-          formControlName="email"
-          placeholder="Enter your email"
-          [errorMessage]="
-            registrationForm.get('email')?.hasError('required') && registrationForm.get('email')?.touched ? 'Email is required' :
-            registrationForm.get('email')?.hasError('email') && registrationForm.get('email')?.touched ? 'Please enter a valid email' : ''
-          "
-        ></app-input-bar>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <app-input-bar
-          formControlName="password"
-          type="password"
-          placeholder="Create a password"
-          [errorMessage]="
-            registrationForm.get('password')?.hasError('required') && registrationForm.get('password')?.touched ? 'Password is required' :
-            registrationForm.get('password')?.hasError('minlength') && registrationForm.get('password')?.touched ? 'Password must be at least 6 characters' : ''
-          "
-        ></app-input-bar>
-      </div>
-
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <app-input-bar
-          formControlName="confirmPassword"
-          type="password"
-          placeholder="Confirm your password"
-          [errorMessage]="
-            registrationForm.get('confirmPassword')?.hasError('required') && registrationForm.get('confirmPassword')?.touched ? 'Please confirm your password' :
-            registrationForm.get('confirmPassword')?.hasError('mismatch') && registrationForm.get('confirmPassword')?.touched ? 'Passwords do not match' : ''
-          "
-        ></app-input-bar>
-      </div>
-
-      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
-
-      <app-button 
-        type="primary"
-        [disabled]="registrationForm.invalid || isSubmitting" 
-        [isLoading]="isSubmitting"
-        [fullWidth]="true"
-        (btnClick)="onSubmit()"
-      >
-        Create Account
-      </app-button>
-
-      <div class="form-footer">
-        <p>Already have an account? <a routerLink="/login">Sign In</a></p>
-      </div>
-    </form>
+    </div>
   </div>
 </div>

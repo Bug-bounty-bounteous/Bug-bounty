@@ -1,11 +1,13 @@
-<div class="input-container">
+<div [ngClass]="'container'">
+  <label [for]="inputId">{{ label }}</label>
   <input
+    [id]="inputId"
     [type]="type"
-    [placeholder]="placeholder"
     [value]="value"
-    [disabled]="disabled"
-    (input)="onInput($event)"
-    class="input-field"
+    (input)="onInputChange($event)"
+    (blur)="onTouched()"
+    [class.input-error]="hasError"
+    [placeholder]="placeholder"
   />
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage && hasError" class="error">{{ errorMessage }}</div>
 </div>

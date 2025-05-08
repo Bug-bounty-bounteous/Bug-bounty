@@ -1,49 +1,49 @@
 <app-nav-bar></app-nav-bar>
 
-<div class="container">
-  <div class="form-container">
-    <div class="form-header">
-      <h1>Welcome Back!</h1>
-      <p>Log in to continue to the Bug Bounty platform</p>
+<div class="main">
+  <div class="form">
+    <div class="form-title">
+      <h2>Bug Bounty</h2>
     </div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <app-input-bar
-          formControlName="email"
-          placeholder="Enter your email"
-          [errorMessage]="
-            loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched ? 'Email is required' :
-            loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched ? 'Please enter a valid email' : ''"
-        ></app-input-bar>
+    <div class="form-body">
+      <div class="tab-title">Login</div>
+      <div class="tab-body">
+        <div class="error" [style.visibility]="hasError ? 'visible' : 'hidden'">
+          Invalid username or password
+        </div>
+        <div class="tab-content">
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              [(ngModel)]="email" 
+              (input)="OnEmailChange(email)"
+              [class.input-error]="hasError"
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              [(ngModel)]="password" 
+              (input)="OnPasswordChange(password)"
+              [class.input-error]="hasError"
+            />
+          </div>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <app-input-bar
-          formControlName="password"
-          type="password"
-          placeholder="Enter your password"
-          [errorMessage]="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched ? 'Password is required' : ''"
-        ></app-input-bar>
+      <div class="tab-buttons">
+        <app-button (onClicked)="goToSignUp($event)">Sign Up</app-button>
+        <app-button 
+          type="primary" 
+          (onClicked)="OnClickLogin($event)" 
+          [isLoading]="isSubmitting"
+          [disabled]="isSubmitting"
+        >Login</app-button>
       </div>
-
-      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
-
-      <app-button 
-        type="primary"
-        [disabled]="loginForm.invalid || isSubmitting" 
-        [isLoading]="isSubmitting"
-        [fullWidth]="true"
-        (btnClick)="onSubmit()"
-      >
-        Log In
-      </app-button>
-
-      <div class="form-footer">
-        <p>Don't have an account? <a routerLink="/register">Sign Up</a></p>
-      </div>
-    </form>
+    </div>
   </div>
 </div>

@@ -29,5 +29,6 @@ export interface User {
     email: string;
     username: string;
     password: string;
+    isCompany?: boolean;   //TODO: check with the backend if this is needed, and if so, see if I need to change something in the backend also
   }
   
