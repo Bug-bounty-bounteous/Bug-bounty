@@ -1,10 +1,10 @@
 package com.bounteous.bug_bounty_backend.services;
 
+import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
 import com.bounteous.bug_bounty_backend.dto.*;
-import com.bounteous.bug_bounty_backend.entities.humans.Company;
-import com.bounteous.bug_bounty_backend.entities.humans.Developer;
-import com.bounteous.bug_bounty_backend.repositories.CompanyRepository;
-import com.bounteous.bug_bounty_backend.repositories.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.CompanyRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
 import com.bounteous.bug_bounty_backend.utils.PasswordHasher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -10,6 +10,8 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Getter
+@Setter
 @SuperBuilder
 @ToString
 @MappedSuperclass

@@ -1,15 +1,15 @@
 package com.bounteous.bug_bounty_backend.controllers;
 
 import com.bounteous.bug_bounty_backend.dto.*;
-import com.bounteous.bug_bounty_backend.entities.humans.Company;
-import com.bounteous.bug_bounty_backend.entities.humans.Developer;
 import com.bounteous.bug_bounty_backend.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.bounteous.bug_bounty_backend.repositories.CompanyRepository;
-import com.bounteous.bug_bounty_backend.repositories.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.CompanyRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
 
 import java.util.Optional;
 
