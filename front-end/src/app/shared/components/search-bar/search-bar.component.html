@@ -1,0 +1,17 @@
+<div [ngClass]="'container'">
+  <div [ngClass]="'left'">
+    <img [src]="searchIconUrl" alt="icon" />
+  </div>
+  <div [ngClass]="'middle'">
+    <input
+      type="text"
+      placeholder="Search a bug"
+      [value]="value"
+      (input)="onInputChange($event)"
+      (blur)="onTouched()"
+    />
+  </div>
+  <div [ngClass]="'right'" (click)="clearSearch()">
+    <img [src]="closeIconUrl" alt="clear" />
+  </div>
+</div>
