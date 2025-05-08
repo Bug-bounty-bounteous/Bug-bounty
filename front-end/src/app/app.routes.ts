@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth.guard';
+import { RoleGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,12 @@ export const routes: Routes = [
     path: 'bugs',
     loadComponent: () => import('./features/bugs/bug-list/bug-list.component').then(m => m.BugListComponent),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'bugs/create',
+    loadComponent: () => import('./features/bugs/bug-create/bug-create.component').then(m => m.BugCreateComponent),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['COMPANY'] }
   },
   {
     path: 'bugs/:id',

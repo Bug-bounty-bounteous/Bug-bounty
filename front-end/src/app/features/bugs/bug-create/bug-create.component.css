@@ -1,4 +1,135 @@
 .bug-create-container {
+    max-width: 900px;
+    margin: 0 auto;
     padding: 20px;
   }
   
+  .title {
+    margin-bottom: 2rem;
+    color: var(--green-1);
+    border-bottom: 1px solid var(--outline);
+    padding-bottom: 0.5rem;
+  }
+  
+  .not-company-message {
+    background-color: var(--background-section);
+    border: 1px solid var(--outline);
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .bug-form {
+    background-color: var(--background-section);
+    border: 1px solid var(--outline);
+    border-radius: 5px;
+    padding: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--green-2);
+    font-weight: bold;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: var(--black);
+    color: var(--green-1);
+    border: 1px solid var(--outline);
+    border-radius: 4px;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: var(--green-3);
+  }
+  
+  .form-control.invalid {
+    border-color: var(--red-1);
+  }
+  
+  textarea.form-control {
+    resize: vertical;
+  }
+  
+  .error-message {
+    color: var(--red-1);
+    font-size: 0.8rem;
+    margin-top: 5px;
+  }
+  
+  .helper-text {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--white);
+  }
+  
+  .helper-text.error {
+    color: var(--red-1);
+  }
+  
+  .tech-stacks-section {
+    background-color: var(--background);
+    border: 1px solid var(--outline);
+    border-radius: 4px;
+    padding: 15px;
+  }
+  
+  .tech-stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .tech-chip {
+    background-color: var(--background-tech-stack);
+    border: 1px solid var(--outline);
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  
+  .tech-chip:hover {
+    background-color: var(--background-section-hover);
+  }
+  
+  .tech-chip.selected {
+    background-color: var(--green-6);
+    border-color: var(--green-3);
+    color: var(--green-1);
+  }
+  
+  .tech-category {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }

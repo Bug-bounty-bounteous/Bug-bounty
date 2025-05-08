@@ -1,0 +1,16 @@
+.marketplace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .marketplace-header h2 {
+    margin-bottom: 0;
+    color: var(--green-1);
+  }
+  
+  .add-bug-button {
+    display: flex;
+    justify-content: flex-end;
+  }

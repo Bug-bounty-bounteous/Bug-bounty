@@ -1,3 +1,15 @@
 <app-sidebar-layout activeSection="Bug Marketplace">
+  <div class="marketplace-header">
+    <h2>Bug Marketplace</h2>
+    
+    <!-- Only show for companies -->
+    <div *ngIf="isCompany" class="add-bug-button">
+      <app-button
+        type="primary"
+        (onClicked)="navigateToBugCreate()"
+      >+ Add New Bug</app-button>
+    </div>
+  </div>
+  
   <app-bug-list></app-bug-list>
 </app-sidebar-layout>

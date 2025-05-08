@@ -1,5 +1,129 @@
-<div class="bug-create-container">
-    <h2>Create Bug</h2>
-    <!-- Form content will be added here -->
-  </div>
-  
+<app-sidebar-layout activeSection="Bug Marketplace">
+    <div class="bug-create-container">
+      <h2 class="title">Submit a New Bug</h2>
+      
+      <app-alert 
+        *ngIf="errorMessage" 
+        type="danger" 
+        [message]="errorMessage"
+        (close)="errorMessage = ''"
+      ></app-alert>
+      
+      <app-alert 
+        *ngIf="successMessage" 
+        type="success" 
+        [message]="successMessage"
+        (close)="successMessage = ''"
+      ></app-alert>
+      
+      <div *ngIf="!isCompany" class="not-company-message">
+        <p>Only company accounts can submit bugs.</p>
+      </div>
+      
+      <div *ngIf="isLoading" class="loading">
+        <app-loader 
+          [isLoading]="isLoading" 
+          message="Loading form..."
+        ></app-loader>
+      </div>
+      
+      <form *ngIf="isCompany && !isLoading" [formGroup]="bugForm" (ngSubmit)="onSubmit()" class="bug-form">
+        <div class="form-group">
+          <label for="title">Bug Title</label>
+          <input 
+            type="text" 
+            id="title" 
+            formControlName="title" 
+            class="form-control"
+            [class.invalid]="bugForm.get('title')?.invalid && bugForm.get('title')?.touched"
+          >
+          <div class="error-message" *ngIf="bugForm.get('title')?.invalid && bugForm.get('title')?.touched">
+            <span *ngIf="bugForm.get('title')?.errors?.['required']">Title is required</span>
+            <span *ngIf="bugForm.get('title')?.errors?.['minlength']">Title must be at least 5 characters</span>
+            <span *ngIf="bugForm.get('title')?.errors?.['maxlength']">Title cannot exceed 100 characters</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea 
+            id="description" 
+            formControlName="description" 
+            class="form-control"
+            rows="6"
+            [class.invalid]="bugForm.get('description')?.invalid && bugForm.get('description')?.touched"
+          ></textarea>
+          <div class="error-message" *ngIf="bugForm.get('description')?.invalid && bugForm.get('description')?.touched">
+            <span *ngIf="bugForm.get('description')?.errors?.['required']">Description is required</span>
+            <span *ngIf="bugForm.get('description')?.errors?.['minlength']">Description must be at least 20 characters</span>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="difficulty">Difficulty</label>
+            <select 
+              id="difficulty" 
+              formControlName="difficulty" 
+              class="form-control"
+              [class.invalid]="bugForm.get('difficulty')?.invalid && bugForm.get('difficulty')?.touched"
+            >
+              <option value="">Select Difficulty</option>
+              <option *ngFor="let difficulty of difficulties" [value]="difficulty">
+                {{difficulty}}
+              </option>
+            </select>
+            <div class="error-message" *ngIf="bugForm.get('difficulty')?.invalid && bugForm.get('difficulty')?.touched">
+              <span *ngIf="bugForm.get('difficulty')?.errors?.['required']">Difficulty is required</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="reward">Reward Amount ($)</label>
+            <input 
+              type="number" 
+              id="reward" 
+              formControlName="reward" 
+              class="form-control"
+              min="1"
+              step="1"
+              [class.invalid]="bugForm.get('reward')?.invalid && bugForm.get('reward')?.touched"
+            >
+            <div class="error-message" *ngIf="bugForm.get('reward')?.invalid && bugForm.get('reward')?.touched">
+              <span *ngIf="bugForm.get('reward')?.errors?.['required']">Reward amount is required</span>
+              <span *ngIf="bugForm.get('reward')?.errors?.['min']">Reward must be greater than 0</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Tech Stacks</label>
+          <div class="tech-stacks-section">
+            <p class="helper-text" [class.error]="selectedTechStacks.length === 0">
+              Select one or more technology stacks that are relevant to this bug
+            </p>
+            <div class="tech-stack-chips">
+              <div 
+                *ngFor="let tech of techStacks" 
+                class="tech-chip" 
+                [class.selected]="isTechStackSelected(tech.id)"
+                (click)="toggleTechStack(tech.id)"
+              >
+                {{ tech.name }}
+                <span *ngIf="tech.category" class="tech-category">({{ tech.category }})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+            <app-button type="default" (onClicked)="navigateToMarketplace()">Cancel</app-button>
+          <app-button 
+            type="primary" 
+            [isLoading]="isSubmitting"
+            [disabled]="isSubmitting"
+          >Submit Bug</app-button>
+        </div>
+      </form>
+    </div>
+  </app-sidebar-layout>
