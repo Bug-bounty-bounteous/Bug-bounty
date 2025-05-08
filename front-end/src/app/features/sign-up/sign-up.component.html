@@ -58,6 +58,15 @@
             <input id="role" type="checkbox" [(ngModel)]="isCompany" />
           </div>
         </div>
+        <div *ngIf="isCompany">
+          <app-input-bar
+            label="Company Name"
+            [(ngModel)]="companyName"
+            type="text"
+            (valueChange)="companyName = $event"
+            [hasError]="false"
+          />
+        </div>
         <div [ngClass]="'tab-buttons'">
           <app-button type="primary" (onClicked)="OnClickSignUp($event)"
             >Sign Up</app-button

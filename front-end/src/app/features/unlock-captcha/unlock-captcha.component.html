@@ -1,0 +1,22 @@
+<div class="captcha-container">
+    <h2>Unlock Account</h2>
+  
+    <app-input-bar
+      label="Email"
+      [(ngModel)]="email"
+      type="email"
+    />
+  
+    <app-input-bar
+      label="CAPTCHA Code"
+      [(ngModel)]="captchaCode"
+      type="text"
+    />
+  
+    <p>💡 Enter code: <strong>ABC123</strong></p>
+  
+    <app-button type="primary" (onClicked)="onSubmit($event)">Unlock</app-button>
+  
+    <div *ngIf="message">{{ message }}</div>
+  </div>
+  
