@@ -1,15 +1,17 @@
-package com.bounteous.bug_bounty_backend.entities.humans;
+package com.bounteous.bug_bounty_backend.data.entities.humans;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
+@SuperBuilder
+@ToString
 @MappedSuperclass
 public class User {
     @Id
@@ -17,8 +19,9 @@ public class User {
     private Long id;
     private String name;
     private String email;
-    // Refer to for why the following are a needed
+    // Refer to v for why the following are a needed
     // https://howtodoinjava.com/java/java-security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/#4-1-java-pbkdf2withhmacsha1-hash-example
+    // Look into Spring Security instead tho
     private String hashedPassword;
     private String salt;
     private int passwordNumIteration;
