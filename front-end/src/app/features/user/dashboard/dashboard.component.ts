@@ -8,6 +8,7 @@ import { SidebarLayoutComponent } from '../../../layout/sidebar-layout/sidebar-l
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
+import { TokenStorageService } from '../../../core/auth/token.storage';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,17 +27,29 @@ export class DashboardComponent implements OnInit {
   user: any; 
   claimedBugs: any[] = [];
   isLoadingClaims = false;
+  isDeveloper = false;
+  isCompany = false;
   
   constructor(
     private userService: UserService,
     private bugService: BugService,
     private solutionService: SolutionService,
-    private router: Router 
+    private router: Router,
+    private tokenStorage: TokenStorageService 
   ) { }
   
   ngOnInit(): void {
     this.loadUserProfile();
-    this.loadClaimedBugs();
+    
+    // Check user role
+    const userRole = this.tokenStorage.getUserRole();
+    this.isDeveloper = userRole === 'DEVELOPER';
+    this.isCompany = userRole === 'COMPANY';
+    
+    // Only load claimed bugs for developers
+    if (this.isDeveloper) {
+      this.loadClaimedBugs();
+    }
   }
   
   loadUserProfile(): void {

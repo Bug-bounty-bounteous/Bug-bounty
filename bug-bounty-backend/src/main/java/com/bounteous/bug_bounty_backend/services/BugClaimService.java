@@ -11,6 +11,7 @@ import com.bounteous.bug_bounty_backend.data.entities.humans.User;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugClaimRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
 import com.bounteous.bug_bounty_backend.exceptions.BadRequestException;
+import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
 import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,9 +42,14 @@ public class BugClaimService {
         // Find the user by email or username
         User user = userService.getUserByEmailOrUsername(userIdentifier);
         
-        // Check if the user is a developer
+        // Check if the user is a developer (companies cannot claim bugs)
         if (!(user instanceof Developer)) {
-            throw new BadRequestException("Only developers can claim bugs");
+            throw new ForbiddenException("Only developers can claim bugs");
+        }
+        
+        // Check if the developer is trying to claim their own bug
+        if (bug.getPublisher() != null && bug.getPublisher().getId().equals(user.getId())) {
+            throw new BadRequestException("You cannot claim your own bugs");
         }
         
         Developer developer = (Developer) user;
