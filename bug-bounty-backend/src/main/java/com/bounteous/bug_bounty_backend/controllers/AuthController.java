@@ -1,5 +1,6 @@
 package com.bounteous.bug_bounty_backend.controllers;
 
+import com.bounteous.bug_bounty_backend.data.dto.requests.auth.CaptchaUnlockRequest;
 import com.bounteous.bug_bounty_backend.data.dto.requests.auth.RegisterRequest;
 import com.bounteous.bug_bounty_backend.data.dto.requests.auth.LoginRequest;
 import com.bounteous.bug_bounty_backend.data.dto.responses.auth.JwtResponse;
@@ -48,5 +49,10 @@ public class AuthController {
     public ResponseEntity<ApiResponse> logout() {
         // We'll implement a simple logout response as JWT is stateless
         return ResponseEntity.ok(new ApiResponse(true, "Logout successful"));
+    }
+    @PostMapping("/unlock")
+    public ResponseEntity<ApiResponse> unlockAccount(@RequestBody CaptchaUnlockRequest request) {
+        String message = authService.unlockAccount(request);
+        return ResponseEntity.ok(new ApiResponse(true,message));
     }
 }
