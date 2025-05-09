@@ -9,34 +9,39 @@
       <div class="tab-title">Sign Up</div>
       <div class="tab-body">
         <div class="tab-content">
-          <div class="input-group">
-            <label for="firstName">First Name</label>
-            <input 
-              type="text" 
-              id="firstName" 
-              [(ngModel)]="firstName" 
-              (input)="OnChangeFirstName(firstName)"
-              [class.input-error]="invalidFirstName"
-            />
-          </div>
-          <div class="error" *ngIf="invalidFirstName">
-            First name is required (min 2 characters)
-          </div>
           
-          <div class="input-group">
-            <label for="lastName">Last Name</label>
-            <input 
-              type="text" 
-              id="lastName" 
-              [(ngModel)]="lastName" 
-              (input)="OnChangeLastName(lastName)"
-              [class.input-error]="invalidLastName"
-            />
+          <!-- First and Last Name only if not company -->
+          <div *ngIf="!isCompany">
+            <div class="input-group">
+              <label for="firstName">First Name</label>
+              <input 
+                type="text" 
+                id="firstName" 
+                [(ngModel)]="firstName" 
+                (input)="OnChangeFirstName(firstName)"
+                [class.input-error]="invalidFirstName"
+              />
+            </div>
+            <div class="error" *ngIf="invalidFirstName">
+              First name is required (min 2 characters)
+            </div>
+
+            <div class="input-group">
+              <label for="lastName">Last Name</label>
+              <input 
+                type="text" 
+                id="lastName" 
+                [(ngModel)]="lastName" 
+                (input)="OnChangeLastName(lastName)"
+                [class.input-error]="invalidLastName"
+              />
+            </div>
+            <div class="error" *ngIf="invalidLastName">
+              Last name is required (min 2 characters)
+            </div>
           </div>
-          <div class="error" *ngIf="invalidLastName">
-            Last name is required (min 2 characters)
-          </div>
-          
+
+          <!-- Username (always shown) -->
           <div class="input-group">
             <label for="username">Username</label>
             <input 
@@ -50,7 +55,8 @@
           <div class="error" *ngIf="invalidUsername">
             Username is required (min 3 characters)
           </div>
-          
+
+          <!-- Email -->
           <div class="input-group">
             <label for="email">Email</label>
             <input 
@@ -64,7 +70,8 @@
           <div class="error" *ngIf="invalidEmail">
             Email is invalid or already registered
           </div>
-          
+
+          <!-- Password -->
           <div class="input-group">
             <label for="password">Password</label>
             <input 
@@ -78,7 +85,8 @@
           <div class="error" *ngIf="invalidPassword">
             Password must be at least 6 characters
           </div>
-          
+
+          <!-- Confirm Password -->
           <div class="input-group">
             <label for="confirmPassword">Confirm Password</label>
             <input 
@@ -92,7 +100,8 @@
           <div class="error" *ngIf="invalidConfirmPassword">
             Passwords do not match
           </div>
-          
+
+          <!-- Company toggle -->
           <div class="input-group checkbox-group">
             <label for="isCompany">Sign Up As Company?</label>
             <input 
@@ -102,8 +111,10 @@
               (change)="OnCompanyChange(isCompany)"
             />
           </div>
+
         </div>
       </div>
+
       <div class="tab-buttons">
         <app-button 
           type="primary" 
