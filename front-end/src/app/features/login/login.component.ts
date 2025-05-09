@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -15,14 +15,16 @@ import { AlertComponent } from '../../shared/components/alert/alert.component';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
+  errorMessage: string = '';
   hasError: boolean = false;
-  errorMessage: string = 'Invalid username or password';
   isSubmitting: boolean = false;
   isLocked: boolean = false;
+  showCaptcha: boolean = false;
+  captchaCode: string = '';
   lockoutTimeRemaining: number = 0;
   lockoutTimer: any;
   returnUrl: string = '/dashboard';
@@ -35,19 +37,16 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get return url from route parameters or default to '/dashboard'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-    
-    // Check if already logged in
+
     if (this.tokenStorage.isLoggedIn()) {
       this.router.navigate([this.returnUrl]);
       return;
     }
-    
-    // Check if account is locked
+
     this.checkLockStatus();
   }
-  
+
   ngOnDestroy(): void {
     if (this.lockoutTimer) {
       clearInterval(this.lockoutTimer);
@@ -63,75 +62,79 @@ export class LoginComponent implements OnInit {
     this.password = value;
     this.hasError = false;
   }
-  
+
   OnRememberMeChange(value: boolean): void {
     this.rememberMe = value;
   }
 
   OnClickLogin(event: MouseEvent): void {
-    // Prevent multiple submissions
-    if (this.isSubmitting) {
-      return;
-    }
-  
+    if (this.isSubmitting) return;
+
     if (!this.email || !this.password) {
       this.errorMessage = 'Email and password are required';
       this.hasError = true;
       return;
     }
-    
-    // Check if account is locked before sending the request
-    if (this.authService.isLockedOut()) {
-      const remainingMinutes = Math.ceil(this.authService.getRemainingLockoutTime() / 60000);
-      this.errorMessage = `Your account is temporarily locked. Please try again in ${remainingMinutes} minutes.`;
-      this.hasError = true;
-      return;
-    }
-    
+
     this.isSubmitting = true;
     this.hasError = false;
-    
-    // Create a local reference to prevent closure issues
-    const loginSubscription = this.authService.login({
+
+    const loginSub = this.authService.login({
       email: this.email,
       password: this.password,
       rememberMe: this.rememberMe
     }).subscribe({
-      next: (response) => {
+      next: (res) => {
         this.isSubmitting = false;
-        loginSubscription.unsubscribe();
+        loginSub.unsubscribe();
         this.router.navigate([this.returnUrl]);
       },
       error: (err) => {
-        console.log('Login error:', err);
-        // Always reset isSubmitting on error
         this.isSubmitting = false;
-        loginSubscription.unsubscribe();
-        
+        loginSub.unsubscribe();
         this.hasError = true;
-        
-        if (err.status === 401) {
-          this.errorMessage = 'Invalid email or password';
-          this.authService.handleLoginFailure();
-          
-          // Check if this attempt has locked the account
-          if (this.authService.isLockedOut()) {
-            const remainingMinutes = Math.ceil(this.authService.getRemainingLockoutTime() / 60000);
-            this.errorMessage = `Your account is temporarily locked. Please try again in ${remainingMinutes} minutes.`;
-            this.isLocked = true;
-          }
-        } else if (err.status === 423) {
-          this.errorMessage = err.error?.message || 'Your account is temporarily locked';
+
+        const msg = err?.error?.message?.toLowerCase() || '';
+
+        if (msg.includes('account locked')) {
+          this.errorMessage = 'Account locked. Please enter CAPTCHA to unlock.';
           this.isLocked = true;
+          this.showCaptcha = true;
+
+        } else if (msg.includes('wrong password')) {
+          this.errorMessage = err.error.message;
+
+        } else if (msg.includes('invalid email')) {
+          this.errorMessage = 'Invalid email address';
+
         } else if (err.status === 0) {
           this.errorMessage = 'Cannot connect to server. Please check your internet connection.';
+
         } else {
-          this.errorMessage = err.error?.message || 'An error occurred during login';
+          this.errorMessage = 'Login failed. Please try again.';
         }
+      }
+    });
+  }
+
+  onUnlockClick(): void {
+    if (!this.email || !this.captchaCode) {
+      this.errorMessage = 'Email and CAPTCHA code are required.';
+      this.hasError = true;
+      return;
+    }
+
+    this.authService.unlockAccount(this.email, this.captchaCode).subscribe({
+      next: () => {
+        this.errorMessage = 'Account unlocked. You can now log in.';
+        this.hasError = true;
+        this.isLocked = false;
+        this.showCaptcha = false;
+        this.captchaCode = '';
       },
-      complete: () => {
-        // Ensure isSubmitting is always reset
-        this.isSubmitting = false;
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Failed to unlock account.';
+        this.hasError = true;
       }
     });
   }
@@ -139,32 +142,27 @@ export class LoginComponent implements OnInit {
   goToSignUp(event: MouseEvent): void {
     this.router.navigate(['/register']);
   }
-  
+
   forgotPassword(event: MouseEvent): void {
-    // Navigate to password reset page - will be implemented in a future requirement
     this.router.navigate(['/forgot-password']);
   }
-  
+
   private checkLockStatus(): void {
-    this.isLocked = this.authService.isLockedOut();
-    
+    this.isLocked = this.authService.isLockedOut?.() || false;
+
     if (this.isLocked) {
-      this.lockoutTimeRemaining = this.authService.getRemainingLockoutTime();
-      this.errorMessage = `Your account is temporarily locked. Please try again in ${Math.ceil(this.lockoutTimeRemaining / 60000)} minutes.`;
+      this.lockoutTimeRemaining = this.authService.getRemainingLockoutTime?.() || 0;
+      this.errorMessage = `Your account is temporarily locked. Please try again later.`;
       this.hasError = true;
-      
-      // Start timer to update remaining time
+
       this.lockoutTimer = setInterval(() => {
         this.lockoutTimeRemaining = this.authService.getRemainingLockoutTime();
-        
         if (this.lockoutTimeRemaining <= 0) {
           clearInterval(this.lockoutTimer);
           this.isLocked = false;
           this.hasError = false;
-        } else {
-          this.errorMessage = `Your account is temporarily locked. Please try again in ${Math.ceil(this.lockoutTimeRemaining / 60000)} minutes.`;
         }
-      }, 30000); // Update every 30 seconds
+      }, 30000);
     }
   }
 }
