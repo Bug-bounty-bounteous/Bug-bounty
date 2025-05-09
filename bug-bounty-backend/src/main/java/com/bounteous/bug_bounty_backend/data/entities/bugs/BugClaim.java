@@ -27,4 +27,6 @@ public class BugClaim {
     
     @Enumerated(EnumType.STRING)
     private ClaimStatus claimStatus;
+
+    private String claimNote;
 }

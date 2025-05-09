@@ -1,6 +1,53 @@
 <app-sidebar-layout activeSection="Dashboard">
-    <div class="dashboard-container">
-      <h2>Dashboard</h2>
-      <!-- Le reste de votre contenu ici -->
+  <div class="dashboard-section">
+    <h3 class="title">Your Claimed Bugs</h3>
+    
+    <app-loader *ngIf="isLoadingClaims" [isLoading]="isLoadingClaims"></app-loader>
+    
+    <div *ngIf="!isLoadingClaims && claimedBugs.length === 0" class="empty-state">
+      <p>You haven't claimed any bugs yet.</p>
+      <app-button type="primary" (onClicked)="navigateToMarketplace()">Find Bugs to Claim</app-button>
     </div>
-  </app-sidebar-layout>
+    
+    <!-- Use the same bug-grid and bug-card structure as marketplace -->
+    <div *ngIf="!isLoadingClaims && claimedBugs.length > 0" class="bug-grid">
+      <div *ngFor="let bug of claimedBugs" class="bug-card" (click)="navigateToBugDetail(bug.id)">
+        <div class="bug-header">
+          <h3 class="bug-title">{{ bug.title }}</h3>
+          <span class="bug-difficulty" [class]="'difficulty-' + bug.difficulty.toLowerCase()">
+            {{ bug.difficulty }}
+          </span>
+        </div>
+        
+        <div class="bug-description">
+          {{ bug.description | slice:0:150 }}{{ bug.description.length > 150 ? '...' : '' }}
+        </div>
+        
+        <div class="bug-info">
+          <div class="bug-reward">💰 {{ bug.reward | currency }}</div>
+          <div class="bug-status" [class]="'status-' + bug.status.toLowerCase()">
+            {{ bug.status }}
+          </div>
+        </div>
+        
+        <div class="bug-tech-stacks" *ngIf="bug.techStacks && bug.techStacks.length > 0">
+          <div class="tech-label">Tech:</div>
+          <div class="tech-stack-list">
+            <span *ngFor="let tech of bug.techStacks" class="tech-tag">
+              {{ tech.name }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="bug-footer">
+          <div class="bug-publisher" *ngIf="bug.publisher">
+            Posted by: {{ bug.publisher.name }}
+          </div>
+          <div class="bug-date">
+            {{ bug.createdAt | dateFormat }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-sidebar-layout>

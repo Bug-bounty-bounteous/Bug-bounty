@@ -84,15 +84,25 @@
             <h3>Actions</h3>
             <div class="actions-container">
               <app-button 
-                *ngIf="isClaimable() && !isOwnedByCurrentUser()" 
+                *ngIf="isClaimable() && !isOwnedByCurrentUser() && !isClaimingBug" 
                 type="primary" 
                 (onClicked)="claimBug()"
               >
                 Claim this Bug
               </app-button>
               
-              <div *ngIf="!isClaimable()" class="action-message">
-                This bug is currently {{ bug.status.toLowerCase() }} and cannot be claimed.
+              <app-loader 
+                *ngIf="isClaimingBug" 
+                [isLoading]="isClaimingBug" 
+                message="Claiming bug..."
+              ></app-loader>
+              
+              <div *ngIf="!isClaimable() && bug?.status === 'CLAIMED'" class="action-message claimed-message">
+                This bug has been claimed and is being worked on.
+              </div>
+              
+              <div *ngIf="!isClaimable() && bug?.status !== 'CLAIMED'" class="action-message">
+                This bug is currently {{ bug?.status.toLowerCase() }} and cannot be claimed.
               </div>
               
               <div *ngIf="isOwnedByCurrentUser()" class="action-message">
