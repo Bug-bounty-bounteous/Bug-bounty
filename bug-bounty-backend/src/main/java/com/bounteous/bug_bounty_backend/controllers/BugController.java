@@ -1,12 +1,17 @@
 package com.bounteous.bug_bounty_backend.controllers;
+
+import com.bounteous.bug_bounty_backend.data.dto.responses.ApiResponse;
 import com.bounteous.bug_bounty_backend.data.dto.responses.bug.BugResponse;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Difficulty;
+import com.bounteous.bug_bounty_backend.services.BugClaimService;
 import com.bounteous.bug_bounty_backend.services.BugService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.bounteous.bug_bounty_backend.data.dto.requests.bug.BugClaimRequest;
 import com.bounteous.bug_bounty_backend.data.dto.requests.bug.BugCreateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +25,8 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class BugController {
     private final BugService bugService;
-    
+    private final BugClaimService bugClaimService;
+
     /**
      * Get all bugs with optional filtering
      * 
@@ -40,7 +46,7 @@ public class BugController {
             Pageable pageable) {
         return ResponseEntity.ok(bugService.findBugs(difficulty, techStackIds, status, query, pageable));
     }
-    
+
     /**
      * Get a specific bug by ID
      * 
@@ -51,7 +57,7 @@ public class BugController {
     public ResponseEntity<BugResponse> getBugById(@PathVariable Long id) {
         return ResponseEntity.ok(bugService.getBugById(id));
     }
-    
+
     /**
      * Get all available difficulty levels
      * 
@@ -61,7 +67,7 @@ public class BugController {
     public ResponseEntity<List<String>> getAllDifficulties() {
         return ResponseEntity.ok(bugService.getAllDifficulties());
     }
-    
+
     /**
      * Get all available tech stacks
      * 
@@ -71,11 +77,11 @@ public class BugController {
     public ResponseEntity<List<BugResponse.TechStackInfo>> getAllTechStacks() {
         return ResponseEntity.ok(bugService.getAllTechStacks());
     }
-    
+
     /**
      * Create a new bug
      * 
-     * @param request The bug creation request data
+     * @param request        The bug creation request data
      * @param authentication The authenticated user
      * @return The created bug
      */
@@ -84,9 +90,22 @@ public class BugController {
     public ResponseEntity<BugResponse> createBug(
             @RequestBody @Valid BugCreateRequest request,
             Authentication authentication) {
-        
+
         String email = authentication.getName();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bugService.createBug(request, email));
+    }
+
+    @PostMapping("/{id}/claim")
+    @PreAuthorize("hasRole('DEVELOPER')")
+    public ResponseEntity<ApiResponse> claimBug(
+            @PathVariable Long id,
+            @RequestBody(required = false) BugClaimRequest request,
+            Authentication authentication) {
+    
+        String identifier = authentication.getName();
+        bugClaimService.claimBug(id, identifier, request != null ? request.getClaimNote() : null);
+    
+        return ResponseEntity.ok(new ApiResponse(true, "Bug claimed successfully"));
     }
 }

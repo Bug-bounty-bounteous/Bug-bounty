@@ -32,7 +32,7 @@ public class Bug {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Company publisher;
     
     @Enumerated(EnumType.STRING)
@@ -40,7 +40,12 @@ public class Bug {
     
     private String verificationReport;
 
-    @ManyToMany(mappedBy = "bugs")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "bug_tech_stack",
+        joinColumns = @JoinColumn(name = "bug_id"),
+        inverseJoinColumns = @JoinColumn(name = "tech_stack_id")
+    )
     @Builder.Default
     private List<TechStack> stack = new ArrayList<>();
 

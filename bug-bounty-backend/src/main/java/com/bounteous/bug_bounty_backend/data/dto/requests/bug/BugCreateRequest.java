@@ -21,7 +21,7 @@ public class BugCreateRequest {
     private String difficulty;
     
     @NotNull(message = "Reward is required")
-    @Min(value = 1, message = "Reward must be greater than 0")
+    @Min(value = 50, message = "Reward must be at least $50 to attract developers")
     private Double reward;
     
     private List<Long> techStackIds;

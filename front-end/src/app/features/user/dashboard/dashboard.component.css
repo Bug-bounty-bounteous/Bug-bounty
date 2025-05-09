@@ -1,4 +1,168 @@
-.dashboard-container {
-    padding: 20px;
+.dashboard-section {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  margin-bottom: 2rem;
+  color: var(--green-1);
+  border-bottom: 1px solid var(--outline);
+  padding-bottom: 0.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--background-section);
+  border: 1px solid var(--outline);
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.empty-state p {
+  margin-bottom: 20px;
+  color: #999;
+}
+
+/* Bug Grid - Same styling as in marketplace */
+.bug-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.bug-card {
+  background-color: var(--background-section);
+  border: 1px solid var(--outline);
+  border-radius: 5px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bug-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.bug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.bug-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--green-1);
+}
+
+.bug-difficulty {
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.difficulty-easy {
+  background-color: rgba(0, 204, 0, 0.2);
+  color: var(--green-2);
+}
+
+.difficulty-medium {
+  background-color: rgba(244, 255, 0, 0.2);
+  color: var(--yellow-1);
+}
+
+.difficulty-hard {
+  background-color: rgba(255, 128, 0, 0.2);
+  color: #ff8000;
+}
+
+.difficulty-expert {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: var(--red-1);
+}
+
+.bug-description {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--white);
+}
+
+.bug-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.bug-reward {
+  font-weight: bold;
+  color: var(--yellow-1);
+}
+
+.bug-status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+.status-open {
+  background-color: rgba(0, 204, 0, 0.2);
+  color: var(--green-2);
+}
+
+.status-claimed, .status-in_progress {
+  background-color: rgba(51, 102, 204, 0.2);
+  color: var(--blue-1);
+}
+
+.status-submitted {
+  background-color: rgba(244, 255, 0, 0.2);
+  color: var(--yellow-1);
+}
+
+.status-resolved {
+  background-color: rgba(153, 153, 153, 0.2);
+  color: #999;
+}
+
+.bug-tech-stacks {
+  display: flex;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.tech-label {
+  margin-right: 0.5rem;
+  color: var(--green-2);
+}
+
+.tech-stack-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.tech-tag {
+  background-color: var(--background-tech-stack);
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+}
+
+.bug-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bug-grid {
+    grid-template-columns: 1fr;
   }
-  
+}

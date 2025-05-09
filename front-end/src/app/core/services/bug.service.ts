@@ -85,4 +85,12 @@ export class BugService {
     getAllTechStacks(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/tech-stacks`);
     }
+
+    /**
+    * Claim a bug
+    */
+    claimBug(bugId: number, note?: string): Observable<any> {
+        const requestBody = note ? { bugId, claimNote: note } : { bugId };
+        return this.http.post<any>(`${this.apiUrl}/${bugId}/claim`, requestBody);
+    }
 }
