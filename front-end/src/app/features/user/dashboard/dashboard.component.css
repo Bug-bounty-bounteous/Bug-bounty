@@ -166,3 +166,20 @@
     grid-template-columns: 1fr;
   }
 }
+
+.company-actions {
+  background-color: var(--background-section);
+  border: 1px solid var(--outline);
+  border-radius: 5px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.company-actions p {
+  margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}

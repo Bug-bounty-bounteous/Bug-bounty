@@ -102,11 +102,16 @@
               </div>
               
               <div *ngIf="!isClaimable() && bug?.status !== 'CLAIMED'" class="action-message">
-                This bug is currently {{ bug?.status.toLowerCase() }} and cannot be claimed.
+                This bug is currently {{ bug?.status.toLowerCase() }}
               </div>
               
               <div *ngIf="isOwnedByCurrentUser()" class="action-message">
                 You cannot claim your own bugs.
+              </div>
+              
+              <!-- Message specifically for companies -->
+              <div *ngIf="userRole === 'COMPANY' && !isOwnedByCurrentUser()" class="action-message">
+                As a company, you can create bugs but not claim them.
               </div>
             </div>
           </div>

@@ -31,6 +31,7 @@ export class BugDetailComponent implements OnInit {
   currentUserId: number | undefined;
   isClaimingBug = false;
   successMessage = '';
+  userRole: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,6 +42,7 @@ export class BugDetailComponent implements OnInit {
     // Get current user ID
     const user = this.tokenService.getUser();
     this.currentUserId = user?.id;
+    this.userRole = this.tokenService.getUserRole();
   }
 
   ngOnInit(): void {
@@ -111,7 +113,12 @@ export class BugDetailComponent implements OnInit {
 
   isClaimable(): boolean {
     if (!this.bug) return false;
-    return this.bug.status === 'OPEN';
+    
+    // Check if user is a developer (companies cannot claim bugs)
+    const userRole = this.tokenService.getUserRole();
+    const isDeveloper = userRole === 'DEVELOPER';
+    
+    return this.bug.status === 'OPEN' && isDeveloper;
   }
 
   isOwnedByCurrentUser(): boolean {
