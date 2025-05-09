@@ -47,7 +47,7 @@ export class BugCreateComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.minLength(20)]],
       difficulty: ['', Validators.required],
-      reward: [0, [Validators.required, Validators.min(1)]]
+      reward: [0, [Validators.required, Validators.min(50)]]
     });
     
     // Check if user is a company

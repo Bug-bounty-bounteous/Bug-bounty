@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY") 
-                .requestMatchers(HttpMethod.GET, "/api/bugs/**").authenticated() 
+                .requestMatchers(HttpMethod.GET, "/api/bugs/**").authenticated()
                 .anyRequest().authenticated())
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
