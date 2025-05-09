@@ -18,7 +18,7 @@ export class SideBarComponent {
     {
       name: 'Bug Marketplace',
       iconUrl: 'assets/images/bug.png',
-      link: '/bugs', 
+      link: '/marketplace', 
     },
     {
       name: 'Resources',

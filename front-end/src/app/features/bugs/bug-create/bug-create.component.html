@@ -118,10 +118,11 @@
         
         <div class="form-actions">
             <app-button type="default" (onClicked)="navigateToMarketplace()">Cancel</app-button>
-          <app-button 
+            <app-button 
             type="primary" 
             [isLoading]="isSubmitting"
             [disabled]="isSubmitting"
+            (onClicked)="onSubmit()"
           >Submit Bug</app-button>
         </div>
       </form>

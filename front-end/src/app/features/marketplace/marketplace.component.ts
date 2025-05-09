@@ -19,11 +19,14 @@ export class MarketplaceComponent implements OnInit {
   constructor(
     private router: Router,
     private tokenStorage: TokenStorageService
-  ) {}
+  ) {
+    console.log('MarketplaceComponent constructor called');
+  }
   
   ngOnInit(): void {
     // Check if user is a company
     const userRole = this.tokenStorage.getUserRole();
+    console.log('User role:', userRole);
     this.isCompany = userRole === 'COMPANY';
   }
   

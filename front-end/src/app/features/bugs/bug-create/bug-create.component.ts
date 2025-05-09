@@ -108,19 +108,26 @@ export class BugCreateComponent implements OnInit {
   }
   
   onSubmit(): void {
+    console.log('onSubmit called');
+    
     if (this.bugForm.invalid) {
+      console.log('Form is invalid', this.bugForm.errors);
       // Mark all form controls as touched to trigger validation messages
       Object.keys(this.bugForm.controls).forEach(key => {
-        this.bugForm.get(key)?.markAsTouched();
+        const control = this.bugForm.get(key);
+        control?.markAsTouched();
+        console.log(`${key} errors:`, control?.errors);
       });
       return;
     }
     
     if (this.selectedTechStacks.length === 0) {
+      console.log('No tech stacks selected');
       this.errorMessage = 'Please select at least one technology stack';
       return;
     }
     
+    console.log('Form is valid, preparing to submit');
     this.isSubmitting = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -130,8 +137,11 @@ export class BugCreateComponent implements OnInit {
       techStackIds: this.selectedTechStacks
     };
     
+    console.log('Bug data to submit:', bugData);
+    
     this.bugService.createBug(bugData).subscribe({
       next: (response) => {
+        console.log('Bug created successfully:', response);
         this.isSubmitting = false;
         this.successMessage = 'Bug created successfully!';
         
@@ -145,8 +155,8 @@ export class BugCreateComponent implements OnInit {
         }, 2000);
       },
       error: (error) => {
+        console.error('Error creating bug:', error);
         this.isSubmitting = false;
-        console.error('Error creating bug', error);
         this.errorMessage = error.error?.message || 'Failed to create bug. Please try again.';
       }
     });
