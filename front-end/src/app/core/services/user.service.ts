@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private apiUrl = `${environment.apiUrl}/users`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getCurrentUserProfile(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/me`);
@@ -17,5 +17,9 @@ export class UserService {
 
   getClaimedBugs(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/me/claimed-bugs`);
+  }
+
+  getUploadedBugs(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/me/uploaded-bugs`);
   }
 }

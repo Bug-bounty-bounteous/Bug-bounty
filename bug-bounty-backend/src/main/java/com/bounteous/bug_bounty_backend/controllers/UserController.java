@@ -3,6 +3,7 @@ package com.bounteous.bug_bounty_backend.controllers;
 import com.bounteous.bug_bounty_backend.data.dto.responses.auth.UserResponse;
 import com.bounteous.bug_bounty_backend.data.dto.responses.bug.BugResponse;
 import com.bounteous.bug_bounty_backend.data.entities.humans.User;
+import com.bounteous.bug_bounty_backend.services.BugService;
 import com.bounteous.bug_bounty_backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final BugService bugService;
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
@@ -31,4 +33,11 @@ public class UserController {
         String identifier = authentication.getName();
         return ResponseEntity.ok(userService.getClaimedBugsByUserIdentifier(identifier));
     }
+
+    @GetMapping("/me/uploaded-bugs")
+    public ResponseEntity<List<BugResponse>> getUploadedBugs(Authentication authentication) {
+        String identifier = authentication.getName();
+        return ResponseEntity.ok(bugService.getUploadedBugsByCompanyIdentifier(identifier));
+    }
+
 }
