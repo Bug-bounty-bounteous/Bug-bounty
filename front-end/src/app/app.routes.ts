@@ -46,6 +46,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent)
   },
   {
+  path: 'my-feedback',
+  loadComponent: () => import('./features/feedback/feedback.component').then(m => m.FeedbackComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
