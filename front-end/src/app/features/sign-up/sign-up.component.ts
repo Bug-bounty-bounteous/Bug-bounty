@@ -77,8 +77,13 @@ export class SignUpComponent {
   
   OnClickSignUp(event: MouseEvent): void {
     // Check all validations first
-    this.invalidFirstName = this.firstName.length < 2;
-    this.invalidLastName = this.lastName.length < 2;
+    if (!this.isCompany) {
+      this.invalidFirstName = this.firstName.length < 2;
+      this.invalidLastName = this.lastName.length < 2;
+    } else {
+      this.invalidFirstName = false;
+      this.invalidLastName = false;
+    }
     this.invalidUsername = this.username.length < 3;
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     this.invalidEmail = !emailPattern.test(this.email);
@@ -93,29 +98,30 @@ export class SignUpComponent {
     this.isSubmitting = true;
     
     this.authService.register({
-      firstName: this.firstName,
-      lastName: this.lastName,
-      username: this.username,
-      email: this.email,
-      password: this.password,
-      isCompany: this.isCompany
-    }).subscribe({
-      next: (response) => {
-        this.tokenStorage.saveToken(response.token);
-        this.tokenStorage.saveUser({
-          id: response.id,
-          username: response.username,
-          email: response.email,
-          role: response.role
-        });
-        
-        this.isSubmitting = false;
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        this.invalidEmail = true;
-        this.isSubmitting = false;
-      }
-    });
+    firstName: this.firstName,
+    lastName: this.lastName,
+    username: this.username,
+    email: this.email,
+    password: this.password,
+    role: this.isCompany ? 'COMPANY' : 'DEVELOPER'
+  }).subscribe({
+    next: (response) => {
+      this.tokenStorage.saveToken(response.token);
+      this.tokenStorage.saveUser({
+        id: response.id,
+        username: response.username,
+        email: response.email,
+        role: response.role
+      });
+
+      this.isSubmitting = false;
+      this.router.navigate(['/dashboard']);
+    },
+    error: (err) => {
+      this.invalidEmail = true;
+      this.isSubmitting = false;
+    }
+  });
+
   }
 }

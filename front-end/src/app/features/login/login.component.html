@@ -61,9 +61,24 @@
           [disabled]="isSubmitting || isLocked"
         >Login</app-button>
       </div>
+      <div class="captcha-box" *ngIf="showCaptcha">
+  <label>CAPTCHA Code</label>
+  <input 
+    type="text" 
+    [(ngModel)]="captchaCode" 
+    placeholder="e.g. ABC123"
+    [disabled]="isSubmitting"
+  />
+  <app-button 
+    type="secondary"
+    (onClicked)="onUnlockClick()"
+    [disabled]="isSubmitting"
+  >Unlock Account</app-button>
+</div>
+
       
       <div class="security-info" *ngIf="!isLocked">
-        <p>Your account will be temporarily locked after 5 failed login attempts.</p>
+       <p>Your account will be locked after 3 failed login attempts. You’ll need to enter a CAPTCHA to unlock.</p>
       </div>
     </div>
   </div>

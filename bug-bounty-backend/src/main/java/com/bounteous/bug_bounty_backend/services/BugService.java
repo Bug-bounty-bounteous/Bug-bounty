@@ -17,13 +17,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.bounteous.bug_bounty_backend.data.dto.requests.bug.BugCreateRequest;
 import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.entities.humans.User;
 import com.bounteous.bug_bounty_backend.data.repositories.humans.CompanyRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.UserRepository;
 import com.bounteous.bug_bounty_backend.exceptions.BadRequestException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +39,7 @@ public class BugService {
     private final BugRepository bugRepository;
     private final TechStackRepository techStackRepository;
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
     /**
      * Find bugs with filtering options
@@ -112,9 +119,9 @@ public class BugService {
     public List<BugResponse.TechStackInfo> getAllTechStacks() {
         return techStackRepository.findAll().stream()
                 .map(techStack -> new BugResponse.TechStackInfo(
-                        techStack.getId(),
-                        techStack.getName(),
-                        techStack.getCategory()))
+                techStack.getId(),
+                techStack.getName(),
+                techStack.getCategory()))
                 .collect(Collectors.toList());
     }
 
@@ -124,9 +131,9 @@ public class BugService {
     private BugResponse convertToResponse(Bug bug) {
         List<BugResponse.TechStackInfo> techStacks = bug.getStack().stream()
                 .map(techStack -> new BugResponse.TechStackInfo(
-                        techStack.getId(),
-                        techStack.getName(),
-                        techStack.getCategory()))
+                techStack.getId(),
+                techStack.getName(),
+                techStack.getCategory()))
                 .collect(Collectors.toList());
 
         BugResponse.UserInfo publisher = null;
@@ -151,7 +158,7 @@ public class BugService {
                 bug.getVerificationStatus() != null ? bug.getVerificationStatus().name() : null);
     }
 
-        /**
+    /**
      * Create a new bug
      */
     @Transactional
@@ -159,7 +166,7 @@ public class BugService {
         // Find the company
         Company company = companyRepository.findByEmail(companyEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found with email: " + companyEmail));
-        
+
         // Validate tech stacks
         List<TechStack> techStacks = new ArrayList<>();
         if (request.getTechStackIds() != null && !request.getTechStackIds().isEmpty()) {
@@ -168,7 +175,7 @@ public class BugService {
                 throw new BadRequestException("One or more tech stacks not found");
             }
         }
-        
+
         // Create the bug
         Difficulty difficulty;
         try {
@@ -176,7 +183,7 @@ public class BugService {
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid difficulty level: " + request.getDifficulty());
         }
-    
+
         Bug bug = Bug.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -188,16 +195,48 @@ public class BugService {
                 .publisher(company)
                 .stack(techStacks)
                 .build();
-        
+
         // Save the bug
         Bug savedBug = bugRepository.save(bug);
-        
+
         // Also update the tech stacks to include this bug
         for (TechStack techStack : techStacks) {
             techStack.getBugs().add(savedBug);
         }
         techStackRepository.saveAll(techStacks);
-        
+
         return convertToResponse(savedBug);
+    }
+
+    @Transactional
+    public List<BugResponse> getUploadedBugsByCompany(Company company) {
+
+        return bugRepository.findByPublisher(company).stream().map(this::convertToResponse).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<BugResponse> getUploadedBugsByCompanyIdentifier(String identifier) {
+        User user = getCompanyByEmailOrUsername(identifier);
+
+        if (!(user instanceof Company)) {
+            return Collections.emptyList();
+        }
+
+        Company company = (Company) user;
+        return getUploadedBugsByCompany(company);
+    }
+
+    @Transactional(readOnly = true)
+    public User getCompanyByEmailOrUsername(String identifier) {
+        Optional<User> userByEmail = userRepository.findByEmail(identifier);
+        if (userByEmail.isPresent()) {
+            return userByEmail.get();
+        }
+        Optional<Company> companyByName = companyRepository.findByCompanyName(identifier);
+        if (companyByName.isPresent()) {
+            return companyByName.get();
+        }
+
+        throw new ResourceNotFoundException("User not found with identifier: " + identifier);
     }
 }

@@ -85,14 +85,15 @@
               id="reward" 
               formControlName="reward" 
               class="form-control"
-              min="1"
+              min="50"
               step="1"
               [class.invalid]="bugForm.get('reward')?.invalid && bugForm.get('reward')?.touched"
             >
             <div class="error-message" *ngIf="bugForm.get('reward')?.invalid && bugForm.get('reward')?.touched">
               <span *ngIf="bugForm.get('reward')?.errors?.['required']">Reward amount is required</span>
-              <span *ngIf="bugForm.get('reward')?.errors?.['min']">Reward must be greater than 0</span>
+              <span *ngIf="bugForm.get('reward')?.errors?.['min']">Reward must be at least $50</span>
             </div>
+            <div class="helper-text">A higher reward will attract more developers to solve your bug.</div>
           </div>
         </div>
         

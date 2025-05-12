@@ -34,7 +34,7 @@ public class DataInitializer {
             // Format current datetime for SQL
             String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             
-            // 1. Create developer user
+            // Create developers
             String developerPassword = passwordEncoder.encode("hadi.com");
             jdbcTemplate.update(
                 "INSERT INTO users (id, email, password, first_name, last_name, role, account_locked, failed_attempts, created_at, updated_at) " +
@@ -45,8 +45,19 @@ public class DataInitializer {
             jdbcTemplate.update(
                 "INSERT INTO developers (id, username, rating, points) VALUES (1, 'hahaha', 0.0, 0)"
             );
+
+            String developer2Password = passwordEncoder.encode("sarah123");
+            jdbcTemplate.update(
+                "INSERT INTO users (id, email, password, first_name, last_name, role, account_locked, failed_attempts, created_at, updated_at) " +
+                "VALUES (3, 'sarah@developer.com', ?, 'Sarah', 'Johnson', 'DEVELOPER', false, 0, ?, ?)",
+                developer2Password, now, now
+            );
             
-            // 2. Create company user
+            jdbcTemplate.update(
+                "INSERT INTO developers (id, username, rating, points) VALUES (3, 'sarahcodes', 0.0, 0)"
+            );
+            
+            // Create company user
             String companyPassword = passwordEncoder.encode("password123");
             jdbcTemplate.update(
                 "INSERT INTO users (id, email, password, first_name, last_name, role, account_locked, failed_attempts, created_at, updated_at) " +
@@ -57,8 +68,19 @@ public class DataInitializer {
             jdbcTemplate.update(
                 "INSERT INTO company (id, company_name) VALUES (2, 'Example Tech Corp')"
             );
+
+            String company2Password = passwordEncoder.encode("techsolutions123");
+            jdbcTemplate.update(
+                "INSERT INTO users (id, email, password, first_name, last_name, role, account_locked, failed_attempts, created_at, updated_at) " +
+                "VALUES (4, 'info@techsolutions.com', ?, 'Tech', 'Solutions', 'COMPANY', false, 0, ?, ?)",
+                company2Password, now, now
+            );
             
-            // 3. Create tech stacks using SQL
+            jdbcTemplate.update(
+                "INSERT INTO company (id, company_name) VALUES (4, 'Tech Solutions Inc')"
+            );
+            
+            // Create tech stacks using SQL
             executeSql(
                 "INSERT INTO tech_stack (id, name, category) VALUES " +
                 "(1, 'Java', 'Backend'), " +
@@ -83,7 +105,7 @@ public class DataInitializer {
                 "(20, 'Google Cloud', 'Cloud')"
             );
 
-            // 4. Create bugs using SQL
+            // Create bugs using SQL
             executeSql(
                 "INSERT INTO bug (id, title, description, difficulty, reward, bug_status, created_at, publisher_id, verification_status) VALUES " +
                 "(1, 'Login Authentication Bypass', 'There is a security vulnerability in the login module that allows users to bypass authentication.', 'HARD', 500.00, 'OPEN', '" + now + "', 2, 'VERIFIED'), " +
@@ -100,7 +122,7 @@ public class DataInitializer {
                 "(12, 'File Upload Vulnerability', 'The file upload system does not properly validate file types, allowing potential malicious uploads.', 'HARD', 700.00, 'OPEN', '" + now + "', 2, 'VERIFIED')"
             );
 
-            // 5. Create bug-techstack relationships using SQL (with DISTINCT to avoid duplicates)
+            // Create bug-techstack relationships using SQL (with DISTINCT to avoid duplicates)
             executeSql(
                 "INSERT INTO bug_tech_stack (bug_id, tech_stack_id) VALUES " +
                 "(1, 2), (1, 3), (1, 15), " +  // Bug 1: Spring Boot, Angular, RESTful API

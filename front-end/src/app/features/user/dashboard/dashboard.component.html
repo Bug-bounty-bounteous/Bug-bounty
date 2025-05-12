@@ -1,6 +1,195 @@
-<app-sidebar-layout activeSection="Dashboard">
-    <div class="dashboard-container">
-      <h2>Dashboard</h2>
-      <!-- Le reste de votre contenu ici -->
+<app-sidebar-layout activeSection="User Space">
+  <div class="dashboard-section">
+    <!-- Developer dashboard - Claimed bugs -->
+    <div *ngIf="isDeveloper" ngClass="dashboard-container">
+      <h2>
+        Welcom Back<span *ngIf="user">, {{ user.firstName }}</span>
+      </h2>
+      <div [ngClass]="'basic-info'" *ngIf="user">
+        <div>Points: {{ user.points }}</div>
+        <div>Rating: {{ user.rating }}</div>
+      </div>
+      <div>
+        <h3 class="title">Tech Stacks</h3>
+        <div *ngIf="!isLoadingClaims && techStacks.length === 0">
+          <p>You haven't any tech stack registered.</p>
+        </div>
+        <div
+          *ngIf="!isLoadingClaims && techStacks.length > 0"
+          class="teachStack-count-list"
+        >
+          @for (ts of techStacks; track $index) {
+          <div class="techStack-count">
+            <div class="techStack-count-name">{{ ts.name }}</div>
+            <div class="techStack-count-count">{{ ts.count }}</div>
+          </div>
+          }
+        </div>
+      </div>
+      <div [ngClass]="'bug-list'">
+        <h3 class="title">Your Claimed Bugs</h3>
+        @for (techStack of techStacks; track $index) {}
+
+        <app-loader
+          *ngIf="isLoadingClaims"
+          [isLoading]="isLoadingClaims"
+        ></app-loader>
+
+        <div
+          *ngIf="!isLoadingClaims && claimedBugs.length === 0"
+          class="empty-state"
+        >
+          <p>You haven't claimed any bugs yet.</p>
+          <app-button type="primary" (onClicked)="navigateToMarketplace()"
+            >Find Bugs to Claim</app-button
+          >
+        </div>
+
+        <div
+          *ngIf="!isLoadingClaims && claimedBugs.length > 0"
+          class="bug-grid"
+        >
+          <div
+            *ngFor="let bug of claimedBugs"
+            class="bug-card"
+            (click)="navigateToBugDetail(bug.id)"
+          >
+            <div class="bug-header">
+              <h3 class="bug-title">{{ bug.title }}</h3>
+              <span
+                class="bug-difficulty"
+                [class]="'difficulty-' + bug.difficulty.toLowerCase()"
+              >
+                {{ bug.difficulty }}
+              </span>
+            </div>
+
+            <div class="bug-description">
+              {{ bug.description | slice : 0 : 150
+              }}{{ bug.description.length > 150 ? "..." : "" }}
+            </div>
+
+            <div class="bug-info">
+              <div class="bug-reward">💰 {{ bug.reward | currency }}</div>
+              <div
+                class="bug-status"
+                [class]="'status-' + bug.status.toLowerCase()"
+              >
+                {{ bug.status }}
+              </div>
+            </div>
+
+            <div
+              class="bug-tech-stacks"
+              *ngIf="bug.techStacks && bug.techStacks.length > 0"
+            >
+              <div class="tech-label">Tech:</div>
+              <div class="tech-stack-list">
+                <span *ngFor="let tech of bug.techStacks" class="tech-tag">
+                  {{ tech.name }}
+                </span>
+              </div>
+            </div>
+
+            <div class="bug-footer">
+              <div class="bug-date">
+                {{ bug.createdAt | dateFormat }}
+              </div>
+              <div class="bug-publisher" *ngIf="bug.publisher">
+                Posted by: {{ bug.publisher.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </app-sidebar-layout>
+
+    <!-- Company dashboard -->
+    <div *ngIf="isCompany">
+      <h3 class="title">Comany Dashboard</h3>
+      <!-- TODO: Update backend to get company name -->
+      <div class="company-actions">
+        <div class="action-buttons">
+          <div>Bug posted: {{ uploadedBugs.length }}</div>
+
+          <app-button type="primary" (onClicked)="navigateToMarketplace()"
+            >View Bug Marketplace</app-button
+          >
+        </div>
+      </div>
+
+      <div [ngClass]="'bug-list'">
+        <h3 class="title">Posted Bugs</h3>
+
+        <app-loader
+          *ngIf="isLoadingUploadedBugs"
+          [isLoading]="isLoadingUploadedBugs"
+        ></app-loader>
+
+        <div
+          *ngIf="!isLoadingUploadedBugs && uploadedBugs.length === 0"
+          class="empty-state"
+        >
+          <p>You haven't claimed any bugs yet.</p>
+          <app-button type="primary" (onClicked)="navigateToMarketplace()"
+            >Find Bugs to Claim</app-button
+          >
+        </div>
+
+        <div
+          *ngIf="!isLoadingUploadedBugs && uploadedBugs.length > 0"
+          class="bug-grid"
+        >
+          <div
+            *ngFor="let bug of uploadedBugs"
+            class="bug-card"
+            (click)="navigateToBugDetail(bug.id)"
+          >
+            <div class="bug-header">
+              <h3 class="bug-title">{{ bug.title }}</h3>
+              <span
+                class="bug-difficulty"
+                [class]="'difficulty-' + bug.difficulty.toLowerCase()"
+              >
+                {{ bug.difficulty }}
+              </span>
+            </div>
+
+            <div class="bug-description">
+              {{ bug.description | slice : 0 : 150
+              }}{{ bug.description.length > 150 ? "..." : "" }}
+            </div>
+
+            <div class="bug-info">
+              <div class="bug-reward">💰 {{ bug.reward | currency }}</div>
+              <div
+                class="bug-status"
+                [class]="'status-' + bug.status.toLowerCase()"
+              >
+                {{ bug.status }}
+              </div>
+            </div>
+
+            <div
+              class="bug-tech-stacks"
+              *ngIf="bug.techStacks && bug.techStacks.length > 0"
+            >
+              <div class="tech-label">Tech:</div>
+              <div class="tech-stack-list">
+                <span *ngFor="let tech of bug.techStacks" class="tech-tag">
+                  {{ tech.name }}
+                </span>
+              </div>
+            </div>
+
+            <div class="bug-footer">
+              <div class="bug-date">
+                {{ bug.createdAt | dateFormat }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-sidebar-layout>

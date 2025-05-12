@@ -19,13 +19,7 @@ public class BugBountyBackendApplication {
 	@Bean
 	CommandLineRunner runner(@Autowired DeveloperRepository repository) {
 		return args -> {
-			//			Developer dev = Developer.builder()
-			//					.username("Imad")
-			//					.rating(5.f)
-			//					.id(1l)
-			//					.build()
-			//					;
-			//			System.out.println(dev);
+
 		};
 	}
 }

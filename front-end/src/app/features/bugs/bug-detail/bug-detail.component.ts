@@ -29,7 +29,10 @@ export class BugDetailComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   currentUserId: number | undefined;
-  
+  isClaimingBug = false;
+  successMessage = '';
+  userRole: string | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -39,22 +42,23 @@ export class BugDetailComponent implements OnInit {
     // Get current user ID
     const user = this.tokenService.getUser();
     this.currentUserId = user?.id;
+    this.userRole = this.tokenService.getUserRole();
   }
 
   ngOnInit(): void {
     this.loadBugDetails();
   }
-  
+
   loadBugDetails(): void {
     this.isLoading = true;
-    
+
     const bugId = this.route.snapshot.paramMap.get('id');
     if (!bugId) {
       this.errorMessage = 'Invalid bug ID';
       this.isLoading = false;
       return;
     }
-    
+
     this.bugService.getBugById(Number(bugId)).subscribe({
       next: (bug) => {
         this.bug = bug;
@@ -67,31 +71,56 @@ export class BugDetailComponent implements OnInit {
       }
     });
   }
-  
+
   goBack(): void {
     this.router.navigate(['/bugs']);
   }
-  
+
   claimBug(): void {
-    // This will be implemented in a future requirement (Requirement 6)
-    console.log('Claim bug functionality will be implemented in a future requirement');
+    if (!this.isClaimable() || this.isOwnedByCurrentUser()) {
+      return;
+    }
+
+    this.isClaimingBug = true;
+
+    this.bugService.claimBug(this.bug.id).subscribe({
+      next: (response) => {
+        this.isClaimingBug = false;
+        this.successMessage = "Bug claimed successfully! You can now start working on it.";
+
+        // Reload the bug to update the status
+        setTimeout(() => {
+          this.loadBugDetails();
+        }, 2000);
+      },
+      error: (error) => {
+        this.isClaimingBug = false;
+        console.error('Error claiming bug', error);
+        this.errorMessage = error.error?.message || 'Failed to claim bug. Please try again later.';
+      }
+    });
   }
-  
+
   getDifficultyClass(): string {
     if (!this.bug) return '';
     return 'difficulty-' + this.bug.difficulty.toLowerCase();
   }
-  
+
   getStatusClass(): string {
     if (!this.bug) return '';
     return 'status-' + this.bug.status.toLowerCase();
   }
-  
+
   isClaimable(): boolean {
     if (!this.bug) return false;
-    return this.bug.status === 'OPEN';
+    
+    // Check if user is a developer (companies cannot claim bugs)
+    const userRole = this.tokenService.getUserRole();
+    const isDeveloper = userRole === 'DEVELOPER';
+    
+    return this.bug.status === 'OPEN' && isDeveloper;
   }
-  
+
   isOwnedByCurrentUser(): boolean {
     if (!this.bug || !this.bug.publisher) return false;
     return this.bug.publisher.id === this.currentUserId;
