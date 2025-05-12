@@ -1,5 +1,50 @@
-<div class="leaderboard-container">
+<app-sidebar-layout activeSection="Leaderboard">
+  <div class="leaderboard-container">
     <h2>Leaderboard</h2>
-    <!-- Content will be added here -->
+    <div *ngIf="developers.length > 0" class="dev-card-list">
+      @for (dev of developers; track $index) {
+      <div class="dev-card">
+        <div class="dev-card-left">{{ $index + 1 }}</div>
+        <div class="dev-card-middle">
+          <div class="dev-card-name">
+            {{ dev.firstName }} {{ dev.lastName }}
+          </div>
+          <div class="dev-card-email">{{ dev.email }}</div>
+          <div class="teachStack-count-list">
+            @for (ts of getTechStacksInfo(dev.claimedBugs); track $index) {
+            <div class="techStack-count">
+              <div class="techStack-count-name">{{ ts.name }}</div>
+              <div class="techStack-count-count">{{ ts.count }}</div>
+            </div>
+            }
+          </div>
+        </div>
+        <div class="dev-card-right">
+          <div class="dev-card-rating">Rating: {{ dev.rating }}</div>
+          <div class="dev-card-points">Points: {{ dev.points }}</div>
+        </div>
+      </div>
+      }
+      <div *ngIf="leaderboard.myRank !== -1">
+        <div class="dev-card my-card">
+          <div class="dev-card-left">{{ leaderboard.myRank }}</div>
+          <div class="dev-card-middle">
+            <div class="dev-card-name">You</div>
+          </div>
+          <div class="dev-card-right">
+            <div class="dev-card-rating">
+              Rating: {{ leaderboard.myRating }}
+            </div>
+            <div class="dev-card-points">
+              Points: {{ leaderboard.myPoints }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="developers.length === 0">
+      <div>No developers registed for bug bounty.</div>
+    </div>
   </div>
-  
+</app-sidebar-layout>
