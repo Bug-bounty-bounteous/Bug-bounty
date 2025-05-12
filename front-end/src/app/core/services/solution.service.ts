@@ -12,5 +12,8 @@ export class SolutionService {
 
   constructor(private http: HttpClient) { }
 
-  // Service methods will be added here
+  postSolution(solutionData: any): Observable<Solution> {
+    return this.http.post<Solution>(this.apiUrl, solutionData);
+  }
+
 }

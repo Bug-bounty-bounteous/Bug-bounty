@@ -30,20 +30,6 @@ export class SolutionCreateComponent implements OnInit {
   successMessage: string = '';
   errorMessage: string = '';
 
-  navigateToBugListing() {
-    //TODO:
-    this.router.navigate(['/bugs/'+this.bugId])
-    this.bugId = '';
-    this.bugtitle = '';
-    this.isLoading = true;
-    this.isSubmitting = false;
-  }
-
-  onSubmit() {
-    // TODO:
-    this.successMessage = "Called on submit"
-  }
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -69,12 +55,6 @@ export class SolutionCreateComponent implements OnInit {
       return;
     };
 
-    // TODO: REMOVE THIS CASE
-    if (Number(this.bugId) == 1) {
-      this.bugtitle = "Hey I am a dummy bug, please kill me after you're done";
-      this.isLoading = false;
-      return;
-    }
 
     this.bugServices.getBugById(Number(this.bugId)).subscribe({
       next: (bug) => {
@@ -87,4 +67,48 @@ export class SolutionCreateComponent implements OnInit {
       }
     });
   }
+
+  navigateToBugListing() {
+    //TODO:
+    this.router.navigate(['/bugs/', this.bugId])
+    this.bugId = '';
+    this.bugtitle = '';
+    this.isLoading = true;
+    this.isSubmitting = false;
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.solutionForm.reset();
+  }
+
+  onSubmit() {
+    // TODO:
+    if (this.solutionForm.invalid) {
+      Object.keys(this.solutionForm.controls).forEach(key => {
+        const control = this.solutionForm.get(key);
+        control?.markAsTouched();
+      });
+      return;
+    }
+    this.isSubmitting = true;
+    const data = {
+      ...this.solutionForm.value,
+      bugId: Number(this.bugId)
+    };
+    this.solutionService.postSolution(data).subscribe({
+      next: (response) => {
+        this.isSubmitting = false;
+        this.successMessage = 'Solution posted successfully'
+        this.solutionForm.reset();
+        setTimeout(() => {
+          // TODO: Go to solution shower screen
+          this.router.navigate(['/marketplace']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.errorMessage = error.error?.message || 'Failed to post solution, please try again later.'
+      } 
+    })
+  }
+
 }

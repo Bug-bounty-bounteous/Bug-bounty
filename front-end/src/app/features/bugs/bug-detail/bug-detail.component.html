@@ -83,13 +83,24 @@
           <div class="info-card bug-actions-card">
             <h3>Actions</h3>
             <div class="actions-container">
-              <app-button 
+              <div 
                 *ngIf="isClaimable() && !isOwnedByCurrentUser()" 
+                class="action-buttons-container"
+              >
+              <app-button 
                 type="primary" 
                 (onClicked)="claimBug()"
               >
                 Claim this Bug
               </app-button>
+              <app-button 
+                type="primary" 
+                (onClicked)="submitSolution()"
+              >
+                Submit a solution
+              </app-button>
+            
+            </div>
               
               <div *ngIf="!isClaimable()" class="action-message">
                 This bug is currently {{ bug.status.toLowerCase() }} and cannot be claimed.

@@ -96,4 +96,8 @@ export class BugDetailComponent implements OnInit {
     if (!this.bug || !this.bug.publisher) return false;
     return this.bug.publisher.id === this.currentUserId;
   }
+
+  submitSolution() {
+    this.router.navigate(["/", "bugs", this.bug.id, "solutions", "create"]);
+  }
 }
