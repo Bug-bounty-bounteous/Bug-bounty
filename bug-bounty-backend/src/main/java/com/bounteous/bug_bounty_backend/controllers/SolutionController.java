@@ -23,7 +23,7 @@ public class SolutionController {
     @PostMapping
     public ResponseEntity<Long> postSolution(
             @RequestBody @Valid SolutionRequest request,
-            Authentication authentication) {
+            Authentication authentication) throws Exception {
         String username = authentication.getName();
         return ResponseEntity.status(HttpStatus.OK).body(solutionService.postSolution(request, username));
     }

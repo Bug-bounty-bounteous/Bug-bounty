@@ -9,6 +9,8 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
 import { TokenStorageService } from '../../../core/auth/token.storage';
 import { SidebarLayoutComponent } from '../../../layout/sidebar-layout/sidebar-layout.component';
+import { UserService } from '../../../core/services/user.service';
+import { catchError, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-bug-detail',
@@ -24,7 +26,7 @@ import { SidebarLayoutComponent } from '../../../layout/sidebar-layout/sidebar-l
   templateUrl: './bug-detail.component.html',
   styleUrls: ['./bug-detail.component.css']
 })
-export class BugDetailComponent implements OnInit {
+export class BugDetailComponent implements OnInit{
   bug: Bug | null = null;
   isLoading = false;
   errorMessage = '';
@@ -32,11 +34,13 @@ export class BugDetailComponent implements OnInit {
   isClaimingBug = false;
   successMessage = '';
   userRole: string | null = null;
+  isClaimedByYou = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private bugService: BugService,
+    private userService: UserService,
     private tokenService: TokenStorageService
   ) {
     // Get current user ID
@@ -70,10 +74,11 @@ export class BugDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    this.checkIfClaimedByUser();
   }
 
   goBack(): void {
-    this.router.navigate(['/bugs']);
+    this.router.navigate(['/marketplace']);
   }
 
   claimBug(): void {
@@ -121,6 +126,24 @@ export class BugDetailComponent implements OnInit {
     return this.bug.status === 'OPEN' && isDeveloper;
   }
 
+
+  checkIfClaimedByUser(): boolean {
+    if (this.userRole == "DEVELOPER") {
+      this.userService.getClaimedBugs().subscribe({
+        next: (bugs) => {
+          for (let bug of bugs) {
+            if (bug.id == this.bug.id) this.isClaimedByYou = true;
+            return;
+          }
+          this.isClaimedByYou = false;
+        },
+        error: (error) => {
+          this.isClaimedByYou = false;
+        }
+      });
+    }
+    return true
+  }
   isOwnedByCurrentUser(): boolean {
     if (!this.bug || !this.bug.publisher) return false;
     return this.bug.publisher.id === this.currentUserId;

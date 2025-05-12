@@ -84,9 +84,9 @@
             <h3>Actions</h3>
             <div class="actions-container">
               <div 
-                *ngIf="isClaimable() && !isOwnedByCurrentUser()" 
                 class="action-buttons-container"
               >
+              @if (isClaimable() && !isOwnedByCurrentUser()) {
               <app-button 
 
                 type="primary" 
@@ -94,14 +94,21 @@
               >
                 Claim this Bug
               </app-button>
+
+              }
+              @else if (!isClaimable() && isClaimedByYou) {
               <app-button 
                 type="primary" 
                 (onClicked)="submitSolution()"
               >
                 Submit a solution
               </app-button>
-            
+
+              } @else {
+                <div class="action-message">This bug is claimed by someone else</div>
+              }
             </div>
+            
               
               <app-loader 
                 *ngIf="isClaimingBug" 
@@ -109,9 +116,6 @@
                 message="Claiming bug..."
               ></app-loader>
               
-              <div *ngIf="!isClaimable() && bug?.status === 'CLAIMED'" class="action-message claimed-message">
-                This bug has been claimed and is being worked on.
-              </div>
               
               <div *ngIf="!isClaimable() && bug?.status !== 'CLAIMED'" class="action-message">
                 This bug is currently {{ bug?.status.toLowerCase() }}

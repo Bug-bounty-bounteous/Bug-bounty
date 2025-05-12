@@ -29,6 +29,8 @@ export class SolutionCreateComponent implements OnInit {
   isSubmitting: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
+  validFile: boolean = false;
+  fileTouched: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -39,8 +41,32 @@ export class SolutionCreateComponent implements OnInit {
   ) {
     this.solutionForm = this.fb.group({
       description: ['', Validators.required],
-      codeLink: ['', Validators.required]
+      codeLink: ['', Validators.required],
+      file: ['', Validators.required]
     });
+  }
+
+  onFileChange(event: Event) {
+    this.solutionForm.patchValue({file: ''});
+    let reader = new FileReader();
+    this.validFile = false;
+    if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files.length)  {
+      const [file] = (event.target as HTMLInputElement).files;
+      if (file.size > 5_000_000) {
+        this.validFile = false;
+        this.errorMessage = 'File is too big, max size is 5 MBs';
+        (event.target as HTMLInputElement).value = null;
+      } else {
+        this.validFile = true;
+        reader.readAsText(file);
+        reader.onload = () => {
+          this.solutionForm.patchValue({
+            file: reader.result.toString()
+          })
+        }
+
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -54,6 +80,11 @@ export class SolutionCreateComponent implements OnInit {
       this.isLoading = false;
       return;
     };
+
+    // if (this.bugId == '1') {
+    //   this.isLoading = false;
+    //   this.bugtitle = 'This is a bug to delete'
+    // }
 
 
     this.bugServices.getBugById(Number(this.bugId)).subscribe({
@@ -83,6 +114,7 @@ export class SolutionCreateComponent implements OnInit {
   onSubmit() {
     // TODO:
     if (this.solutionForm.invalid) {
+      this.fileTouched = true;
       Object.keys(this.solutionForm.controls).forEach(key => {
         const control = this.solutionForm.get(key);
         control?.markAsTouched();

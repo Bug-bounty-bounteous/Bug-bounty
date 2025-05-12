@@ -8,13 +8,17 @@ import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.SolutionRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
 import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.function.BinaryOperator;
 
 // Handles solution-related business logic
 @Service
@@ -35,21 +39,30 @@ public class SolutionService {
      * @return The id of the new solution
      */
     @Transactional
-    public Long postSolution(@Valid SolutionRequest request, String username) {
+    public Long postSolution(@Valid SolutionRequest request, String username) throws IllegalAccessException, SQLException {
         Bug bug = bugRepository.findById(request.getBugId()).orElseThrow(
                 () -> new ResourceNotFoundException("No bug with id: " + request.getBugId())
         );
         Developer developer = developerRepository.findByUsername(username).orElseThrow(
                 () -> new ResourceNotFoundException("No developer with username: " + username)
         );
+        // check if the bug has been claimed by the developer
+        if (!developer
+                .getBugClaims()
+                .stream().map((e) -> e.getBug() == bug)
+                .reduce(false, (a, e) -> e || a)) {
+            throw new ForbiddenException("This is not your bug to solve");
+        }
         Solution solution = Solution.builder()
                 .description(request.getDescription())
                 .codeLink(request.getCodeLink())
+                .file(new SerialBlob(request.getFile().getBytes()))
                 .status(SolutionStatus.SUBMITTED)
                 .submittedAt(LocalDateTime.now())
                 .developer(developer)
                 .bug(bug)
                 .build();
+        System.out.println(solution);
         solutionRepository.save(solution);
         bug.getSolutions().add(solution);
         developer.getSolutions().add(solution);

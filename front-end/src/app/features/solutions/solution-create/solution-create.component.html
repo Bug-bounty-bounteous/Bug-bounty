@@ -66,6 +66,22 @@
         </div>
         }
       </div>
+      <div class="form-group">
+        <label for="file">Solutions file: </label>
+        <input 
+          type="file"
+          id="file"
+          (click)="fileTouched = true"
+          (change)="onFileChange($event)"
+          class="form-control"
+          [class.invalid]="fileTouched && !validFile"
+         id="file" #fileInput>
+        @if (fileTouched && !validFile) {
+        <div class="error-message">
+          <span>File is invalid</span>
+        </div>
+        }
+      </div>
       <div class="form-actions">
         <app-button type="default" (onClicked)="navigateToBugListing()"
           >Cancel</app-button
