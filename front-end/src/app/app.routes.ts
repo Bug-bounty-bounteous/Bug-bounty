@@ -42,6 +42,17 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'resources',
+    loadComponent: () => import('./features/resources/resource-list/resource-list.component').then(m => m.ResourceListComponent),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'resources/create',
+    loadComponent: () => import('./features/resources/resource-create/resource-create.component').then(m => m.ResourceCreateComponent),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['COMPANY'] }
+  },
+  {
     path: 'about',
     loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent)
   },

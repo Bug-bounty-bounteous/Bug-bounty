@@ -1,4 +1,109 @@
 .resource-create-container {
-    padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.title {
+  margin-bottom: 2rem;
+  color: var(--green-1);
+  border-bottom: 1px solid var(--outline);
+  padding-bottom: 0.5rem;
+}
+
+.not-company-message {
+  background-color: var(--background-section);
+  border: 1px solid var(--outline);
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.resource-form {
+  background-color: var(--background-section);
+  border: 1px solid var(--outline);
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--green-2);
+  font-weight: bold;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: var(--black);
+  color: var(--green-1);
+  border: 1px solid var(--outline);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--green-3);
+  box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.1);
+}
+
+.form-control.invalid {
+  border-color: var(--red-1);
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.error-message {
+  color: var(--red-1);
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+.helper-text {
+  font-size: 0.85rem;
+  color: var(--white);
+  margin-top: 5px;
+  opacity: 0.7;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--outline);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
   
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .resource-create-container {
+    padding: 10px;
+  }
+}
