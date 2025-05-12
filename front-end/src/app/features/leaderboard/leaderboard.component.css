@@ -1,4 +1,70 @@
 .leaderboard-container {
-    padding: 20px;
-  }
-  
+  padding: 20px;
+}
+
+.dev-card-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.dev-card {
+  display: flex;
+  background-color: var(--black);
+  border: 1px solid var(--outline);
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.dev-card-left {
+  text-align: center;
+  flex: 1;
+}
+.dev-card-middle {
+  flex: 9;
+}
+
+.dev-card-name {
+  font-size: 1.33rem;
+}
+
+.dev-card-email {
+  font-size: 0.66rem;
+}
+.dev-card-right {
+  flex: 2;
+  display: flex;
+  font-size: 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.teachStack-count-list {
+  display: flex;
+  column-gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.techStack-count {
+  border: 1px solid var(--outline);
+  display: flex;
+  font-size: 0.66rem;
+  justify-content: space-between;
+  background-color: var(--black);
+  border-radius: 3px;
+  margin-bottom: 3px;
+}
+
+.techStack-count-count {
+  border-left: 1px solid var(--outline);
+  padding: 0.15rem;
+}
+
+.techStack-count-name {
+  padding: 0.15rem;
+}
+
+.my-card {
+  color: var(--green-1);
+}

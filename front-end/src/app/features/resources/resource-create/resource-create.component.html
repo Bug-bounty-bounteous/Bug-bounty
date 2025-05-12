@@ -1,5 +1,114 @@
-<div class="resource-create-container">
-    <h2>Add Learning Resource</h2>
-    <!-- Form content will be added here -->
+<app-sidebar-layout activeSection="Resources">
+  <div class="resource-create-container">
+    <h2 class="title">Add Learning Resource</h2>
+    
+    <app-alert 
+      *ngIf="errorMessage" 
+      type="danger" 
+      [message]="errorMessage"
+      (close)="errorMessage = ''"
+    ></app-alert>
+    
+    <app-alert 
+      *ngIf="successMessage" 
+      type="success" 
+      [message]="successMessage"
+      (close)="successMessage = ''"
+    ></app-alert>
+    
+    <div *ngIf="!isCompany" class="not-company-message">
+      <p>Only company accounts can add learning resources.</p>
+    </div>
+    
+    <div *ngIf="isLoading" class="loading">
+      <app-loader 
+        [isLoading]="isLoading" 
+        message="Loading form..."
+      ></app-loader>
+    </div>
+    
+    <form *ngIf="isCompany && !isLoading" [formGroup]="resourceForm" (ngSubmit)="onSubmit()" class="resource-form">
+      <div class="form-group">
+        <label for="title">Resource Title</label>
+        <input 
+          type="text" 
+          id="title" 
+          formControlName="title" 
+          class="form-control"
+          [class.invalid]="resourceForm.get('title')?.invalid && resourceForm.get('title')?.touched"
+          placeholder="Enter the title of your learning resource"
+        >
+        <div class="error-message" *ngIf="resourceForm.get('title')?.invalid && resourceForm.get('title')?.touched">
+          <span *ngIf="resourceForm.get('title')?.errors?.['required']">Title is required</span>
+          <span *ngIf="resourceForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters</span>
+          <span *ngIf="resourceForm.get('title')?.errors?.['maxlength']">Title cannot exceed 200 characters</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          formControlName="description" 
+          class="form-control"
+          rows="5"
+          [class.invalid]="resourceForm.get('description')?.invalid && resourceForm.get('description')?.touched"
+          placeholder="Describe what developers will learn from this resource..."
+        ></textarea>
+        <div class="error-message" *ngIf="resourceForm.get('description')?.invalid && resourceForm.get('description')?.touched">
+          <span *ngIf="resourceForm.get('description')?.errors?.['required']">Description is required</span>
+          <span *ngIf="resourceForm.get('description')?.errors?.['minlength']">Description must be at least 10 characters</span>
+          <span *ngIf="resourceForm.get('description')?.errors?.['maxlength']">Description cannot exceed 1000 characters</span>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="url">Resource URL</label>
+          <input 
+            type="url" 
+            id="url" 
+            formControlName="url" 
+            class="form-control"
+            [class.invalid]="resourceForm.get('url')?.invalid && resourceForm.get('url')?.touched"
+            placeholder="https://example.com/resource"
+          >
+          <div class="error-message" *ngIf="resourceForm.get('url')?.invalid && resourceForm.get('url')?.touched">
+            <span *ngIf="resourceForm.get('url')?.errors?.['required']">URL is required</span>
+            <span *ngIf="resourceForm.get('url')?.errors?.['invalidUrl']">URL must start with http:// or https://</span>
+          </div>
+          <div class="helper-text">Provide the direct link to your learning resource</div>
+        </div>
+        
+        <div class="form-group">
+          <label for="resourceType">Resource Type</label>
+          <select 
+            id="resourceType" 
+            formControlName="resourceType" 
+            class="form-control"
+            [class.invalid]="resourceForm.get('resourceType')?.invalid && resourceForm.get('resourceType')?.touched"
+          >
+            <option value="">Select Resource Type</option>
+            <option *ngFor="let type of resourceTypes" [value]="type">
+              {{ type | titlecase }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="resourceForm.get('resourceType')?.invalid && resourceForm.get('resourceType')?.touched">
+            <span *ngIf="resourceForm.get('resourceType')?.errors?.['required']">Resource type is required</span>
+          </div>
+          <div class="helper-text">Choose the most appropriate type for this resource</div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <app-button type="default" (onClicked)="navigateToResourceList()">Cancel</app-button>
+        <app-button 
+          type="primary" 
+          [isLoading]="isSubmitting"
+          [disabled]="isSubmitting"
+          (onClicked)="onSubmit()"
+        >Add Resource</app-button>
+      </div>
+    </form>
   </div>
-  
+</app-sidebar-layout>

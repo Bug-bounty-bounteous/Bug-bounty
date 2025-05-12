@@ -1,5 +1,120 @@
-<div class="resource-list-container">
-    <h2>Learning Resources</h2>
-    <!-- Content will be added here -->
+<app-sidebar-layout activeSection="Resources">
+  <div class="resource-list-container">
+    <div class="header">
+      <h2 class="title">Learning Resources</h2>
+      
+      <!-- Add Resource button for companies -->
+      <div *ngIf="isCompany" class="header-actions">
+        <app-button 
+          type="primary" 
+          (onClicked)="navigateToCreateResource()"
+        >+ Add Resource</app-button>
+      </div>
+    </div>
+    
+    <!-- Search and filters -->
+    <div class="filters-section">
+      <div class="search-bar">
+        <input 
+          type="text" 
+          placeholder="Search for resources..." 
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="applyFilters()"
+        />
+        <button class="search-btn" (click)="applyFilters()">Search</button>
+      </div>
+      
+      <div class="filters">
+        <div class="filter-group">
+          <label>Type:</label>
+          <select [(ngModel)]="selectedType" (change)="applyFilters()">
+            <option value="">All Types</option>
+            <option *ngFor="let type of resourceTypes" [value]="type">
+              {{ type | titlecase }}
+            </option>
+          </select>
+        </div>
+        
+        <button class="reset-btn" (click)="resetFilters()">Reset Filters</button>
+      </div>
+    </div>
+    
+    <!-- Alert messages -->
+    <app-alert 
+      *ngIf="errorMessage" 
+      type="danger" 
+      [message]="errorMessage"
+      (close)="errorMessage = ''"
+    ></app-alert>
+    
+    <app-alert 
+      *ngIf="successMessage" 
+      type="success" 
+      [message]="successMessage"
+      (close)="successMessage = ''"
+    ></app-alert>
+    
+    <!-- Loading indicator -->
+    <app-loader 
+      *ngIf="isLoading" 
+      [isLoading]="isLoading" 
+      message="Loading resources..."
+    ></app-loader>
+    
+    <!-- Empty state -->
+    <div *ngIf="!isLoading && resources.length === 0" class="empty-state">
+      <p>No learning resources found matching your criteria.</p>
+    </div>
+    
+    <!-- Resource cards -->
+    <div class="resource-grid" *ngIf="!isLoading && resources.length > 0">
+      <div class="resource-card" *ngFor="let resource of resources">
+        <div class="resource-header">
+          <h3 class="resource-title">{{ resource.title }}</h3>
+          <div class="resource-type" [class]="getResourceTypeClass(resource.resourceType)">
+            {{ resource.resourceType | titlecase }}
+          </div>
+        </div>
+        
+        <div class="resource-description">
+          {{ resource.description | slice:0:200 }}{{ resource.description.length > 200 ? '...' : '' }}
+        </div>
+        
+        <div class="resource-info">
+          <div class="resource-publisher" *ngIf="resource.publisher">
+            By: {{ resource.publisher.companyName }}
+          </div>
+          <div class="resource-date">
+            {{ resource.date | dateFormat }}
+          </div>
+        </div>
+        
+        <div class="resource-actions">
+          <app-button type="primary" (onClicked)="openResource(resource.url)">
+            View Resource
+          </app-button>
+          
+          <app-button 
+            *ngIf="!resource.reported"
+            type="secondary" 
+            (onClicked)="reportResource(resource.id)"
+          >
+            Report Issue
+          </app-button>
+          
+          <div *ngIf="resource.reported" class="reported-indicator">
+            ⚠️ Reported
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pagination -->
+    <app-pagination 
+      *ngIf="totalPages > 1"
+      [currentPage]="currentPage + 1"
+      [totalPages]="totalPages"
+      (pageChange)="onPageChange($event)"
+    ></app-pagination>
   </div>
-  
+</app-sidebar-layout>

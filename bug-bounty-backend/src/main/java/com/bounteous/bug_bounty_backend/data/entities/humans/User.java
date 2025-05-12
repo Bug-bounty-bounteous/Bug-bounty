@@ -19,7 +19,7 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)  // Add this for @CreatedDate to work
+@EntityListeners(AuditingEntityListener.class) 
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
@@ -50,13 +50,12 @@ public class User implements UserDetails {
     
     private Long lockTime;
     
-    // Add created_at field with default value
+    
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     
-    // You may also want to add updated_at field for consistency
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
