@@ -27,7 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final DeveloperRepository developerRepository;
     private final CompanyRepository companyRepository;
-    private final BugClaimRepository bugClaimRepository;  // Add this repository
+    private final BugClaimRepository bugClaimRepository;  
     
     @Transactional(readOnly = true)
     public User getUserById(Long id) {

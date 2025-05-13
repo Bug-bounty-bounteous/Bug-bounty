@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -56,4 +57,11 @@ public class Bug {
     @OneToMany(mappedBy = "bug")
     @Builder.Default
     private List<Solution> solutions = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object other) {
+        if (! (other instanceof Bug)) return false;
+        if (this == other) return true;
+        return Objects.equals(((Bug) other).getId(), this.getId());
+    }
 }

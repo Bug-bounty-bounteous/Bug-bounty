@@ -93,4 +93,8 @@ export class BugService {
         const requestBody = note ? { bugId, claimNote: note } : { bugId };
         return this.http.post<any>(`${this.apiUrl}/${bugId}/claim`, requestBody);
     }
+
+    unclaimBug(bugId: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/${bugId}/claim`);
+    }
 }

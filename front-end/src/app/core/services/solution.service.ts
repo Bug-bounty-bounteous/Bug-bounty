@@ -19,5 +19,8 @@ getSolutionsByCompany(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/company`);
 }
 
-  // Service methods will be added here
+  postSolution(solutionData: any): Observable<Solution> {
+    return this.http.post<Solution>(this.apiUrl, solutionData);
+  }
+
 }

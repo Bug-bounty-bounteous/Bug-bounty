@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface BugClaimRepository extends JpaRepository<BugClaim, BugClaimId> {
-    // Add this method to fetch bug claims with their related bugs
+    
     @Query("SELECT bc FROM BugClaim bc JOIN FETCH bc.bug WHERE bc.developer = :developer")
     List<BugClaim> findByDeveloper(Developer developer);
 }

@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,6 +14,7 @@ export class AlertComponent implements OnInit {
   @Input() message: string = '';
   @Input() dismissible: boolean = true;
   @Input() autoClose: number = 0; // Time in milliseconds, 0 = no auto close
+  @Output() close: EventEmitter<any> = new EventEmitter<any>();
   
   visible: boolean = true;
   private timer: any;
@@ -20,7 +22,7 @@ export class AlertComponent implements OnInit {
   ngOnInit(): void {
     if (this.autoClose > 0) {
       this.timer = setTimeout(() => {
-        this.close();
+        this.closeFunction();
       }, this.autoClose);
     }
   }
@@ -31,7 +33,8 @@ export class AlertComponent implements OnInit {
     }
   }
 
-  close(): void {
+  closeFunction(): void {
+    this.close.emit("");
     this.visible = false;
   }
 }

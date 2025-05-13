@@ -1,5 +1,15 @@
 package com.bounteous.bug_bounty_backend.controllers;
 
+import com.bounteous.bug_bounty_backend.data.dto.requests.bug.BugCreateRequest;
+import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
+import com.bounteous.bug_bounty_backend.services.SolutionService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import com.bounteous.bug_bounty_backend.data.dto.responses.solution.SolutionResponse;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;

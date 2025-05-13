@@ -108,4 +108,15 @@ public class BugController {
     
         return ResponseEntity.ok(new ApiResponse(true, "Bug claimed successfully"));
     }
+
+    @DeleteMapping("/{id}/claim")
+    @PreAuthorize("hasRole('DEVELOPER')")
+    public ResponseEntity<ApiResponse> unclaimBug(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        String identifier = authentication.getName();
+        bugClaimService.unclaimBug(id, identifier);
+        return ResponseEntity.ok(new ApiResponse(true, "Bug unclaimed successfully"));
+    }
 }

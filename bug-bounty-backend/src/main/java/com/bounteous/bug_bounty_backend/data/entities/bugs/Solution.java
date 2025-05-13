@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@ToString
 @Builder
 public class Solution {
     @Id
@@ -24,7 +25,7 @@ public class Solution {
     private String description;
     private String codeLink;
     private Blob file;
-
+    
     @Enumerated(EnumType.STRING)
     private SolutionStatus status;
 
@@ -33,14 +34,17 @@ public class Solution {
 
     @ManyToOne
     @ToString.Exclude
+    @ToString.Exclude
     private Developer developer;
 
     @ManyToOne
+    @ToString.Exclude
     @ToString.Exclude
     private Bug bug;
 
     @OneToMany(mappedBy = "solution")
     @Builder.Default
+    @ToString.Exclude
     @ToString.Exclude
     private List<Feedback> feedbacks = new ArrayList<>();
 }
