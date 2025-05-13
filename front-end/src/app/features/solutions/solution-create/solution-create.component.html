@@ -16,8 +16,8 @@
       [message]="errorMessage"
       (close)="errorMessage = ''"
     ></app-alert>
-
-    } @else if (successMessage) {
+    } 
+    @if (successMessage) {
     <app-alert
       type="success"
       [message]="successMessage"

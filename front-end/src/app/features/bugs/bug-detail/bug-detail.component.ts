@@ -132,8 +132,10 @@ export class BugDetailComponent implements OnInit{
       this.userService.getClaimedBugs().subscribe({
         next: (bugs) => {
           for (let bug of bugs) {
-            if (bug.id == this.bug.id) this.isClaimedByYou = true;
-            return;
+            if (bug.id == this.bug.id) {
+              this.isClaimedByYou = true;
+              return;
+            }
           }
           this.isClaimedByYou = false;
         },

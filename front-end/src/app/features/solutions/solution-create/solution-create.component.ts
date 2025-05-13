@@ -41,8 +41,10 @@ export class SolutionCreateComponent implements OnInit {
   ) {
     this.solutionForm = this.fb.group({
       description: ['', Validators.required],
-      codeLink: ['', Validators.required],
-      file: ['', Validators.required]
+      // codeLink: ['', Validators.required],
+      codeLink: [''],
+      // file: ['', Validators.required],
+      file: ['']
     });
   }
 
@@ -52,9 +54,9 @@ export class SolutionCreateComponent implements OnInit {
     this.validFile = false;
     if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files.length)  {
       const [file] = (event.target as HTMLInputElement).files;
-      if (file.size > 5_000_000) {
+      if (file.size > 10_000_000) {
         this.validFile = false;
-        this.errorMessage = 'File is too big, max size is 5 MBs';
+        this.errorMessage = 'File is too big, max size is 10 MBs, use a code link instead';
         (event.target as HTMLInputElement).value = null;
       } else {
         this.validFile = true;

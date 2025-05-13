@@ -86,27 +86,42 @@
               <div 
                 class="action-buttons-container"
               >
+              @if (userRole == "DEVELOPER") {
               @if (isClaimable() && !isOwnedByCurrentUser()) {
-              <app-button 
+                <app-button 
 
-                type="primary" 
-                (onClicked)="claimBug()"
-              >
-                Claim this Bug
-              </app-button>
+                  type="primary" 
+                  (onClicked)="claimBug()"
+                >
+                  Claim this Bug
+                </app-button>
 
+                }
+                @else if (!isClaimable() && isClaimedByYou) {
+                <app-button 
+                  type="primary" 
+                  (onClicked)="submitSolution()"
+                >
+                  Submit a solution
+                </app-button>
+
+                } @else if (!isClaimable() && !isClaimedByYou){
+                  <div class="action-message">This bug is claimed by someone else</div>
+                }
               }
-              @else if (!isClaimable() && isClaimedByYou) {
-              <app-button 
-                type="primary" 
-                (onClicked)="submitSolution()"
-              >
-                Submit a solution
-              </app-button>
-
-              } @else {
-                <div class="action-message">This bug is claimed by someone else</div>
+              @else {
+                @if (isOwnedByCurrentUser()) {
+                <div class="action-message">
+                  You cannot claim your own bugs.
+                </div>
+                }
+                @else {
+                  <div class="action-message">
+                    As a company, you can create bugs but not claim them.
+                  </div>
+                }
               }
+
             </div>
             
               
@@ -121,14 +136,7 @@
                 This bug is currently {{ bug?.status.toLowerCase() }}
               </div>
               
-              <div *ngIf="isOwnedByCurrentUser()" class="action-message">
-                You cannot claim your own bugs.
-              </div>
               
-              <!-- Message specifically for companies -->
-              <div *ngIf="userRole === 'COMPANY' && !isOwnedByCurrentUser()" class="action-message">
-                As a company, you can create bugs but not claim them.
-              </div>
             </div>
           </div>
         </div>

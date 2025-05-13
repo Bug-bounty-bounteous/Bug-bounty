@@ -13,6 +13,7 @@ import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -30,6 +31,8 @@ public class SolutionService {
     private DeveloperRepository developerRepository;
     @Autowired
     private SolutionRepository solutionRepository;
+    @Value("${spring.servlet.multipart.max-file-size}")
+    private int maxFileSizeBytes;
     
 
     /**
@@ -53,6 +56,15 @@ public class SolutionService {
                 .reduce(false, (a, e) -> e || a)) {
             throw new ForbiddenException("This is not your bug to solve");
         }
+        if (request.getFile().getBytes().length >= maxFileSizeBytes) {
+            throw new ForbiddenException("This file is too large");
+        }
+
+        if ((request.getFile() == null || request.getFile().isEmpty())
+                && (request.getCodeLink() == null || request.getCodeLink().isEmpty())) {
+            throw new ForbiddenException("Either a file or a link need to be attached at minimum");
+        }
+
         Solution solution = Solution.builder()
                 .description(request.getDescription())
                 .codeLink(request.getCodeLink())
