@@ -11,29 +11,20 @@ import com.bounteous.bug_bounty_backend.data.repositories.bugs.SolutionRepositor
 import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
 import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
 import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.SolutionStatus;
-import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
-import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
-import com.bounteous.bug_bounty_backend.data.repositories.bugs.SolutionRepository;
-import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
-import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
-import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
+
 import org.springframework.stereotype.Service;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.function.BinaryOperator;
 
 // Handles solution-related business logic
@@ -95,5 +86,29 @@ public class SolutionService {
         bug.getSolutions().add(solution);
         developer.getSolutions().add(solution);
         return solution.getId();
+    }
+    @Transactional(readOnly = true)
+    public List<SolutionResponse> getSolutionsByDeveloperId(Long developerId) {
+        List<Solution> solutions = solutionRepository.findByDeveloper_Id(developerId);
+
+        return solutions.stream().map(solution -> SolutionResponse.builder()
+                .id(solution.getId())
+                .description(solution.getDescription())
+                .codeLink(solution.getCodeLink())
+                .status(solution.getStatus().toString())
+                .submittedAt(solution.getSubmittedAt())
+                .reviewedAt(solution.getReviewedAt())
+                .bug(SolutionResponse.BugInfo.builder()
+                        .id(solution.getBug().getId())
+                        .title(solution.getBug().getTitle())
+                        .build())
+                .developer(SolutionResponse.DeveloperInfo.builder()
+                        .id(solution.getDeveloper().getId())
+                        .username(solution.getDeveloper().getUsername())
+                        .email(solution.getDeveloper().getEmail())
+                        .rating(solution.getDeveloper().getRating())
+                        .build())
+                .build()
+        ).toList();
     }
 }

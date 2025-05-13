@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@ToString
 @Builder
 public class Solution {
     @Id
@@ -34,17 +33,14 @@ public class Solution {
 
     @ManyToOne
     @ToString.Exclude
-    @ToString.Exclude
     private Developer developer;
 
     @ManyToOne
-    @ToString.Exclude
     @ToString.Exclude
     private Bug bug;
 
     @OneToMany(mappedBy = "solution")
     @Builder.Default
-    @ToString.Exclude
     @ToString.Exclude
     private List<Feedback> feedbacks = new ArrayList<>();
 }

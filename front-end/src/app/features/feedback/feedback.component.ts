@@ -5,11 +5,12 @@ import { FeedbackService } from '../../core/services/feedback.service';
 import { TokenStorageService } from '../../core/auth/token.storage';
 import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-feedback',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,],
   templateUrl: './feedback.component.html',
   styleUrl: './feedback.component.css'
 })

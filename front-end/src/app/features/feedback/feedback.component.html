@@ -1,40 +1,30 @@
-<h2>Feedback Section</h2>
+<div class="feedback-section">
+ 
 
-<!-- Developer View -->
-<div *ngIf="role === 'DEVELOPER'">
-  <h3>My Feedback & Ratings</h3>
-  <div *ngIf="solutions.length === 0">No feedback received yet.</div>
-  <div *ngFor="let sol of solutions" class="feedback-card">
-    <h4>{{ sol.bug?.title }}</h4>
-    <p><strong>Status:</strong> {{ sol.status }}</p>
-    <div *ngFor="let fb of sol.feedbacks">
-      <p><strong>Feedback:</strong> {{ fb.feedbackMessage }}</p>
-      <p><strong>Rating:</strong> {{ fb.rating }}/5</p>
+  <div class="feedback-form">
+    <h2>Submit Feedback on Solutions</h2>
+
+    <div class="form-group">
+      <label for="solution">Select Solution:</label>
+      <select id="solution" [(ngModel)]="selectedSolutionId" class="form-control">
+        <option *ngFor="let solution of solutions" [value]="solution.id">
+          {{ solution.description }}
+        </option>
+      </select>
     </div>
+
+    <div class="form-group">
+      <label for="feedback">Feedback:</label>
+      <textarea id="feedback" [(ngModel)]="feedbackMessage" class="form-control" placeholder="Your feedback here"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="rating">Rating (1-5):</label>
+      <input type="number" id="rating" [(ngModel)]="rating" min="1" max="5" class="form-control">
+    </div>
+
+    <button class="btn-primary" (click)="submitFeedback()">
+      Submit Feedback
+    </button>
   </div>
-</div>
-
-<!-- Company View -->
-<div *ngIf="role === 'COMPANY'">
-  <h3>Submit Feedback on Solutions</h3>
-  
-  <label>Select Solution:</label>
-  <select [(ngModel)]="selectedSolutionId">
-    <option [value]="0">Select a Solution</option>
-    <option *ngFor="let sol of solutions" [value]="sol.id">
-      {{ sol.bug?.title }} - {{ sol.developer?.username }}
-    </option>
-  </select>
-
-  <div>
-    <label>Feedback:</label>
-    <textarea [(ngModel)]="feedbackMessage" placeholder="Your feedback here"></textarea>
-  </div>
-
-  <div>
-    <label>Rating (1-5):</label>
-    <input type="number" [(ngModel)]="rating" min="1" max="5"/>
-  </div>
-
-  <button (click)="submitFeedback()" [disabled]="isSubmitting">Submit Feedback</button>
 </div>
