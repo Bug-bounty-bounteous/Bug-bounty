@@ -1,4 +1,4 @@
 <div *ngIf="visible" [ngClass]="['alert', 'alert-' + type]">
     <span [innerHTML]="message"></span>
-    <button *ngIf="dismissible" type="button" class="close" (click)="close()">&times;</button>
+    <button *ngIf="dismissible" type="button" class="close" (click)="closeFunction()">&times;</button>
   </div>

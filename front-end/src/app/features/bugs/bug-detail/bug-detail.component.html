@@ -83,13 +83,47 @@
           <div class="info-card bug-actions-card">
             <h3>Actions</h3>
             <div class="actions-container">
-              <app-button 
-                *ngIf="isClaimable() && !isOwnedByCurrentUser() && !isClaimingBug" 
-                type="primary" 
-                (onClicked)="claimBug()"
+              <div 
+                class="action-buttons-container"
               >
-                Claim this Bug
-              </app-button>
+              @if (userRole == "DEVELOPER") {
+              @if (isClaimable() && !isOwnedByCurrentUser()) {
+                <app-button 
+
+                  type="primary" 
+                  (onClicked)="claimBug()"
+                >
+                  Claim this Bug
+                </app-button>
+
+                }
+                @else if (!isClaimable() && isClaimedByYou) {
+                <app-button 
+                  type="primary" 
+                  (onClicked)="submitSolution()"
+                >
+                  Submit a solution
+                </app-button>
+
+                } @else if (!isClaimable() && !isClaimedByYou){
+                  <div class="action-message">This bug is claimed by someone else</div>
+                }
+              }
+              @else {
+                @if (isOwnedByCurrentUser()) {
+                <div class="action-message">
+                  You cannot claim your own bugs.
+                </div>
+                }
+                @else {
+                  <div class="action-message">
+                    As a company, you can create bugs but not claim them.
+                  </div>
+                }
+              }
+
+            </div>
+            
               
               <app-loader 
                 *ngIf="isClaimingBug" 
@@ -97,22 +131,12 @@
                 message="Claiming bug..."
               ></app-loader>
               
-              <div *ngIf="!isClaimable() && bug?.status === 'CLAIMED'" class="action-message claimed-message">
-                This bug has been claimed and is being worked on.
-              </div>
               
               <div *ngIf="!isClaimable() && bug?.status !== 'CLAIMED'" class="action-message">
                 This bug is currently {{ bug?.status.toLowerCase() }}
               </div>
               
-              <div *ngIf="isOwnedByCurrentUser()" class="action-message">
-                You cannot claim your own bugs.
-              </div>
               
-              <!-- Message specifically for companies -->
-              <div *ngIf="userRole === 'COMPANY' && !isOwnedByCurrentUser()" class="action-message">
-                As a company, you can create bugs but not claim them.
-              </div>
             </div>
           </div>
         </div>

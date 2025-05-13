@@ -5,10 +5,7 @@ import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -28,8 +25,10 @@ public class Developer extends User {
     private Integer points;
 
     @OneToMany(mappedBy = "developer")
+    @Builder.Default
     private List<BugClaim> bugClaims = new ArrayList<>();
 
     @OneToMany(mappedBy = "developer")
+    @Builder.Default
     private List<Solution> solutions = new ArrayList<>();
 }

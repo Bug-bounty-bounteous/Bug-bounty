@@ -29,14 +29,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'bugs',
-    loadComponent: () =>
-      import('./features/bugs/bug-list/bug-list.component').then(
-        (m) => m.BugListComponent
-      ),
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'bugs/create',
     loadComponent: () =>
       import('./features/bugs/bug-create/bug-create.component').then(
@@ -52,6 +44,12 @@ export const routes: Routes = [
         (m) => m.BugDetailComponent
       ),
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'bugs/:id/solutions/create',
+    loadComponent: () => import('./features/solutions/solution-create/solution-create.component').then(m => m.SolutionCreateComponent),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['DEVELOPER'] }
   },
   {
     path: 'dashboard',

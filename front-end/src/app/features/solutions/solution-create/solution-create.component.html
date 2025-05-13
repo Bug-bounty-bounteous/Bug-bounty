@@ -1,5 +1,102 @@
-<div class="solution-create-container">
-    <h2>Submit Solution</h2>
+<app-sidebar-layout activeSection="Bug Marketplace">
+  <div class="solution-create-container">
+    <h2 class="title">Submit Solution</h2>
     <!-- Form content will be added here -->
+    @if (isLoading) {
+    <app-loader
+      [isLoading]="true"
+      message="Loading bug details..."
+    ></app-loader>
+    } @else { @if (bugtitle) {
+    <!-- Here goes the actual code -->
+    <h3>Bug: {{ bugtitle }}</h3>
+    @if (errorMessage) {
+    <app-alert
+      type="danger"
+      [message]="errorMessage"
+      (close)="errorMessage = ''"
+    ></app-alert>
+    } 
+    @if (successMessage) {
+    <app-alert
+      type="success"
+      [message]="successMessage"
+      (close)="successMessage = ''"
+    ></app-alert>
+    }
+    <form [formGroup]="solutionForm" class="solution-form">
+      <div class="form-group">
+        <label for="description">Description: </label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+          rows="6"
+          [class.invalid]="
+            solutionForm.get('description')?.invalid &&
+            solutionForm.get('description')?.touched
+          "
+        ></textarea>
+        @if (solutionForm.get('description')?.invalid &&
+        solutionForm.get('description')?.touched &&
+        solutionForm.get('description')?.errors?.['required']) {
+        <div class="error-message">
+          <span>Description is required</span>
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="codeLink">Code link: </label>
+        <input
+          type="text"
+          id="codeLink"
+          formControlName="codeLink"
+          class="form-control"
+          [class.invalid]="
+            solutionForm.get('codeLink')?.invalid &&
+            solutionForm.get('codeLink')?.touched
+          "
+        />
+        @if (solutionForm.get('codeLink')?.invalid &&
+        solutionForm.get('codeLink')?.touched &&
+        solutionForm.get('codeLink')?.errors?.['required']) {
+        <div class="error-message">
+          <span>Code link is required</span>
+        </div>
+        }
+      </div>
+      <div class="form-group">
+        <label for="file">Solutions file: </label>
+        <input 
+          type="file"
+          id="file"
+          (click)="fileTouched = true"
+          (change)="onFileChange($event)"
+          class="form-control"
+          [class.invalid]="fileTouched && !validFile"
+         id="file" #fileInput>
+        @if (fileTouched && !validFile) {
+        <div class="error-message">
+          <span>File is invalid</span>
+        </div>
+        }
+      </div>
+      <div class="form-actions">
+        <app-button type="default" (onClicked)="navigateToBugListing()"
+          >Cancel</app-button
+        >
+        <app-button
+          type="primary"
+          [isLoading]="isSubmitting"
+          [disabled]="isSubmitting"
+          (onClicked)="onSubmit()"
+          >Submit Solution</app-button
+        >
+      </div>
+    </form>
+    } @else {
+    <app-alert type="danger" [message]="'No bug with this id'"></app-alert>
+    } }
   </div>
-  
+</app-sidebar-layout>

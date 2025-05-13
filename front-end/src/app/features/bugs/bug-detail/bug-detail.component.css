@@ -25,6 +25,11 @@
     border-radius: 5px;
     margin-bottom: 1rem;
   }
+
+  .action-buttons-container {
+    display: flex;
+    justify-content: space-between;
+  }
   
   .bug-header {
     margin-bottom: 2rem;
