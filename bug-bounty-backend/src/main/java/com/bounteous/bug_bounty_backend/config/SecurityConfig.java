@@ -43,7 +43,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY") 
+                .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY")
+                .requestMatchers(HttpMethod.POST, "/api/feedback/submit").hasRole("COMPANY")
+                .requestMatchers(HttpMethod.GET, "/api/solutions/developer/**").hasAnyRole("DEVELOPER", "COMPANY")
                 .requestMatchers(HttpMethod.GET, "/api/bugs/**").authenticated()
                 .anyRequest().authenticated())
             .authenticationProvider(authenticationProvider())

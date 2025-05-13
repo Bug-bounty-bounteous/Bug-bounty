@@ -7,5 +7,5 @@ import lombok.Data;
 public class FeedbackRequest {
     private Long solutionId;
     private int rating;
-    private String feedbackText;
+    private String feedbackMessage;
 }

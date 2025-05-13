@@ -1,6 +1,21 @@
 package com.bounteous.bug_bounty_backend.services;
 
 import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
+import com.bounteous.bug_bounty_backend.data.dto.responses.solution.SolutionResponse;
+import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
+import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
+import com.bounteous.bug_bounty_backend.data.entities.bugs.SolutionStatus;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.bugs.SolutionRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
+import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.SolutionStatus;
@@ -23,6 +38,7 @@ import java.util.function.BinaryOperator;
 
 // Handles solution-related business logic
 @Service
+@RequiredArgsConstructor
 public class SolutionService {
 
     @Autowired

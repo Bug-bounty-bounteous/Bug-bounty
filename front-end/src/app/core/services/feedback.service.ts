@@ -13,4 +13,12 @@ export class FeedbackService {
   constructor(private http: HttpClient) { }
 
   // Service methods will be added here
+  submitFeedback(payload: {
+    solutionId: number;
+    feedbackMessage: string;
+    rating: number;
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/submit`, payload);
+  }
+
 }

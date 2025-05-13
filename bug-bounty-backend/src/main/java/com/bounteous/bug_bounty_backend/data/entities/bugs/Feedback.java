@@ -19,13 +19,16 @@ public class Feedback {
     private Long id;
     
     private int rating;
-    private String feedbackText;
+
     private boolean flagged;
-    private LocalDateTime date;
+    private LocalDateTime submittedAt;
 
     @ManyToOne
     private Solution solution;
 
     @ManyToOne
     private Company company;
+
+    @Column(length = 2000)
+    private String feedbackMessage;
 }
