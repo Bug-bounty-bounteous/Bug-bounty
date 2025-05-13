@@ -36,16 +36,6 @@
             />
           </div>
           
-          <div class="input-group remember-me">
-            <input 
-              type="checkbox" 
-              id="rememberMe" 
-              [(ngModel)]="rememberMe" 
-              (change)="OnRememberMeChange(rememberMe)"
-              [disabled]="isLocked || isSubmitting"
-            />
-            <label for="rememberMe">Remember me</label>
-          </div>
           
           <div class="forgot-password">
             <a href="javascript:void(0)" (click)="forgotPassword($event)">Forgot Password?</a>
