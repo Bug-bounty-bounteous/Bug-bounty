@@ -106,6 +106,33 @@ export class BugDetailComponent implements OnInit{
     });
   }
 
+  unclaimBug() {
+    this.checkIfClaimedByUser();
+    this.isClaimingBug = true;
+    if (this.isClaimedByYou) {
+      this.bugService.unclaimBug(this.bug.id).subscribe(
+        {
+          next: () => {
+            this.successMessage = "Bug unclaimed successfully!"
+            this.isClaimingBug = false;
+            setTimeout(() => {
+              this.loadBugDetails();
+            }, 2000);
+          },
+          error: (error) => {
+            this.isClaimingBug = false;
+            console.error('Error unclaiming bug', error);
+            this.errorMessage = error.error?.message || 'Failed to unclaim bug. Please try again later.';
+          }
+        }
+      );
+    } else {
+      this.errorMessage = "This is not a bug you claimed."
+      this.isClaimingBug = false;
+    }
+
+  }
+
   getDifficultyClass(): string {
     if (!this.bug) return '';
     return 'difficulty-' + this.bug.difficulty.toLowerCase();

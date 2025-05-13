@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +79,43 @@ public class BugClaimService {
             bugRepository.save(bug);
             
             return new ApiResponse(true, "Bug claimed successfully");
+        } catch (DataIntegrityViolationException e) {
+            // Handle race condition - someone else claimed it first
+            // This should catch the case where multiple developers try to claim simultaneously
+            throw new BadRequestException("This bug was just claimed by another developer");
+        }
+    }
+
+    @Transactional
+    public void unclaimBug(Long id, String identifier) {
+        // Find the bug
+        Bug bug = bugRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Bug not found with id: " + id));
+
+        // Check if the bug is already claimed
+        if (bug.getBugStatus() != BugStatus.CLAIMED) {
+            throw new BadRequestException("This bug is not claimed or available for claiming");
+        }
+
+        // Find the user by email or username
+        User user = userService.getUserByEmailOrUsername(identifier);
+
+        // Check if the user is a developer (companies cannot claim bugs)
+        if (!(user instanceof Developer)) {
+            throw new ForbiddenException("Only developers can unclaim bugs");
+        }
+
+        Developer developer = (Developer) user;
+        BugClaim bugclaim = bugClaimRepository.findById(new BugClaimId(developer.getId(), bug.getId()))
+                .orElseThrow(() -> new BadRequestException("Bug claim not found for this user"));
+
+        try {
+            // delete the claim
+            bugClaimRepository.delete(bugclaim);
+            // Update the bug status
+            bug.setBugStatus(BugStatus.OPEN);
+            bugRepository.save(bug);
+
         } catch (DataIntegrityViolationException e) {
             // Handle race condition - someone else claimed it first
             // This should catch the case where multiple developers try to claim simultaneously

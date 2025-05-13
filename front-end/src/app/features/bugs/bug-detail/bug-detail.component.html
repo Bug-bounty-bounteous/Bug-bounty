@@ -105,6 +105,14 @@
                   Submit a solution
                 </app-button>
 
+                <app-button 
+                  type="secondary" 
+                  (onClicked)="unclaimBug()"
+                >
+                Unclaim this bug
+                </app-button>
+
+
                 } @else if (!isClaimable() && !isClaimedByYou){
                   <div class="action-message">This bug is claimed by someone else</div>
                 }
