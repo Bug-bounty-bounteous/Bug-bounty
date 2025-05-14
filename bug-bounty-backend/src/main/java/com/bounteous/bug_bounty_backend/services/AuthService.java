@@ -39,7 +39,7 @@ public class AuthService {
     @Transactional
     public JwtResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BadRequestException("Email already in use");
+            throw new BadRequestException("This email is already registered. Please login.");
         }
 
         LocalDateTime now = LocalDateTime.now();
