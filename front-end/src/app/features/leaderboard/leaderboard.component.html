@@ -29,7 +29,9 @@
         <div class="dev-card my-card">
           <div class="dev-card-left">{{ leaderboard.myRank }}</div>
           <div class="dev-card-middle">
-            <div class="dev-card-name">You</div>
+            <div class="dev-card-name">
+              {{ leaderboard.firstName }} {{ leaderboard.lastName }} (You)
+            </div>
           </div>
           <div class="dev-card-right">
             <div class="dev-card-rating">

@@ -12,7 +12,6 @@ import com.bounteous.bug_bounty_backend.data.dto.responses.leaderboard.Leaderboa
 import com.bounteous.bug_bounty_backend.data.dto.responses.leaderboard.LeaderboardResponse.DeveloperInfo;
 import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import com.bounteous.bug_bounty_backend.data.entities.humans.User;
-import com.bounteous.bug_bounty_backend.data.repositories.bugs.FeedbackRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,9 @@ public class LeaderboardService {
         int myRank = (amIDev) ? getDeveloperRank(me.getId()) : -1;
         float myRating = (amIDev) ? ratingService.getAverageRatingAsFloat(me.getId()) : -1f;
         int myPoints = (amIDev) ? developerRepository.findById(me.getId()).get().getPoints() : -1;
-        return new LeaderboardResponse(devsDtos, myRank, myRating, myPoints, devsDtos.size());
+        String myFirstName = (amIDev) ? me.getFirstName() : "";
+        String myLastName = (amIDev) ? me.getLastName() : "";
+        return new LeaderboardResponse(devsDtos, myRank, myRating, myPoints, devsDtos.size(), myFirstName, myLastName);
     }
 
     @Transactional(readOnly = true)
