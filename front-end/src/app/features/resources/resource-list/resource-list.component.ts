@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // Ajout de FormsModule
 import { Router } from '@angular/router';
 import { ResourceService } from '../../../core/services/resource.service';
 import { LearningResource } from '../../../core/models/resource.model';
@@ -12,13 +12,14 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
 import { SidebarLayoutComponent } from '../../../layout/sidebar-layout/sidebar-layout.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-resource-list',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    FormsModule, 
     CardComponent,
     LoaderComponent,
     ButtonComponent,
@@ -142,8 +143,33 @@ export class ResourceListComponent implements OnInit {
     });
   }
   
-  openResource(url: string): void {
+  openResource(resource: LearningResource): void {
+    let url: string;
+    
+    // Check if it's a file resource
+    if (resource.fileName) {
+      // For file resources, use the download endpoint
+      url = `${environment.apiUrl}/resources/${resource.id}/download`;
+    } else if (resource.url) {
+      // For URL resources, use the provided URL
+      url = resource.url;
+    } else {
+      // Fallback - no valid URL
+      console.error('No valid URL or file for resource', resource);
+      return;
+    }
+    
     window.open(url, '_blank');
+  }
+  
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   
   getResourceTypeClass(type: string): string {

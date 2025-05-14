@@ -3,7 +3,7 @@
     <!-- Developer dashboard - Claimed bugs -->
     <div *ngIf="isDeveloper" ngClass="dashboard-container">
       <h2>
-        Welcom Back<span *ngIf="user">, {{ user.firstName }}</span>
+        Welcome Back<span *ngIf="user">, {{ user.firstName }}</span>
       </h2>
       <div [ngClass]="'basic-info'" *ngIf="user">
         <div>Points: {{ user.points }}</div>
