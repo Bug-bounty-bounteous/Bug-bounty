@@ -65,9 +65,9 @@ public class DataInitializer {
                     companyPassword, now, now
             );
 
-//            jdbcTemplate.update(
-//                "INSERT INTO company (id, company_name) VALUES (2, 'Example Tech Corp')"
-//            );
+           jdbcTemplate.update(
+               "INSERT INTO company (id, company_name) VALUES (2, 'Example Tech Corp')"
+           );
             String company2Password = passwordEncoder.encode("techsolutions123");
             jdbcTemplate.update(
                     "INSERT INTO users (id, email, password, first_name, last_name, role, account_locked, failed_attempts, created_at, updated_at, suspended) "
@@ -75,9 +75,9 @@ public class DataInitializer {
                     company2Password, now, now
             );
 
-//            jdbcTemplate.update(
-//                "INSERT INTO company (id, company_name) VALUES (4, 'Tech Solutions Inc')"
-//            );
+           jdbcTemplate.update(
+               "INSERT INTO company (id, company_name) VALUES (4, 'Tech Solutions Inc')"
+           );
 //
             // Create tech stacks using SQL
             executeSql(
