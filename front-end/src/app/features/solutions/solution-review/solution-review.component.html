@@ -1,0 +1,69 @@
+<!-- <app-sidebar-layout activeSection="Bug Marketplace">
+    <div class="solution-review-container">
+        <h2 class="title">Review Solution</h2>
+            <app-alert
+                type="danger"
+                [message]="errorMessage"
+                (close)="errorMessage = ''"
+                ></app-alert>
+            <app-alert
+                type="success"
+                [message]="successMessage"
+                (close)="successMessage = ''"
+                ></app-alert>
+        @if (isLoading) {
+            <app-loader
+            [isLoading]="true"
+            message="Loading solution...">
+        </app-loader>
+        } @else if (!isLoading && !isPublisher && !isClaimer) {
+            <h3>You are not allowed to view this page</h3>
+        }
+        @else {
+            <!-- General Solution details -->
+            <div class="solution-info">
+                <div [ngClass]="'status-' + solution.status">{{solution.status}}</div>
+                <h3>Bug: {{bug.title}}</h3>
+                <h4>Solution:</h4>
+                <p>Decription: {{solution.description}}</p>
+            </div>
+            <div class="solution-actions">
+            @if (solution.codeLink) {
+                <p>Code Link: {{solution.codeLink}}</p>
+            } @else {
+                <app-button 
+                    type="primary"
+                    [isLoading]="isDownloading"
+                    [disabled]="isDownloading"
+                    (onClicked)="downloadSolutionFile()"
+                >Download file</app-button>
+            }
+            <!-- If company, then actions -->
+            @if (isPublisher && canAct) {
+                <div class="actions">
+                    <app-button
+                        type="primary"
+                        [isLoading]="isSendingAccept"
+                        [disabled]="isSendingAccept"
+                        (onClicked)="sendAcceptSolution()"
+                    >Accept Solution</app-button>
+                    <app-button
+                        type="primary"
+                        [isLoading]="isSendingRefuse"
+                        [disabled]="isSendingRefuse"
+                        (onClicked)="sendRefuseSolution()"
+                    >Refuse Solution</app-button>
+                    <app-button
+                        type="primary"
+                        [isLoading]="isSendingRefuseWithFeedback"
+                        [disabled]="isSendingRefuseWithFeedback"
+                        (onClicked)="sendRefuseSolution()"
+                    >Refuse Solution, With Feedback</app-button>
+
+                </div>
+            }
+
+            </div>
+        }
+    </div>
+</app-sidebar-layout> -->
