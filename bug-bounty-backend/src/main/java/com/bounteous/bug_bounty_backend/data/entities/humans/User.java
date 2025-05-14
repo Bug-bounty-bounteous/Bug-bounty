@@ -19,7 +19,7 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class) 
+@EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
@@ -31,34 +31,36 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String firstName;
     private String lastName;
-    
+
     @Column(unique = true)
     private String email;
-    
+
     private String password;
-    
+
     private String role;
-    
+
+    @Builder.Default
+    private boolean suspended = false;
+
     @Builder.Default
     private boolean accountLocked = false;
-    
+
     @Builder.Default
     private int failedAttempts = 0;
-    
+
     private Long lockTime;
-    
-    
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
-    
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     // This runs before update operations
     @PreUpdate
     protected void onUpdate() {
