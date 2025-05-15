@@ -2,12 +2,14 @@ package com.bounteous.bug_bounty_backend.data.dto.responses.leaderboard;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
 import com.bounteous.bug_bounty_backend.data.dto.responses.bug.BugResponse;
 
 @Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class LeaderboardResponse {
