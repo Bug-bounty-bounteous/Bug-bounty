@@ -1,4 +1,4 @@
-<!-- <app-sidebar-layout activeSection="Bug Marketplace">
+<app-sidebar-layout activeSection="Bug Marketplace">
     <div class="solution-review-container">
         <h2 class="title">Review Solution</h2>
             <app-alert
@@ -55,15 +55,34 @@
                     >Refuse Solution</app-button>
                     <app-button
                         type="primary"
-                        [isLoading]="isSendingRefuseWithFeedback"
-                        [disabled]="isSendingRefuseWithFeedback"
-                        (onClicked)="sendRefuseSolution()"
-                    >Refuse Solution, With Feedback</app-button>
+                        [isLoading]="isSendingFeedback"
+                        [disabled]="isSendingFeedback"
+                        (onClicked)="sendFeedback()"
+                    >Send Feedback</app-button>
 
                 </div>
             }
 
             </div>
         }
+        <div class="feedbacks-container">
+            @if (isLoadingFeedbacks) {
+            <app-loader
+            [isLoading]="true"
+            message="Loading feedbacks...">
+                </app-loader>
+            } @else {
+            @if (feedbacks.length == 0) {
+                <h3>No feedbacks yet</h3>
+            } @else {
+                @for (feedback of feedbacks; track feedback.id) {
+                    <div class="feedback-container">
+                        <p>{{feedback.feedbackText}}</p>
+                        <p>{{feedback.rating}}</p>
+                    </div>
+                }
+            }
+            }
+        </div>
     </div>
-</app-sidebar-layout> -->
+</app-sidebar-layout>
