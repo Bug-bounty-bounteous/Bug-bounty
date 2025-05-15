@@ -90,8 +90,8 @@
         </div>
         
         <div class="resource-actions">
-          <app-button type="primary" (onClicked)="openResource(resource.url)">
-            View Resource
+          <app-button type="primary" (onClicked)="openResource(resource)">
+            {{ resource.fileName ? 'Download' : 'View Resource' }}
           </app-button>
           
           <app-button 
@@ -104,6 +104,13 @@
           
           <div *ngIf="resource.reported" class="reported-indicator">
             ⚠️ Reported
+          </div>
+          
+          <div class="resource-type-indicator">
+            {{ resource.fileName ? '📁 File' : '🔗 Link' }}
+            <span *ngIf="resource.fileName && resource.fileSize" class="file-size">
+              ({{ formatFileSize(resource.fileSize) }})
+            </span>
           </div>
         </div>
       </div>

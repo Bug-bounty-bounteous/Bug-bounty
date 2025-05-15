@@ -219,3 +219,4 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,angular,java,gradle
+bug-bounty-backend/uploads/

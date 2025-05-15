@@ -2,7 +2,10 @@ export interface LearningResource {
   id: number;
   title: string;
   description: string;
-  url: string;
+  url?: string;
+  fileName?: string;
+  filePath?: string;
+  fileSize?: number;
   resourceType: string;
   date: string;
   reported: boolean;
@@ -10,6 +13,8 @@ export interface LearningResource {
     id: number;
     companyName: string;
   };
+  isFileResource?: boolean;
+  resourceUrl?: string;
 }
 
 export interface ResourceRequest {

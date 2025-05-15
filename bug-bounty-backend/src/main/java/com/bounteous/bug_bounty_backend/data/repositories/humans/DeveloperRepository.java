@@ -19,6 +19,6 @@ public interface DeveloperRepository extends JpaRepository<Developer, Long> {
 
     boolean existsByUsername(String username);
 
-    @Query("SELECT d FROM Developer d ORDER BY d.rating DESC, d.points DESC")
+    @Query("SELECT d FROM Developer d WHERE d.suspended = false ORDER BY d.rating DESC, d.points DESC")
     List<Developer> findTopDevelopers(Pageable pageable);
 }

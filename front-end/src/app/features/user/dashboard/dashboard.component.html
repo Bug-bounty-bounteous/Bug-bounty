@@ -3,7 +3,7 @@
     <!-- Developer dashboard - Claimed bugs -->
     <div *ngIf="isDeveloper" ngClass="dashboard-container">
       <h2>
-        Welcom Back<span *ngIf="user">, {{ user.firstName }}</span>
+        Welcome Back<span *ngIf="user">, {{ user.firstName }}</span>
       </h2>
       <div [ngClass]="'basic-info'" *ngIf="user">
         <div>Points: {{ user.points }}</div>
@@ -130,10 +130,7 @@
           *ngIf="!isLoadingUploadedBugs && uploadedBugs.length === 0"
           class="empty-state"
         >
-          <p>You haven't claimed any bugs yet.</p>
-          <app-button type="primary" (onClicked)="navigateToMarketplace()"
-            >Find Bugs to Claim</app-button
-          >
+          <p>You haven't uploaded any bugs yet.</p>
         </div>
 
         <div

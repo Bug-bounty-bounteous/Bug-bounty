@@ -88,6 +88,10 @@ export const routes: Routes = [
       ),
   },
   {
+  path: 'my-feedback',
+  loadComponent: () => import('./features/feedback/feedback.component').then(m => m.FeedbackComponent)
+  },
+  {
     path: '**',
     redirectTo: '',
   },

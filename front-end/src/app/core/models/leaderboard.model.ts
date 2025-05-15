@@ -6,6 +6,8 @@ export interface Leaderboard {
   myRating: number;
   myPoints: number;
   length: number;
+  firstName: string;
+  lastName: string;
 }
 
 export interface DeveloperInfo {

@@ -30,8 +30,8 @@ export class LeaderboardComponent implements OnInit {
       next: (data) => {
         this.leaderboard = data;
         this.developers = this.leaderboard.developers;
-        console.log('Leaderboard info');
-        console.log(this.leaderboard);
+        // console.log('Leaderboard info');
+        // console.log(this.leaderboard);
       },
       error: (err) => {
         console.error('Error loading leaderboard', err);

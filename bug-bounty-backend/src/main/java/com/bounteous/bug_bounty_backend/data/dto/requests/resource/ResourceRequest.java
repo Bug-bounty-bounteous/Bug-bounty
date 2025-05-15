@@ -2,9 +2,13 @@ package com.bounteous.bug_bounty_backend.data.dto.requests.resource;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 public class ResourceRequest {
     
     @NotBlank(message = "Title is required")

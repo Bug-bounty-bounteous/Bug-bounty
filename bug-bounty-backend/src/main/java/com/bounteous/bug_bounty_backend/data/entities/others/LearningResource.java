@@ -29,8 +29,17 @@ public class LearningResource {
     @Column(nullable = false, length = 1000)
     private String description;
     
-    @Column(nullable = false, length = 500)
+    @Column(length = 500)
     private String url;
+    
+    @Column(name = "file_name", length = 255)
+    private String fileName;
+    
+    @Column(name = "file_path", length = 500)
+    private String filePath;
+    
+    @Column(name = "file_size")
+    private Long fileSize;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -48,4 +57,23 @@ public class LearningResource {
     @JoinColumn(name = "publisher_id")
     @JsonIgnoreProperties({"resources", "bugs", "feedbacks"})
     private Company publisher;
+    
+    /**
+     * Check if this resource is a file or external link
+     */
+    @Transient
+    public boolean isFileResource() {
+        return fileName != null && filePath != null;
+    }
+    
+    /**
+     * Get the resource URL (either external URL or file download URL)
+     */
+    @Transient
+    public String getResourceUrl() {
+        if (isFileResource()) {
+            return "/api/resources/" + id + "/download";
+        }
+        return url;
+    }
 }

@@ -20,14 +20,14 @@ public class Solution {
     @Id
     @GeneratedValue
     private Long id;
-    
+
     private String description;
     private String codeLink;
     private Blob file;
     
     @Enumerated(EnumType.STRING)
     private SolutionStatus status;
-    
+
     private LocalDateTime submittedAt;
     private LocalDateTime reviewedAt;
 
@@ -38,7 +38,7 @@ public class Solution {
     @ManyToOne
     @ToString.Exclude
     private Bug bug;
-    
+
     @OneToMany(mappedBy = "solution")
     @Builder.Default
     @ToString.Exclude

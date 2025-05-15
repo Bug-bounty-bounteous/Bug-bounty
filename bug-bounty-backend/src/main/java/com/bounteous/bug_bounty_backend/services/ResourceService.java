@@ -15,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class ResourceService {
     
     private final LearningResourceRepository resourceRepository;
     private final CompanyRepository companyRepository;
+    private final FileUploadService fileUploadService;
     
     /**
      * Get all resources with optional filtering
@@ -66,7 +69,7 @@ public class ResourceService {
     }
     
     /**
-     * Create a new learning resource
+     * Create a new learning resource with external URL
      */
     @Transactional
     public LearningResource createResource(ResourceRequest request, String companyEmail) {
@@ -100,13 +103,57 @@ public class ResourceService {
     }
     
     /**
-     * Report a resource as outdated or broken
+     * Create a new learning resource with file upload
      */
     @Transactional
-    public void reportResource(Long id) {
-        LearningResource resource = getResourceById(id);
-        resource.setReported(true);
-        resourceRepository.save(resource);
+    public LearningResource createResourceWithFile(
+            MultipartFile file, 
+            String title, 
+            String description, 
+            String resourceTypeStr, 
+            String companyEmail) {
+        
+        Company company = companyRepository.findByEmail(companyEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
+        
+        // Validate inputs
+        if (title == null || title.trim().isEmpty()) {
+            throw new BadRequestException("Title is required");
+        }
+        if (description == null || description.trim().isEmpty()) {
+            throw new BadRequestException("Description is required");
+        }
+        
+        // Validate resource type
+        ResourceType resourceType;
+        try {
+            resourceType = ResourceType.valueOf(resourceTypeStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid resource type: " + resourceTypeStr);
+        }
+        
+        try {
+            // Upload file
+            FileUploadService.FileUploadResult uploadResult = fileUploadService.uploadFile(file);
+            
+            // Create resource
+            LearningResource resource = LearningResource.builder()
+                    .title(title.trim())
+                    .description(description.trim())
+                    .fileName(uploadResult.getFileName())
+                    .filePath(uploadResult.getFilePath())
+                    .fileSize(uploadResult.getFileSize())
+                    .resourceType(resourceType)
+                    .date(LocalDateTime.now())
+                    .reported(false)
+                    .publisher(company)
+                    .build();
+            
+            return resourceRepository.save(resource);
+            
+        } catch (IOException e) {
+            throw new BadRequestException("Failed to upload file: " + e.getMessage());
+        }
     }
     
     /**
@@ -131,6 +178,11 @@ public class ResourceService {
             throw new BadRequestException("Invalid resource type: " + request.getResourceType());
         }
         
+        // Only allow updating URL-based resources for now
+        if (resource.isFileResource()) {
+            throw new BadRequestException("Cannot update file-based resources. Please create a new resource.");
+        }
+        
         // Validate URL format
         if (!isValidUrl(request.getUrl())) {
             throw new BadRequestException("Invalid URL format");
@@ -143,6 +195,16 @@ public class ResourceService {
         resource.setResourceType(resourceType);
         
         return resourceRepository.save(resource);
+    }
+    
+    /**
+     * Report a resource as outdated or broken
+     */
+    @Transactional
+    public void reportResource(Long id) {
+        LearningResource resource = getResourceById(id);
+        resource.setReported(true);
+        resourceRepository.save(resource);
     }
     
     /**
@@ -172,6 +234,13 @@ public class ResourceService {
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found"));
         
         return resourceRepository.findByPublisherOrderByDateDesc(company);
+    }
+    
+    /**
+     * Download file content
+     */
+    public byte[] downloadFile(String filePath) throws IOException {
+        return fileUploadService.downloadFile(filePath);
     }
     
     /**

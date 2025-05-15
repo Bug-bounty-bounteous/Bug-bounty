@@ -66,8 +66,8 @@ export class DashboardComponent implements OnInit {
     this.userService.getCurrentUserProfile().subscribe({
       next: (userData) => {
         this.user = userData;
-        console.log('User Data');
-        console.log(this.user);
+        // console.log('User Data');
+        // console.log(this.user);
       },
       error: (error) => {
         console.error('Error loading user profile', error);
@@ -81,8 +81,8 @@ export class DashboardComponent implements OnInit {
       next: (response) => {
         this.claimedBugs = response;
         this.isLoadingClaims = false;
-        console.log('Bugs');
-        console.log(this.claimedBugs);
+        // console.log('Bugs');
+        // console.log(this.claimedBugs);
         this.updateTechStackList();
       },
       error: (error) => {

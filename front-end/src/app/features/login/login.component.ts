@@ -18,7 +18,6 @@ import { AlertComponent } from '../../shared/components/alert/alert.component';
 export class LoginComponent implements OnInit, OnDestroy {
   email: string = '';
   password: string = '';
-  rememberMe: boolean = false;
   errorMessage: string = '';
   hasError: boolean = false;
   isSubmitting: boolean = false;
@@ -63,9 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.hasError = false;
   }
 
-  OnRememberMeChange(value: boolean): void {
-    this.rememberMe = value;
-  }
+
 
   OnClickLogin(event: MouseEvent): void {
     if (this.isSubmitting) return;
@@ -82,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const loginSub = this.authService.login({
       email: this.email,
       password: this.password,
-      rememberMe: this.rememberMe
+
     }).subscribe({
       next: (res) => {
         this.isSubmitting = false;

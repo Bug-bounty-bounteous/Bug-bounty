@@ -53,10 +53,17 @@ export class ResourceService {
   }
 
   /**
-   * Create a new learning resource
+   * Create a new learning resource with URL
    */
   createResource(resource: any): Observable<LearningResource> {
     return this.http.post<LearningResource>(this.apiUrl, resource);
+  }
+
+  /**
+   * Create a new learning resource with file upload
+   */
+  createResourceWithFile(formData: FormData): Observable<LearningResource> {
+    return this.http.post<LearningResource>(`${this.apiUrl}/upload`, formData);
   }
 
   /**

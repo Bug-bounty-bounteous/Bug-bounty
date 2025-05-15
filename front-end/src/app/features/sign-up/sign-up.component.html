@@ -57,19 +57,23 @@
           </div>
 
           <!-- Email -->
-          <div class="input-group">
-            <label for="email">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              [(ngModel)]="email" 
-              (input)="OnChangeEmail(email)"
-              [class.input-error]="invalidEmail"
-            />
-          </div>
-          <div class="error" *ngIf="invalidEmail">
-            Email is invalid or already registered
-          </div>
+            <div class="input-group">
+              <label for="email">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                [(ngModel)]="email" 
+                (input)="OnChangeEmail(email)"
+                [class.input-error]="invalidEmail || emailAlreadyRegistered"
+              />
+            </div>
+            <div class="error" *ngIf="invalidEmail">
+              Invalid email format
+            </div>
+            <div class="error" *ngIf="emailAlreadyRegistered">
+              This email is already registered. Please login.
+            </div>
+
 
           <!-- Password -->
           <div class="input-group">

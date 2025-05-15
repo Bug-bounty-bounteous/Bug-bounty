@@ -23,20 +23,23 @@ public class LeaderboardService {
 
     private final DeveloperRepository developerRepository;
     private final UserService userService;
+    private final RatingService ratingService;
 
     // Service methods will be added here
     @Transactional(readOnly = true)
     public LeaderboardResponse getLeaderBoardInfo(int number, User me) {
         // Get top x devs
         List<Developer> topDevs = developerRepository.findTopDevelopers(PageRequest.of(0, number));
-        List<DeveloperInfo> devsDtos = topDevs.stream().map(d -> new DeveloperInfo(d.getId(), d.getFirstName(), d.getLastName(), d.getEmail(), d.getPoints(), d.getRating(), userService.getClaimedBugsByDeveloper(d))
+        List<DeveloperInfo> devsDtos = topDevs.stream().map(d -> new DeveloperInfo(d.getId(), d.getFirstName(), d.getLastName(), d.getEmail(), d.getPoints(), ratingService.getAverageRatingAsFloat(d.getId()), userService.getClaimedBugsByDeveloper(d))
         ).collect(Collectors.toList());
         // Get my rank
         boolean amIDev = isDeveloper(me.getId());
         int myRank = (amIDev) ? getDeveloperRank(me.getId()) : -1;
-        float myRating = (amIDev) ? developerRepository.findById(me.getId()).get().getRating() : -1f;
+        float myRating = (amIDev) ? ratingService.getAverageRatingAsFloat(me.getId()) : -1f;
         int myPoints = (amIDev) ? developerRepository.findById(me.getId()).get().getPoints() : -1;
-        return new LeaderboardResponse(devsDtos, myRank, myRating, myPoints, devsDtos.size());
+        String myFirstName = (amIDev) ? me.getFirstName() : "";
+        String myLastName = (amIDev) ? me.getLastName() : "";
+        return new LeaderboardResponse(devsDtos, myRank, myRating, myPoints, devsDtos.size(), myFirstName, myLastName);
     }
 
     @Transactional(readOnly = true)

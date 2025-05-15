@@ -20,11 +20,77 @@
   margin-bottom: 20px;
 }
 
-.resource-form {
+.resource-form-container {
   background-color: var(--background-section);
   border: 1px solid var(--outline);
   border-radius: 5px;
   padding: 20px;
+}
+
+/* Upload Mode Toggle */
+.upload-mode-toggle {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--background);
+  border: 1px solid var(--outline);
+  border-radius: 5px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+}
+
+.toggle-container input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: background-color 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-container input[type="checkbox"]:checked + .toggle-slider {
+  background-color: var(--green-4);
+}
+
+.toggle-container input[type="checkbox"]:checked + .toggle-slider::before {
+  transform: translateX(26px);
+}
+
+.toggle-label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--green-1);
+}
+
+.toggle-description {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--white);
+  opacity: 0.8;
+}
+
+.resource-form {
+  margin-top: 20px;
 }
 
 .form-group {
@@ -69,6 +135,46 @@ textarea.form-control {
   min-height: 100px;
 }
 
+/* File Upload Styles */
+.file-upload-area {
+  position: relative;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload-label {
+  display: block;
+  padding: 40px 20px;
+  border: 2px dashed var(--outline);
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: var(--black);
+  color: var(--green-1);
+}
+
+.file-upload-label:hover {
+  border-color: var(--green-3);
+  background-color: rgba(0, 255, 0, 0.05);
+}
+
+.file-upload-info {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--white);
+  opacity: 0.7;
+  text-align: center;
+}
+
 .error-message {
   color: var(--red-1);
   font-size: 0.85rem;
@@ -105,5 +211,11 @@ textarea.form-control {
   
   .resource-create-container {
     padding: 10px;
+  }
+  
+  .toggle-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }
