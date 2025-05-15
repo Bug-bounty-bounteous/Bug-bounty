@@ -40,7 +40,7 @@ public class SolutionController {
     public ResponseEntity<Long> postSolution(
             @RequestBody @Valid SolutionRequest request,
             Authentication authentication) throws Exception {
-        String username = authentication.getName();
-        return ResponseEntity.status(HttpStatus.OK).body(solutionService.postSolution(request, username));
+        String email = authentication.getName();
+        return ResponseEntity.status(HttpStatus.OK).body(solutionService.postSolution(request, email));
     }
 }

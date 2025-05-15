@@ -45,16 +45,16 @@ public class SolutionService {
     /**
      * Create a solution for a bug in the database, by the user with the given username.
      * @param request Request details
-     * @param username Email of the user who posted the solution.
+     * @param email Email of the user who posted the solution.
      * @return The id of the new solution
      */
     @Transactional
-    public Long postSolution(@Valid SolutionRequest request, String username) throws IllegalAccessException, SQLException {
+    public Long postSolution(@Valid SolutionRequest request, String email) throws IllegalAccessException, SQLException {
         Bug bug = bugRepository.findById(request.getBugId()).orElseThrow(
                 () -> new ResourceNotFoundException("No bug with id: " + request.getBugId())
         );
-        Developer developer = developerRepository.findByUsername(username).orElseThrow(
-                () -> new ResourceNotFoundException("No developer with username: " + username)
+        Developer developer = developerRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("No developer with email: " + email)
         );
         // check if the bug has been claimed by the developer
         if (!developer
