@@ -79,6 +79,33 @@
               </div>
             </div>
           </div>
+
+          <div class="info-card solution-feedback-card" *ngIf="solutions.length > 0">
+          <h3>Submitted Solutions & Feedback</h3>
+
+          <div *ngFor="let solution of solutions" class="solution-card">
+            <div class="solution-details">
+              <h4>{{ solution.description }}</h4>
+              <a *ngIf="solution.codeLink" [href]="solution.codeLink" target="_blank">View Code</a>
+              <p>Status: {{ solution.status }}</p>
+              <p>Submitted At: {{ solution.submittedAt | dateFormat }}</p>
+            </div>
+
+            <div class="feedback-section" *ngIf="solution.feedbacks?.length > 0">
+              <h5>Feedbacks:</h5>
+              <div *ngFor="let feedback of solution.feedbacks" class="feedback-item">
+                <p><strong>Rating:</strong> {{ feedback.rating }} ⭐</p>
+                <p><strong>Comment:</strong> {{ feedback.feedbackMessage }}</p>
+                <p><small>By: {{ feedback.company.companyName }}</small></p>
+              </div>
+            </div>
+
+            <div *ngIf="solution.feedbacks?.length === 0">
+              <em>No feedback submitted yet.</em>
+            </div>
+          </div>
+        </div>
+
           
           <div class="info-card bug-actions-card">
             <h3>Actions</h3>

@@ -1,11 +1,13 @@
 package com.bounteous.bug_bounty_backend.data.dto.responses.solution;
 
+import com.bounteous.bug_bounty_backend.data.dto.responses.feedback.FeedbackResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -22,6 +24,8 @@ public class SolutionResponse {
 
     private DeveloperInfo developer;
     private BugInfo bug;
+
+    private List<FeedbackResponse> feedbacks;
 
     @Data
     @Builder

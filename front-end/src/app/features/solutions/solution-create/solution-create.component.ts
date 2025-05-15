@@ -8,6 +8,7 @@ import { AlertComponent } from "../../../shared/components/alert/alert.component
 import { CommonModule, NgIf } from '@angular/common';
 import { LoaderComponent } from "../../../shared/components/loader/loader.component";
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { Feedback } from '../../../core/models/feedback.model'; 
 
 @Component({
   selector: 'app-solution-create',
@@ -31,6 +32,7 @@ export class SolutionCreateComponent implements OnInit {
   errorMessage: string = '';
   validFile: boolean = false;
   fileTouched: boolean = false;
+  // feedbacks:Feedback[]; 
 
   constructor(
     private fb: FormBuilder,
