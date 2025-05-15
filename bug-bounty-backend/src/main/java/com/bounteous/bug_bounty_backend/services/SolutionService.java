@@ -1,6 +1,7 @@
 package com.bounteous.bug_bounty_backend.services;
 
 import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
+import com.bounteous.bug_bounty_backend.data.dto.responses.feedback.FeedbackResponse;
 import com.bounteous.bug_bounty_backend.data.dto.responses.solution.SolutionResponse;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
@@ -26,6 +27,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 
 // Handles solution-related business logic
 @Service
@@ -111,4 +113,89 @@ public class SolutionService {
                 .build()
         ).toList();
     }
+    @Transactional(readOnly = true)
+    public List<SolutionResponse> getSolutionsByBugId(Long bugId) {
+        List<Solution> solutions = solutionRepository.findByBug_Id(bugId);
+
+        return solutions.stream().map(solution -> SolutionResponse.builder()
+                .id(solution.getId())
+                .description(solution.getDescription())
+                .codeLink(solution.getCodeLink())
+                .status(solution.getStatus().toString())
+                .submittedAt(solution.getSubmittedAt())
+                .reviewedAt(solution.getReviewedAt())
+                .bug(SolutionResponse.BugInfo.builder()
+                        .id(solution.getBug().getId())
+                        .title(solution.getBug().getTitle())
+                        .build())
+                .developer(SolutionResponse.DeveloperInfo.builder()
+                        .id(solution.getDeveloper().getId())
+                        .username(solution.getDeveloper().getUsername())
+                        .email(solution.getDeveloper().getEmail())
+                        .rating(solution.getDeveloper().getRating())
+                        .build())
+                .build()
+        ).toList();
+    }
+    private SolutionResponse mapSolutionToResponse(Solution solution) {
+        return SolutionResponse.builder()
+                .id(solution.getId())
+                .description(solution.getDescription())
+                .codeLink(solution.getCodeLink())
+                .status(solution.getStatus().toString())
+                .submittedAt(solution.getSubmittedAt())
+                .reviewedAt(solution.getReviewedAt())
+                .bug(SolutionResponse.BugInfo.builder()
+                        .id(solution.getBug().getId())
+                        .title(solution.getBug().getTitle())
+                        .build())
+                .developer(SolutionResponse.DeveloperInfo.builder()
+                        .id(solution.getDeveloper().getId())
+                        .username(solution.getDeveloper().getUsername())
+                        .email(solution.getDeveloper().getEmail())
+                        .rating(solution.getDeveloper().getRating())
+                        .build())
+                .build();
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<SolutionResponse> getSolutionsByCompanyId(Long companyId) {
+        List<Solution> solutions = solutionRepository.findByBug_Publisher_Id(companyId);
+
+        return solutions.stream().map(solution -> SolutionResponse.builder()
+                        .id(solution.getId())
+                        .description(solution.getDescription())
+                        .codeLink(solution.getCodeLink())
+                        .status(solution.getStatus().toString())
+                        .submittedAt(solution.getSubmittedAt())
+                        .reviewedAt(solution.getReviewedAt())
+                        .bug(SolutionResponse.BugInfo.builder()
+                                .id(solution.getBug().getId())
+                                .title(solution.getBug().getTitle())
+                                .build())
+                        .developer(SolutionResponse.DeveloperInfo.builder()
+                                .id(solution.getDeveloper().getId())
+                                .username(solution.getDeveloper().getUsername())
+                                .email(solution.getDeveloper().getEmail())
+                                .rating(solution.getDeveloper().getRating())
+                                .build())
+                        .feedbacks(solution.getFeedbacks().stream().map(fb -> FeedbackResponse.builder()
+                                        .id(fb.getId())
+                                        .feedbackMessage(fb.getFeedbackMessage())
+                                        .rating(fb.getRating())
+                                        .submittedAt(fb.getSubmittedAt())
+                                        .company(FeedbackResponse.CompanyInfo.builder()
+                                                .id(fb.getCompany().getId())
+                                                .companyName(fb.getCompany().getCompanyName())
+                                                .email(fb.getCompany().getEmail())
+                                                .build())
+                                        .build())
+                                .toList())
+                        .build())
+                .toList();
+    }
+
+
+
 }
