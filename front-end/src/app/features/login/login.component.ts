@@ -62,8 +62,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.hasError = false;
   }
 
-
-
   OnClickLogin(event: MouseEvent): void {
     if (this.isSubmitting) return;
 
@@ -79,7 +77,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     const loginSub = this.authService.login({
       email: this.email,
       password: this.password,
-
     }).subscribe({
       next: (res) => {
         this.isSubmitting = false;
@@ -142,6 +139,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   forgotPassword(event: MouseEvent): void {
     this.router.navigate(['/forgot-password']);
+  }
+
+  onGoogleLogin(): void {
+    this.authService.initGoogleLogin();
   }
 
   private checkLockStatus(): void {

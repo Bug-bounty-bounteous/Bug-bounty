@@ -189,4 +189,104 @@ export class AuthService {
     if (!this.lockoutTime) return 0;
     return Math.max(0, this.lockoutTime - Date.now());
   }
+
+  /**
+ * Initiate OAuth2 authentication with Google
+ */
+  initGoogleLogin(): void {
+    const authUrl = `${environment.apiUrl}/oauth2/authorization/google`;
+    window.location.href = authUrl;
+  }
+
+  /**
+   * Handle OAuth2 callback from backend
+   */
+  handleOAuth2Callback(token: string): Observable<AuthResponse> {
+    return new Observable(observer => {
+      try {
+        // Save the token directly from backend
+        this.tokenStorage.saveToken(token);
+
+        // Decode JWT to extract user information
+        const payload = JSON.parse(atob(token.split('.')[1]));
+
+        const authResponse: AuthResponse = {
+          token: token,
+          type: 'Bearer',
+          id: payload.userId || payload.sub,
+          username: payload.preferred_username || payload.email,
+          email: payload.email,
+          role: payload.role || payload.authorities?.[0]?.replace('ROLE_', '')
+        };
+
+        // Save user information
+        this.tokenStorage.saveUser({
+          id: authResponse.id,
+          username: authResponse.username,
+          email: authResponse.email,
+          role: authResponse.role,
+        });
+
+        // Update user subject
+        this.userSubject.next({
+          id: authResponse.id,
+          username: authResponse.username,
+          email: authResponse.email,
+          role: authResponse.role,
+        });
+
+        observer.next(authResponse);
+        observer.complete();
+      } catch (error) {
+        console.error('Error processing OAuth2 callback:', error);
+        observer.error(error);
+      }
+    });
+  }
+
+  /**
+ * Handle OAuth2 callback with additional user info
+ */
+handleOAuth2CallbackWithInfo(token: string, userInfo: any): Observable<AuthResponse> {
+  return new Observable(observer => {
+    try {
+      // Save the token directly from backend
+      this.tokenStorage.saveToken(token);
+      
+      // Use provided user info instead of decoding JWT
+      const authResponse: AuthResponse = {
+        token: token,
+        type: 'Bearer',
+        id: userInfo.id,
+        username: userInfo.username,
+        email: userInfo.email,
+        role: userInfo.role
+      };
+      
+      // Save user information
+      this.tokenStorage.saveUser({
+        id: authResponse.id,
+        username: authResponse.username,
+        email: authResponse.email,
+        role: authResponse.role,
+      });
+      
+      // Update user subject
+      this.userSubject.next({
+        id: authResponse.id,
+        username: authResponse.username,
+        email: authResponse.email,
+        role: authResponse.role,
+      });
+      
+      console.log('OAuth2 user saved:', authResponse);
+      
+      observer.next(authResponse);
+      observer.complete();
+    } catch (error) {
+      console.error('Error processing OAuth2 callback:', error);
+      observer.error(error);
+    }
+  });
+}
 }

@@ -1,11 +1,13 @@
 package com.bounteous.bug_bounty_backend.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
@@ -13,11 +15,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Configuration
-@RequiredArgsConstructor
 public class DataInitializer {
 
-    private final PasswordEncoder passwordEncoder;
-    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    @Lazy // to break circular dependency
+    private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Bean
     @Transactional

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -252,5 +253,56 @@ public class AuthService {
         userRepository.save(user);
 
         return "Account unlocked successfully.";
+    }
+
+    /**
+     * Find or create user from OAuth2 authentication
+     */
+    @Transactional
+    public User findOrCreateOAuth2User(String email, String firstName, String lastName, 
+                                    String provider, String oauth2Id) {
+        Optional<User> existingUser = userRepository.findByEmail(email);
+        
+        if (existingUser.isPresent()) {
+            // Update OAuth2 provider info if needed
+            User user = existingUser.get();
+            user.setOauth2Provider(provider);
+            user.setOauth2Id(oauth2Id);
+            return userRepository.save(user);
+        }
+        
+        // Create new developer as default role
+        Developer newDeveloper = Developer.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .username(generateUsernameFromEmail(email))
+                .role("DEVELOPER")
+                .rating(0.0f)
+                .points(0)
+                .oauth2Provider(provider)
+                .oauth2Id(oauth2Id)
+                .accountLocked(false)
+                .failedAttempts(0)
+                .createdAt(LocalDateTime.now())
+                .build();
+        
+        return userRepository.save(newDeveloper);
+    }
+
+    /**
+     * Generate unique username from email address
+     */
+    private String generateUsernameFromEmail(String email) {
+        String baseUsername = email.split("@")[0].replaceAll("[^a-zA-Z0-9]", "");
+        String username = baseUsername;
+        int counter = 1;
+        
+        // Ensure username is unique
+        while (developerRepository.existsByUsername(username)) {
+            username = baseUsername + counter;
+            counter++;
+        }
+        return username;
     }
 }

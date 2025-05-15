@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/auth/auth.guard';
 import { RoleGuard } from './core/auth/role.guard';
+import { OAuth2CallbackComponent } from './features/auth/oauth2-callback.component';
 
 export const routes: Routes = [
   {
@@ -81,6 +82,10 @@ export const routes: Routes = [
       import('./features/leaderboard/leaderboard.component').then(
         (m) => m.LeaderboardComponent
       ),
+  },
+  {
+    path: 'oauth2/callback',
+    component: OAuth2CallbackComponent
   },
   {
   path: 'my-feedback',

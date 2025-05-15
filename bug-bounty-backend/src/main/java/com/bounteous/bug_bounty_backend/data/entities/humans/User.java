@@ -42,6 +42,13 @@ public class User implements UserDetails {
 
     private String role;
 
+    // OAuth2 fields
+    @Column(name = "oauth2_provider")
+    private String oauth2Provider;
+    
+    @Column(name = "oauth2_id")
+    private String oauth2Id;
+
     @Builder.Default
     private boolean suspended = false;
 
@@ -61,7 +68,6 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // This runs before update operations
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
@@ -74,7 +80,6 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        // Using email as the username for Spring Security
         return email;
     }
 
@@ -96,5 +101,12 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    /**
+     * Check if user registered via OAuth2
+     */
+    public boolean isOAuth2User() {
+        return oauth2Provider != null && !oauth2Provider.isEmpty();
     }
 }
