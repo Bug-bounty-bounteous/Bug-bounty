@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { AuthResponse, LoginRequest, RegisterRequest } from '../models/user.model';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import {
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+} from '../models/user.model';
 import { environment } from '../../../environments/environment';
 import { TokenStorageService } from '../auth/token.storage';
 import { Router } from '@angular/router';
 
 const AUTH_API = `${environment.apiUrl}/auth`;
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private userSubject = new BehaviorSubject<any>(null);
@@ -36,72 +40,91 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<AuthResponse> {
     if (this.isLockedOut()) {
-      return new Observable(observer => {
-        observer.error({ status: 423, error: { message: 'Account is temporarily locked. Please try again later.' } });
+      return new Observable((observer) => {
+        observer.error({
+          status: 423,
+          error: {
+            message: 'Account is temporarily locked. Please try again later.',
+          },
+        });
         observer.complete();
       });
     }
 
-    return this.http.post<AuthResponse>(`${AUTH_API}/login`, credentials, httpOptions).pipe(
-      tap({
-        next: (response) => {
-          this.loginAttempts = 0;
-          this.lockoutTime = null;
-          localStorage.removeItem('loginAttempts');
-          localStorage.removeItem('lockoutTime');
+    return this.http
+      .post<AuthResponse>(`${AUTH_API}/login`, credentials, httpOptions)
+      .pipe(
+        tap({
+          next: (response) => {
+            this.loginAttempts = 0;
+            this.lockoutTime = null;
+            localStorage.removeItem('loginAttempts');
+            localStorage.removeItem('lockoutTime');
 
+            this.tokenStorage.saveToken(response.token);
+            this.tokenStorage.saveUser({
+              id: response.id,
+              username: response.username,
+              email: response.email,
+              role: response.role,
+            });
+
+            this.userSubject.next({
+              id: response.id,
+              username: response.username,
+              email: response.email,
+              role: response.role,
+            });
+          },
+          error: (error) => {
+            console.error('Error in login service:', error);
+          },
+        })
+        // catchError((error) => {
+        //   console.error('Caught Error in login service:', error);
+        //   return throwError(() => error); // re-throw so subscriber can handle it
+        // })
+      );
+  }
+
+  unlockAccount(email: string, captchaCode: string): Observable<any> {
+    return this.http.post(
+      `${AUTH_API}/unlock`,
+      { email, captchaCode },
+      httpOptions
+    );
+  }
+
+  register(userData: RegisterRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${AUTH_API}/register`, userData, httpOptions)
+      .pipe(
+        tap((response) => {
           this.tokenStorage.saveToken(response.token);
           this.tokenStorage.saveUser({
             id: response.id,
             username: response.username,
             email: response.email,
-            role: response.role
+            role: response.role,
           });
-
           this.userSubject.next({
             id: response.id,
             username: response.username,
             email: response.email,
-            role: response.role
+            role: response.role,
           });
-        },
-        error: (error) => {
-          console.error('Error in login service:', error);
-        }
-      })
-    );
-  }
-
-  unlockAccount(email: string, captchaCode: string): Observable<any> {
-    return this.http.post(`${AUTH_API}/unlock`, { email, captchaCode }, httpOptions);
-  }
-
-  register(userData: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${AUTH_API}/register`, userData, httpOptions).pipe(
-      tap(response => {
-        this.tokenStorage.saveToken(response.token);
-        this.tokenStorage.saveUser({
-          id: response.id,
-          username: response.username,
-          email: response.email,
-          role: response.role
-        });
-        this.userSubject.next({
-          id: response.id,
-          username: response.username,
-          email: response.email,
-          role: response.role
-        });
-      })
-    );
+        })
+      );
   }
 
   refreshToken(): Observable<AuthResponse> {
-    return this.http.get<AuthResponse>(`${AUTH_API}/refresh-token`, {
-      headers: new HttpHeaders({ 'Authorization': `Bearer ${this.tokenStorage.getToken()}` })
-    }).pipe(
-      tap(response => this.tokenStorage.saveToken(response.token))
-    );
+    return this.http
+      .get<AuthResponse>(`${AUTH_API}/refresh-token`, {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${this.tokenStorage.getToken()}`,
+        }),
+      })
+      .pipe(tap((response) => this.tokenStorage.saveToken(response.token)));
   }
 
   logout(): void {
@@ -115,7 +138,7 @@ export class AuthService {
     this.http.post<any>(`${AUTH_API}/logout`, {}, httpOptions).subscribe({
       next: () => console.log('Logout successful on server'),
       error: (err) => console.error('Logout error on server:', err),
-      complete: () => console.log('Logout request completed')
+      complete: () => console.log('Logout request completed'),
     });
   }
 
