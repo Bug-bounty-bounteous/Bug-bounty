@@ -8,6 +8,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
 import { TokenStorageService } from '../../../core/auth/token.storage';
+import { Solution } from '../../../core/models/solution.model';
 import { SidebarLayoutComponent } from '../../../layout/sidebar-layout/sidebar-layout.component';
 import { UserService } from '../../../core/services/user.service';
 import { catchError, map, of } from 'rxjs';
@@ -35,6 +36,7 @@ export class BugDetailComponent implements OnInit{
   successMessage = '';
   userRole: string | null = null;
   isClaimedByYou = false;
+  solutions: Solution[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -67,6 +69,7 @@ export class BugDetailComponent implements OnInit{
       next: (bug) => {
         this.bug = bug;
         this.isLoading = false;
+        this.loadSolutions(bug.id);
       },
       error: (error) => {
         console.error('Error loading bug details', error);
@@ -76,6 +79,17 @@ export class BugDetailComponent implements OnInit{
     });
     this.checkIfClaimedByUser();
   }
+
+  loadSolutions(bugId: number): void {
+  this.bugService.getSolutionsByBugId(bugId).subscribe({
+    next: (solutions) => {
+      this.solutions = solutions;
+    },
+    error: (error) => {
+      console.error('Error loading solutions', error);
+    }
+  });
+}
 
   goBack(): void {
     this.router.navigate(['/marketplace']);
