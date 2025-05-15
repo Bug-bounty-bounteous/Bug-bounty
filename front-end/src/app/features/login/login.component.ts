@@ -4,16 +4,24 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NavBarComponent } from '../../layout/nav-bar/nav-bar.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { AuthService } from '../../core/services/auth.service'; 
+import { AuthService } from '../../core/services/auth.service';
 import { TokenStorageService } from '../../core/auth/token.storage';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavBarComponent, ButtonComponent, AlertComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NavBarComponent,
+    ButtonComponent,
+    AlertComponent,
+    RecaptchaModule,
+  ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
   email: string = '';
@@ -23,10 +31,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   isSubmitting: boolean = false;
   isLocked: boolean = false;
   showCaptcha: boolean = false;
-  captchaCode: string = '';
+  captchaCode: string = 'ABC123';
   lockoutTimeRemaining: number = 0;
   lockoutTimer: any;
   returnUrl: string = '/dashboard';
+
+  CAPTCHA_SITE_KEY: string = '6LeZ6TsrAAAAAPtv1zrtC3suhfFPHhbD4YuQBhHY';
+
+  captchaToken: string | null = null;
 
   constructor(
     private router: Router,
@@ -36,7 +48,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    this.returnUrl =
+      this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
 
     if (this.tokenStorage.isLoggedIn()) {
       this.router.navigate([this.returnUrl]);
@@ -62,7 +75,38 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.hasError = false;
   }
 
+  onCaptchaResolved(token: string) {
+    this.captchaToken = token;
+    // console.log('Captcha token: ' + this.captchaToken);
+    this.authService.SolveCaptchaRequest(this.captchaToken).subscribe({
+      next: (res) => {
+        // console.log('Captcha Success: ' + res);
+        this.showCaptcha = false;
+        this.captchaToken = '';
 
+        this.authService.unlockAccount(this.email, this.captchaCode).subscribe({
+          next: () => {
+            this.errorMessage = 'Account unlocked. You can now log in.';
+            this.hasError = true;
+            this.isLocked = false;
+            this.showCaptcha = false;
+          },
+          error: (err) => {
+            this.errorMessage =
+              err.error?.message || 'Failed to unlock account.';
+            this.hasError = true;
+          },
+        });
+      },
+      error: (err) => {
+        // console.log('Captcha Failed: ');
+        // console.log(err);
+
+        this.errorMessage = err.error?.message || 'Captcha Failed.';
+        this.hasError = true;
+      },
+    });
+  }
 
   OnClickLogin(event: MouseEvent): void {
     if (this.isSubmitting) return;
@@ -76,64 +120,41 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     this.hasError = false;
 
-    const loginSub = this.authService.login({
-      email: this.email,
-      password: this.password,
+    const loginSub = this.authService
+      .login({
+        email: this.email,
+        password: this.password,
+      })
+      .subscribe({
+        next: (res) => {
+          this.isSubmitting = false;
+          loginSub.unsubscribe();
+          this.router.navigate([this.returnUrl]);
+        },
+        error: (err) => {
+          this.isSubmitting = false;
+          loginSub.unsubscribe();
+          this.hasError = true;
 
-    }).subscribe({
-      next: (res) => {
-        this.isSubmitting = false;
-        loginSub.unsubscribe();
-        this.router.navigate([this.returnUrl]);
-      },
-      error: (err) => {
-        this.isSubmitting = false;
-        loginSub.unsubscribe();
-        this.hasError = true;
+          const msg = err?.error?.message?.toLowerCase() || '';
 
-        const msg = err?.error?.message?.toLowerCase() || '';
-
-        if (msg.includes('account locked')) {
-          this.errorMessage = 'Account locked. Please enter CAPTCHA to unlock.';
-          this.isLocked = true;
-          this.showCaptcha = true;
-
-        } else if (msg.includes('wrong password')) {
-          this.errorMessage = err.error.message;
-
-        } else if (msg.includes('invalid email')) {
-          this.errorMessage = 'Invalid email address';
-
-        } else if (err.status === 0) {
-          this.errorMessage = 'Cannot connect to server. Please check your internet connection.';
-
-        } else {
-          this.errorMessage = 'Login failed. Please try again.';
-        }
-      }
-    });
-  }
-
-  onUnlockClick(): void {
-    if (!this.email || !this.captchaCode) {
-      this.errorMessage = 'Email and CAPTCHA code are required.';
-      this.hasError = true;
-      return;
-    }
-
-    this.authService.unlockAccount(this.email, this.captchaCode).subscribe({
-      next: () => {
-        this.errorMessage = 'Account unlocked. You can now log in.';
-        this.hasError = true;
-        this.isLocked = false;
-        this.showCaptcha = false;
-        this.captchaCode = '';
-      },
-      error: (err) => {
-        this.errorMessage = err.error?.message || 'Failed to unlock account.';
-        this.hasError = true;
-      }
-    });
+          if (msg.includes('account locked')) {
+            this.errorMessage =
+              'Account locked. Please enter CAPTCHA to unlock.';
+            this.isLocked = true;
+            this.showCaptcha = true;
+          } else if (msg.includes('wrong password')) {
+            this.errorMessage = err.error.message;
+          } else if (msg.includes('invalid email')) {
+            this.errorMessage = 'Invalid email address';
+          } else if (err.status === 0) {
+            this.errorMessage =
+              'Cannot connect to server. Please check your internet connection.';
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
+        },
+      });
   }
 
   goToSignUp(event: MouseEvent): void {
@@ -148,7 +169,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLocked = this.authService.isLockedOut?.() || false;
 
     if (this.isLocked) {
-      this.lockoutTimeRemaining = this.authService.getRemainingLockoutTime?.() || 0;
+      this.lockoutTimeRemaining =
+        this.authService.getRemainingLockoutTime?.() || 0;
       this.errorMessage = `Your account is temporarily locked. Please try again later.`;
       this.hasError = true;
 

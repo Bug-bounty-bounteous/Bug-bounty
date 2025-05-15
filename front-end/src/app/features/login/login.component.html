@@ -14,61 +14,60 @@
         <div class="tab-content">
           <div class="input-group">
             <label for="email">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              [(ngModel)]="email" 
+            <input
+              type="email"
+              id="email"
+              [(ngModel)]="email"
               (input)="OnEmailChange(email)"
               [class.input-error]="hasError"
               [disabled]="isLocked || isSubmitting"
             />
           </div>
-          
+
           <div class="input-group">
             <label for="password">Password</label>
-            <input 
-              type="password" 
-              id="password" 
-              [(ngModel)]="password" 
+            <input
+              type="password"
+              id="password"
+              [(ngModel)]="password"
               (input)="OnPasswordChange(password)"
               [class.input-error]="hasError"
               [disabled]="isLocked || isSubmitting"
             />
           </div>
-          
-          
-          <div class="forgot-password">
-            <a href="javascript:void(0)" (click)="forgotPassword($event)">Forgot Password?</a>
-          </div>
+
+          <!-- <div class="forgot-password">
+            <a href="javascript:void(0)" (click)="forgotPassword($event)"
+              >Forgot Password?</a
+            >
+          </div> -->
         </div>
       </div>
       <div class="tab-buttons">
-        <app-button (onClicked)="goToSignUp($event)" [disabled]="isSubmitting">Sign Up</app-button>
-        <app-button 
-          type="primary" 
-          (onClicked)="OnClickLogin($event)" 
+        <app-button (onClicked)="goToSignUp($event)" [disabled]="isSubmitting"
+          >Sign Up</app-button
+        >
+        <app-button
+          type="primary"
+          (onClicked)="OnClickLogin($event)"
           [isLoading]="isSubmitting"
           [disabled]="isSubmitting || isLocked"
-        >Login</app-button>
+          >Login</app-button
+        >
       </div>
       <div class="captcha-box" *ngIf="showCaptcha">
-  <label>CAPTCHA Code</label>
-  <input 
-    type="text" 
-    [(ngModel)]="captchaCode" 
-    placeholder="e.g. ABC123"
-    [disabled]="isSubmitting"
-  />
-  <app-button 
-    type="secondary"
-    (onClicked)="onUnlockClick()"
-    [disabled]="isSubmitting"
-  >Unlock Account</app-button>
-</div>
+        <re-captcha
+          (resolved)="onCaptchaResolved($event)"
+          [siteKey]="CAPTCHA_SITE_KEY"
+        >
+        </re-captcha>
+      </div>
 
-      
       <div class="security-info" *ngIf="!isLocked">
-       <p>Your account will be locked after 3 failed login attempts. You’ll need to enter a CAPTCHA to unlock.</p>
+        <p>
+          Your account will be locked after 3 failed login attempts. You’ll need
+          to enter a CAPTCHA to unlock.
+        </p>
       </div>
     </div>
   </div>
