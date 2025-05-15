@@ -15,12 +15,15 @@ export class SolutionService {
   getSolutionsByDeveloper(developerId: number): Observable<Solution[]> {
   return this.http.get<Solution[]>(`${this.apiUrl}/developer/${developerId}`);
 }
-getSolutionsByCompany(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}/company`);
-}
 
   postSolution(solutionData: any): Observable<Solution> {
     return this.http.post<Solution>(this.apiUrl, solutionData);
   }
+
+getSolutionsByCompany(companyId: number): Observable<Solution[]> {
+  return this.http.get<Solution[]>(`${this.apiUrl}/company/${companyId}`);
+}
+
+
 
 }

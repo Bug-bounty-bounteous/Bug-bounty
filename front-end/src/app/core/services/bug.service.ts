@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Bug } from '../models/bug.model';
 import { PagedResponse } from '../models/paged-response.model';
+import { Solution } from '../models/solution.model';
 
 @Injectable({
     providedIn: 'root'
@@ -97,4 +98,13 @@ export class BugService {
     unclaimBug(bugId: number): Observable<any> {
         return this.http.delete(`${this.apiUrl}/${bugId}/claim`);
     }
+    /**
+     * Get solutions for a specific bug
+     */
+    getSolutionsByBugId(bugId: number): Observable<any[]> {
+    return this.http.get<any[]>(`/api/solutions/bug/${bugId}`);
+    }
+ 
+
+    
 }

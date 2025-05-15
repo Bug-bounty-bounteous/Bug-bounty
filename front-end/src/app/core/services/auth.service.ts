@@ -77,7 +77,7 @@ export class AuthService {
             });
           },
           error: (error) => {
-            console.error('Error in login service:', error);
+            // console.error('Error in login service:', error);
           },
         })
         // catchError((error) => {
@@ -91,6 +91,14 @@ export class AuthService {
     return this.http.post(
       `${AUTH_API}/unlock`,
       { email, captchaCode },
+      httpOptions
+    );
+  }
+
+  SolveCaptchaRequest(captcha: string): Observable<any> {
+    return this.http.post(
+      `${AUTH_API}/verify-captcha`,
+      { captcha },
       httpOptions
     );
   }

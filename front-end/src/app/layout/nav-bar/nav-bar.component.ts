@@ -12,8 +12,5 @@ import { RouterLink } from '@angular/router';
 export class NavBarComponent {
   logoUrl: string = 'assets/images/logo.png';
 
-  links: { name: string; url: string }[] = [
-    { name: 'About', url: '/about' },
-    { name: 'Login', url: '/login' },
-  ];
+  links: { name: string; url: string }[] = [{ name: 'Login', url: '/login' }];
 }
