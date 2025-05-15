@@ -114,7 +114,7 @@ public class AuthService {
 
 
 
-    @Transactional
+    @Transactional(noRollbackFor = UnauthorizedException.class)
     public JwtResponse login(LoginRequest request) {
         String email = request.getEmail();
 
