@@ -141,7 +141,7 @@ export class SolutionCreateComponent implements OnInit {
         this.solutionForm.reset();
         setTimeout(() => {
           // TODO: Go to solution shower screen
-          this.router.navigate(['/solutions/', this.bugId])
+          this.router.navigate(['/solutions/', response])
         }, 2000);
       },
       error: (error) => {

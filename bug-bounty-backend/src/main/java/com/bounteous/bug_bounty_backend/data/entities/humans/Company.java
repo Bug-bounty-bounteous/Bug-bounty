@@ -35,4 +35,8 @@ public class Company extends User {
     @OneToMany(mappedBy = "company")
     @Builder.Default 
     private List<Feedback> feedbacks = new ArrayList<>();
+
+    public boolean publishedBug(Bug bug) {
+        return getBugs().contains(bug);
+    }
 }

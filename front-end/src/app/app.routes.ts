@@ -52,6 +52,11 @@ export const routes: Routes = [
     data: { roles: ['DEVELOPER'] }
   },
   {
+    path: 'bugs/:id/solutions',
+    loadComponent: () => import('./features/solutions/solution-list/solution-list.component').then(m => m.SolutionListComponent),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'solutions/:id',
     loadComponent: () => import('./features/solutions/solution-review/solution-review.component').then(m => m.SolutionReviewComponent),
     canActivate: [AuthGuard],

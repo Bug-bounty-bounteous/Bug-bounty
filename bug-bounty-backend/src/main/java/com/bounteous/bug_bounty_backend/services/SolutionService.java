@@ -6,17 +6,19 @@ import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.BugStatus;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.SolutionStatus;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Admin;
 import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
 import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
+import com.bounteous.bug_bounty_backend.data.entities.humans.User;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.SolutionRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.humans.CompanyRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.UserRepository;
 import com.bounteous.bug_bounty_backend.exceptions.BadRequestException;
 import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
 import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
 import org.antlr.v4.runtime.misc.Pair;
-import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,8 @@ public class SolutionService {
     private SolutionRepository solutionRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Value("${spring.servlet.multipart.max-file-size}")
     private int maxFileSizeBytes;
 
@@ -185,7 +189,65 @@ public class SolutionService {
             Bug bug = solution.getBug();
             bug.setBugStatus(BugStatus.RESOLVED);
             bugRepository.save(bug);
+            Developer claimer = solution.getDeveloper();
+            claimer.setPoints(claimer.getPoints() + (int) bug.getReward());
+            developerRepository.save(claimer);
         }
         solutionRepository.save(solution);
+    }
+
+    private List<SolutionResponse> getAllSolutionsForBug(Bug bug) {
+        return bug.getSolutions().stream().map(
+                solution ->
+                    SolutionResponse.builder()
+                            .id(solution.getId())
+                            .description(solution.getDescription())
+                            .codeLink(solution.getCodeLink())
+                            .status(solution.getStatus().toString())
+                            .submittedAt(solution.getSubmittedAt())
+                            .reviewedAt(solution.getReviewedAt())
+                            .bug(SolutionResponse.BugInfo.builder()
+                                    .id(solution.getBug().getId())
+                                    .title(solution.getBug().getTitle())
+                                    .build())
+                            .developer(SolutionResponse.DeveloperInfo.builder()
+                                    .id(solution.getDeveloper().getId())
+                                    .username(solution.getDeveloper().getUsername())
+                                    .email(solution.getDeveloper().getEmail())
+                                    .rating(solution.getDeveloper().getRating())
+                                    .build())
+                            .build()
+        ).toList();
+    }
+
+    private List<SolutionResponse> getDeveloperSolutionsForBug(Bug bug, Developer user) {
+        List<SolutionResponse> allSols = getAllSolutionsForBug(bug);
+        return allSols.stream().filter(
+                solutionResponse ->
+                        Objects.equals(solutionResponse.getDeveloper().getId(), user.getId())
+                ).toList();
+    }
+
+    public List<SolutionResponse> getSolutionsForBug(Long bugId, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BadRequestException(
+                String.format("No user with email %s", email)
+        ));
+        Bug bug = bugRepository.findById(bugId).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        String.format("No bug with id: %d", bugId))
+        );
+
+        if (user instanceof Developer
+                && ((Developer) user).isClaiming(bug)) {
+            return getDeveloperSolutionsForBug(bug, (Developer) user);
+        }
+        else if (
+                (user instanceof Company
+                && ((Company) user).publishedBug(bug))
+                        || user instanceof Admin) {
+            return getAllSolutionsForBug(bug);
+        } else {
+            return List.of();
+        }
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -75,6 +76,7 @@ public class BugClaimService {
             bugClaimRepository.save(claim);
             
             // Update the bug status
+            bug.setBugClaims(List.of(claim));
             bug.setBugStatus(BugStatus.CLAIMED);
             bugRepository.save(bug);
             
@@ -113,6 +115,7 @@ public class BugClaimService {
             // delete the claim
             bugClaimRepository.delete(bugclaim);
             // Update the bug status
+            bug.setBugClaims(List.of());
             bug.setBugStatus(BugStatus.OPEN);
             bugRepository.save(bug);
 

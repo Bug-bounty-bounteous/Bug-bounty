@@ -21,8 +21,8 @@ export class SolutionService {
     return this.http.get<Solution[]>(`${this.apiUrl}/company/${companyId}`);
   }
 
-  postSolution(solutionData: any): Observable<Solution> {
-    return this.http.post<Solution>(this.apiUrl, solutionData);
+  postSolution(solutionData: any): Observable<number> {
+    return this.http.post<number>(this.apiUrl, solutionData);
   }
 
   getSolutionById(solutionId: number): Observable<Solution> {

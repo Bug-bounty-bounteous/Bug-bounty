@@ -1,5 +1,6 @@
 package com.bounteous.bug_bounty_backend.data.entities.humans;
 
+import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.BugClaim;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import jakarta.persistence.Entity;
@@ -31,4 +32,10 @@ public class Developer extends User {
     @OneToMany(mappedBy = "developer")
     @Builder.Default
     private List<Solution> solutions = new ArrayList<>();
+
+    public boolean isClaiming(Bug bug) {
+        return ! (getBugClaims().stream().filter(
+                bugClaim -> bugClaim.getBug().equals(bug)
+        ).toList().isEmpty());
+    }
 }

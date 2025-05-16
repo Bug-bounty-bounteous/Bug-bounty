@@ -38,6 +38,24 @@ public class SolutionController {
         return ResponseEntity.ok(solutions);
     }
 
+    /**
+     * If publisher company, return all solutions for this bug event past claimers
+     *  if claimer return only those that you submitted.
+     * @param bugId
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/bugs/{bugId}")
+    public ResponseEntity<List<SolutionResponse>> getSolutionsForBug(
+            @PathVariable Long bugId,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        List<SolutionResponse> solutions = solutionService.getSolutionsForBug(bugId, email);
+        return ResponseEntity.ok(solutions);
+    }
+
+
     @GetMapping("/{solutionId}")
     public ResponseEntity<SolutionResponse> getSolutionById(
             @PathVariable Long solutionId
