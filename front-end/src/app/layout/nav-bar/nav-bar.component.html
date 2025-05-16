@@ -1,16 +1,30 @@
-<div [ngClass]="'container'">
-  <div>
-    <a routerLink="/">
-      <img [src]="logoUrl" alt="logo" />
+<nav class="navbar">
+  <div class="nav-left">
+    <a routerLink="/home" class="logo">
+      <img 
+        [src]="(theme$ | async) === 'light' ? 'assets/images/logo-light.png' : 'assets/images/logo.png'" 
+        alt="Bug Bounty Logo" 
+        class="logo-icon" 
+      />
+      Bug Bounty
     </a>
   </div>
-  <nav [ngClass]="'navBar'">
-    <ul>
-      @for (link of links; track $index) {
-      <li>
-        <a [routerLink]="link.url">{{ link.name }}</a>
-      </li>
-      }
-    </ul>
-  </nav>
-</div>
+  
+  <div class="nav-center">
+    <!-- Navigation links can go here -->
+  </div>
+  
+  <div class="nav-right">
+    <app-theme-toggle></app-theme-toggle>
+    
+    <div *ngIf="!isLoggedIn" class="nav-links">
+      <a routerLink="/login" class="nav-link">Login</a>
+      <a routerLink="/register" class="nav-link">Sign Up</a>
+    </div>
+    
+    <div *ngIf="isLoggedIn" class="nav-links">
+      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+      <button (click)="logout()" class="logout-btn">Logout</button>
+    </div>
+  </div>
+</nav>

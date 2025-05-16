@@ -126,7 +126,7 @@
 
 body {
   margin: 0;
-  font-family: 'Courier New', monospace;
+  min-height: 100vh;
   background-color: var(--background);
   color: var(--white);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -176,6 +176,13 @@ body {
   --alert-warning-text: #F4FF00;
 }
 
+
+/* Set a base font size and family */
+html {
+  font-size: 16px;
+  font-family: "Source Code Pro", monospace;
+}
+
 /* Scrollbar styling for both themes */
 ::-webkit-scrollbar {
   width: 8px;
@@ -201,4 +208,35 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--green-3);
+}
+
+:root[data-theme="light"] .form,
+:root[data-theme="light"] .form-body,
+:root[data-theme="light"] .tab-content {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .input-group input[type="text"],
+:root[data-theme="light"] .input-group input[type="email"],
+:root[data-theme="light"] .input-group input[type="password"] {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--form-border);
+}
+
+:root[data-theme="light"] .input-group label {
+  color: var(--green-1);
+}
+
+:root[data-theme="light"] .main {
+  background-color: var(--background);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }

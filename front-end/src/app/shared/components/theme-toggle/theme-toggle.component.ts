@@ -7,80 +7,8 @@ import { Observable } from 'rxjs';
   selector: 'app-theme-toggle',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <button 
-      class="theme-toggle"
-      (click)="toggleTheme()"
-      [attr.aria-label]="(theme$ | async) === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
-    >
-      <div class="toggle-container">
-        <div class="toggle-slider" [class.light-mode]="(theme$ | async) === 'light'">
-          <span class="toggle-icon">
-            {{ (theme$ | async) === 'light' ? '🌙' : '☀️' }}
-          </span>
-        </div>
-      </div>
-    </button>
-  `,
-  styles: [`
-    .theme-toggle {
-      background: transparent;
-      border: 1px solid var(--outline);
-      border-radius: 25px;
-      padding: 4px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .theme-toggle:hover {
-      border-color: var(--green-3);
-      background: var(--background-section-hover);
-    }
-    
-    .toggle-container {
-      width: 48px;
-      height: 24px;
-      background: var(--background-section);
-      border-radius: 20px;
-      position: relative;
-      transition: background-color 0.3s ease;
-    }
-    
-    .toggle-slider {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 20px;
-      height: 20px;
-      background: var(--green-3);
-      border-radius: 50%;
-      transition: transform 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .toggle-slider.light-mode {
-      transform: translateX(24px);
-      background: var(--yellow-1);
-    }
-    
-    .toggle-icon {
-      font-size: 12px;
-      line-height: 1;
-    }
-    
-    :root[data-theme="light"] .toggle-container {
-      background: #e9ecef;
-    }
-    
-    :root[data-theme="light"] .toggle-slider:not(.light-mode) {
-      background: #6c757d;
-    }
-  `]
+  templateUrl: './theme-toggle.component.html',
+  styleUrls: ['./theme-toggle.component.css']
 })
 export class ThemeToggleComponent {
   theme$: Observable<'light' | 'dark'>;
