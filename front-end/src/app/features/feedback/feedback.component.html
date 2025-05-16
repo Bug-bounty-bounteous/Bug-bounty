@@ -1,30 +1,36 @@
-<div class="feedback-section">
- 
+<div class="feedback-wrapper">
+  <div class="feedback-section">
+    <div class="feedback-form">
+      <h2>Submit Feedback</h2>
 
-  <div class="feedback-form">
-    <h2>Submit Feedback on Solutions</h2>
+      <div class="form-group">
+        <label for="feedback">Feedback:</label>
+        <textarea
+          id="feedback"
+          [(ngModel)]="feedbackMessage"
+          class="form-control"
+          placeholder="Your feedback here"
+        ></textarea>
+      </div>
 
-    <div class="form-group">
-      <label for="solution">Select Solution:</label>
-      <select id="solution" [(ngModel)]="selectedSolutionId" class="form-control">
-        <option *ngFor="let solution of solutions" [value]="solution.id">
-          {{ solution.description }}
-        </option>
-      </select>
+      <div class="form-group">
+        <label for="rating">Rating (1–5):</label>
+        <input
+          type="number"
+          id="rating"
+          [(ngModel)]="rating"
+          min="1"
+          max="5"
+          class="form-control"
+        />
+      </div>
+
+      <button 
+        class="btn-primary"
+        (click)="submitFeedback()"
+        [disabled]="!feedbackMessage || rating < 1 || rating > 5 || isSubmitting">
+        Submit Feedback
+      </button>
     </div>
-
-    <div class="form-group">
-      <label for="feedback">Feedback:</label>
-      <textarea id="feedback" [(ngModel)]="feedbackMessage" class="form-control" placeholder="Your feedback here"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label for="rating">Rating (1-5):</label>
-      <input type="number" id="rating" [(ngModel)]="rating" min="1" max="5" class="form-control">
-    </div>
-
-    <button class="btn-primary" (click)="submitFeedback()">
-      Submit Feedback
-    </button>
   </div>
 </div>
