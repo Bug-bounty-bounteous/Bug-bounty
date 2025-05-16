@@ -1,35 +1,38 @@
 <app-sidebar-layout activeSection="Bug Marketplace">
     <div class="solution-review-container">
         <h2 class="title">Review Solution</h2>
+        @if (errorMessage) {
             <app-alert
                 type="danger"
                 [message]="errorMessage"
                 (close)="errorMessage = ''"
                 ></app-alert>
+        }
+        @if (successMessage) {
             <app-alert
                 type="success"
                 [message]="successMessage"
                 (close)="successMessage = ''"
                 ></app-alert>
+
+        }
         @if (isLoading) {
             <app-loader
             [isLoading]="true"
             message="Loading solution...">
         </app-loader>
         } @else if (!isLoading && !isPublisher && !isClaimer) {
-            <h3>You are not allowed to view this page</h3>
+            <h3 class="not-allowed">You are not allowed to view this page</h3>
         }
         @else {
             <!-- General Solution details -->
             <div class="solution-info">
-                <div [ngClass]="'status-' + solution.status">{{solution.status}}</div>
-                <h3>Bug: {{bug.title}}</h3>
+                <div class="status" [ngClass]="'status-' + solution.status.toLowerCase()">{{solution.status}}</div>
+                <h3>Bug: {{solution.bug.title}}</h3> 
                 <h4>Solution:</h4>
                 <p>Decription: {{solution.description}}</p>
-            </div>
-            <div class="solution-actions">
             @if (solution.codeLink) {
-                <p>Code Link: {{solution.codeLink}}</p>
+                <p>Code Link: <a [href]="solution.codeLink">{{solution.codeLink}}</a></p>
             } @else {
                 <app-button 
                     type="primary"
@@ -38,8 +41,10 @@
                     (onClicked)="downloadSolutionFile()"
                 >Download file</app-button>
             }
+            </div>
+            <div class="solution-actions">
             <!-- If company, then actions -->
-            @if (isPublisher && canAct) {
+            @if (isPublisher && ["REJECTED", "ACCEPTED"].indexOf(solution.status) == -1) {
                 <div class="actions">
                     <app-button
                         type="primary"
@@ -55,8 +60,6 @@
                     >Refuse Solution</app-button>
                     <app-button
                         type="primary"
-                        [isLoading]="isSendingFeedback"
-                        [disabled]="isSendingFeedback"
                         (onClicked)="sendFeedback()"
                     >Send Feedback</app-button>
 
@@ -64,8 +67,8 @@
             }
 
             </div>
-        }
         <div class="feedbacks-container">
+            <h3>Feedbacks:</h3>
             @if (isLoadingFeedbacks) {
             <app-loader
             [isLoading]="true"
@@ -77,12 +80,13 @@
             } @else {
                 @for (feedback of feedbacks; track feedback.id) {
                     <div class="feedback-container">
-                        <p>{{feedback.feedbackText}}</p>
-                        <p>{{feedback.rating}}</p>
+                        <p>Feedback: {{feedback.feedbackText}}</p>
+                        <p>Rating: {{feedback.rating}}</p>
                     </div>
+                    }
                 }
             }
-            }
         </div>
+        }
     </div>
 </app-sidebar-layout>

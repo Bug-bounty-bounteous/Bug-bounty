@@ -7,13 +7,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SolutionService } from '../../../core/services/solution.service';
 import { UserService } from '../../../core/services/user.service';
 import { Solution } from '../../../core/models/solution.model';
-import { Bug } from '../../../core/models/bug.model';
 import { BugService } from '../../../core/services/bug.service';
 import { User } from '../../../core/models/user.model';
 import { TokenStorageService } from '../../../core/auth/token.storage';
 import { AlertComponent } from "../../../shared/components/alert/alert.component";
 import { Feedback } from '../../../core/models/feedback.model';
 import { FeedbackService } from '../../../core/services/feedback.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-solution-review',
@@ -31,25 +32,20 @@ import { FeedbackService } from '../../../core/services/feedback.service';
 export class SolutionReviewComponent implements OnInit {
   isLoading: boolean = true;
   isLoadingFeedbacks: boolean = true;
-  allowedToView: boolean = false;
   solution: Solution;
-  bug: Bug;
   isDownloading: boolean = false;
   isPublisher: boolean = false;
   isClaimer: boolean = false;
-  canAct: boolean = false;
   user: User;
   isSendingAccept: boolean = false;
   isSendingRefuse: boolean = false;
-  isSendingFeedback: boolean = false;
   errorMessage: string = '';
-  successMessage: string;
-  feedbacks: Feedback[];
+  successMessage: string = '';
+  feedbacks: Feedback[] = [];
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private bugService: BugService,
     private solutionService: SolutionService,
     private userService: UserService,
     private feedbackService: FeedbackService,
@@ -62,6 +58,23 @@ export class SolutionReviewComponent implements OnInit {
     this.loadSolutionReview();
   }
 
+
+  loadSolutionReview() {
+    this.isLoading = true;
+    let solutionId = Number(this.route.snapshot.paramMap.get('id'));
+    this.solutionService.getSolutionById(solutionId).subscribe({
+      next: (response) => {
+        this.solution = response;
+        this.checkAllowedToViewOrAct();
+        this.loadFeedbacks();
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || error.error?.error?.message || "Failed to load solution";
+      }
+    })
+  }
+
   loadFeedbacks() {
     this.isLoadingFeedbacks = true;
     this.feedbackService.getFeedbacksForSolution(this.solution.id).subscribe(
@@ -71,51 +84,26 @@ export class SolutionReviewComponent implements OnInit {
                 this.isLoadingFeedbacks = false;
             },
             error: (error) => {
-                this.errorMessage = error;
+                this.errorMessage = error.error?.message || error.error?.error?.message ||  "Failed to load feedbacks";
                 this.isLoadingFeedbacks = false;
             }
         }
     );
   }
 
-  loadSolutionReview() {
-    let solutionId = Number(this.route.snapshot.paramMap.get('id'));
-    this.solutionService.getSolutionById(solutionId).subscribe({
-      next: (response) => {
-        this.solution = response;
-        this.bug = this.solution.bug;
-        this.checkAllowedToViewOrAct();
-        this.loadFeedbacks();
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error;
-      }
-    })
-  }
-
   downloadSolutionFile() {
-    this.isDownloading = true;
-    this.solutionService.downloadSolutionFile(this.solution.id).subscribe({
-      next: (data) => {
-          const blob = new Blob([data]);
-          const url= window.URL.createObjectURL(blob);
-          window.open(url);
-          this.isDownloading = false;
-      },
-      error: (error) => {
-        this.errorMessage = error;
-        this.isDownloading = false;
-      }
-    })
+    this.solutionService.downloadSolutionFile(this.solution.id);
   }
+  
   checkAllowedToViewOrAct() {
+    this.isClaimer = false;
+    this.isPublisher = false;
     if (this.user.role == 'DEVELOPER') {
       this.userService.getClaimedBugs().subscribe(
         {
           next: (bugs) => {
             for (let bug of bugs) {
-              if (bug.id == this.bug.id) {
+              if (bug.id == this.solution.bug.id) {
                 this.isClaimer = true;
                 return;
               }
@@ -124,7 +112,7 @@ export class SolutionReviewComponent implements OnInit {
           },
           error: (error) => {
             this.isClaimer = false;
-            this.errorMessage = error;
+            this.errorMessage = error.error?.message || error.error?.error?.message || "You are not the claimer for this bug";
           }
         }
       )
@@ -133,9 +121,8 @@ export class SolutionReviewComponent implements OnInit {
         {
           next: (bugs) => {
             for (let bug of bugs) {
-              if (bug.id == this.bug.id) {
+              if (bug.id == this.solution.bug.id) {
                 this.isPublisher = true;
-                this.checkAllowedToAct();
                 return;
               }
               this.isPublisher = false;
@@ -143,7 +130,7 @@ export class SolutionReviewComponent implements OnInit {
           },
           error: (error) => {
             this.isPublisher = false;
-            this.errorMessage = error;
+            this.errorMessage = error.error?.message || error.error?.error?.message || "You are not the publisher for this bug";
           }
         }
       )
@@ -151,9 +138,6 @@ export class SolutionReviewComponent implements OnInit {
     this.isLoading = false;
   }
 
-  checkAllowedToAct() {
-    this.canAct = this.solution.status == "SUBMITTED";
-  }
 
   sendAcceptSolution() {
     this.isSendingAccept = true;
@@ -161,10 +145,30 @@ export class SolutionReviewComponent implements OnInit {
       next: (res) => {
         this.successMessage = "Solution accepted successfully!";
         this.isSendingAccept = false;
+        this.loadSolutionReview();
       }, 
       error: (error) => {
-        this.errorMessage = error;
+        this.errorMessage = error.error?.message || error.error?.error?.message || "Solution failed to be accepted";
         this.isSendingAccept = false;
+      }
+    });
+  }
+
+  sendFeedback() {
+    this.router.navigate(["/", "my-feedback", this.solution.id]);
+  }
+
+  sendRefuseSolution() {
+    this.isSendingRefuse = true;
+    this.solutionService.refuseSolution(this.solution.id).subscribe({
+      next: (res) => {
+        this.successMessage = "Solution rejected successfully!";
+        this.isSendingRefuse = false;
+        this.loadSolutionReview();
+      }, 
+      error: (error) => {
+        this.errorMessage = error.error?.message || error.error?.error?.message || "Solution failed to be rejected";
+        this.isSendingRefuse = false;
       }
     });
   }

@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/feedback/submit").hasRole("COMPANY")
                 .requestMatchers(HttpMethod.GET, "/api/solutions/developer/**").hasAnyRole("DEVELOPER", "COMPANY")
                 .requestMatchers(HttpMethod.GET, "/api/resources/*/download").permitAll() // Allow public access to downloads
-                .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY") 
+                .requestMatchers(HttpMethod.GET, "/api/solutions/*/file").permitAll() // Allow public access to downloads
+                .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY")
                 .requestMatchers(HttpMethod.GET, "/api/bugs/**").authenticated()
                 .anyRequest().authenticated())
             .authenticationProvider(authenticationProvider())

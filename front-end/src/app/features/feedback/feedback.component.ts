@@ -44,7 +44,7 @@ export class FeedbackComponent implements OnInit {
     }
 
     if (this.role === 'COMPANY') {
-      this.solutionService.getSolutionsByCompany().subscribe({
+      this.solutionService.getSolutionsByCompany(user.id).subscribe({
         next: (data) => this.solutions = data,
         error: (err) => console.error('Error fetching solutions', err)
       });

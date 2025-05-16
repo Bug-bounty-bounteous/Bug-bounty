@@ -51,11 +51,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['DEVELOPER'] }
   },
-  // {
-  //   path: 'solutions/:id',
-  //   loadComponent: () => import('./features/solutions/solution-review/solution-review.component').then(m => m.SolutionReviewComponent),
-  //   canActivate: [AuthGuard],
-  // },
+  {
+    path: 'solutions/:id',
+    loadComponent: () => import('./features/solutions/solution-review/solution-review.component').then(m => m.SolutionReviewComponent),
+    canActivate: [AuthGuard],
+  },
   {
     path: 'dashboard',
     loadComponent: () =>

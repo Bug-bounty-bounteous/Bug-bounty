@@ -24,6 +24,7 @@ public class Solution {
     private String description;
     private String codeLink;
     private Blob file;
+    private String filename;
     
     @Enumerated(EnumType.STRING)
     private SolutionStatus status;

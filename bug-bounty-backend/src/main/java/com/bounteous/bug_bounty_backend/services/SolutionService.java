@@ -3,14 +3,20 @@ package com.bounteous.bug_bounty_backend.services;
 import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
 import com.bounteous.bug_bounty_backend.data.dto.responses.solution.SolutionResponse;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
+import com.bounteous.bug_bounty_backend.data.entities.bugs.BugStatus;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.SolutionStatus;
+import com.bounteous.bug_bounty_backend.data.entities.humans.Company;
 import com.bounteous.bug_bounty_backend.data.entities.humans.Developer;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.SolutionRepository;
+import com.bounteous.bug_bounty_backend.data.repositories.humans.CompanyRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.humans.DeveloperRepository;
+import com.bounteous.bug_bounty_backend.exceptions.BadRequestException;
 import com.bounteous.bug_bounty_backend.exceptions.ForbiddenException;
 import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
+import org.antlr.v4.runtime.misc.Pair;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.function.BinaryOperator;
+import java.util.Objects;
 
 // Handles solution-related business logic
 @Service
@@ -38,9 +45,12 @@ public class SolutionService {
     private DeveloperRepository developerRepository;
     @Autowired
     private SolutionRepository solutionRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
     @Value("${spring.servlet.multipart.max-file-size}")
     private int maxFileSizeBytes;
-    
+
+
 
     /**
      * Create a solution for a bug in the database, by the user with the given username.
@@ -76,6 +86,7 @@ public class SolutionService {
                 .description(request.getDescription())
                 .codeLink(request.getCodeLink())
                 .file(new SerialBlob(request.getFile().getBytes()))
+                .filename(request.getFilename())
                 .status(SolutionStatus.SUBMITTED)
                 .submittedAt(LocalDateTime.now())
                 .developer(developer)
@@ -110,5 +121,71 @@ public class SolutionService {
                         .build())
                 .build()
         ).toList();
+    }
+
+    public SolutionResponse getSolutionById(Long solutionId) {
+        Solution solution = solutionRepository.findById(solutionId).orElseThrow(
+                () -> new BadRequestException("Solution with id ")
+        );
+        return SolutionResponse.builder()
+                .id(solution.getId())
+                .description(solution.getDescription())
+                .codeLink(solution.getCodeLink())
+                .status(solution.getStatus().toString())
+                .submittedAt(solution.getSubmittedAt())
+                .reviewedAt(solution.getReviewedAt())
+                .bug(SolutionResponse.BugInfo.builder()
+                        .id(solution.getBug().getId())
+                        .title(solution.getBug().getTitle())
+                        .build())
+                .developer(SolutionResponse.DeveloperInfo.builder()
+                        .id(solution.getDeveloper().getId())
+                        .username(solution.getDeveloper().getUsername())
+                        .email(solution.getDeveloper().getEmail())
+                        .rating(solution.getDeveloper().getRating())
+                        .build())
+                .build();
+    }
+
+    public Pair<byte[], String> getSolutionFile(Long solutionId) throws SQLException {
+        Solution solution = solutionRepository.findById(solutionId).orElseThrow(
+                () -> new BadRequestException("Solution with id '" + solutionId + "' doesn't exist")
+        );
+        Blob blob = solution.getFile();
+        return new Pair<>(blob.getBytes(1, (int) blob.length()), solution.getFilename());
+    }
+
+    public boolean companyCanMutateSolution(Company company, Solution solution) {
+        Bug solutionBug = solution.getBug();
+        for (Bug bug: company.getBugs()) {
+            if (Objects.equals(bug.getId(), solutionBug.getId())) return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public void setVerdict(Long solutionId, @Valid String request, String email) {
+        Solution solution = solutionRepository.findById(solutionId).orElseThrow(
+                () -> new BadRequestException("Solution with id ")
+        );
+        Company company = companyRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("No company with email: " + email)
+        );
+        if (!this.companyCanMutateSolution(company, solution)) {
+            throw new BadRequestException("Bug '" + solution.getBug().getTitle() + "' is not from Company '"+ company.getCompanyName()+ "'");
+        }
+        SolutionStatus status;
+        try {
+            status = SolutionStatus.valueOf(request);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(request + " is not a valid SolutionStatus");
+        }
+        solution.setStatus(status);
+        if (status == SolutionStatus.ACCEPTED) {
+            Bug bug = solution.getBug();
+            bug.setBugStatus(BugStatus.RESOLVED);
+            bugRepository.save(bug);
+        }
+        solutionRepository.save(solution);
     }
 }
