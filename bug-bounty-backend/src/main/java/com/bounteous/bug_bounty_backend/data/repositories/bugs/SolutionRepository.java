@@ -10,4 +10,7 @@ import java.util.List;
 public interface SolutionRepository extends JpaRepository<Solution, Long> {
     // Repository methods will be added here
     List<Solution> findByDeveloper_Id(Long developerId);
+    List<Solution> findByBug_Id(Long bugId);
+    List<Solution> findByBug_Publisher_Id(Long companyId);
+
 }

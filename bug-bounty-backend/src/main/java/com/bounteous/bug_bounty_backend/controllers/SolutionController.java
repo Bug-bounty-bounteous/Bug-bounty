@@ -85,6 +85,7 @@ public class SolutionController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+
     @PostMapping
     public ResponseEntity<Long> postSolution(
             @RequestBody @Valid SolutionRequest request,
@@ -92,5 +93,17 @@ public class SolutionController {
         String email = authentication.getName();
         return ResponseEntity.status(HttpStatus.OK).body(solutionService.postSolution(request, email));
     }
+
+    // @GetMapping("/bug/{bugId}")
+    // public ResponseEntity<List<SolutionResponse>> getSolutionsByBug(@PathVariable Long bugId) {
+    //     List<SolutionResponse> solutions = solutionService.getSolutionsByBugId(bugId);
+    //     return ResponseEntity.ok(solutions);
+    // }
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<List<SolutionResponse>> getSolutionsByCompany(@PathVariable Long companyId) {
+        List<SolutionResponse> solutions = solutionService.getSolutionsByCompanyId(companyId);
+        return ResponseEntity.ok(solutions);
+    }
+
 
 }

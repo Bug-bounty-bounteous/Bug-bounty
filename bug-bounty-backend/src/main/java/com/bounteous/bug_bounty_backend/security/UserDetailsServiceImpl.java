@@ -18,13 +18,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        
+        // For OAuth2 users, use a placeholder password since they don't have one
+        String password = user.getPassword();
+        if (password == null || password.isEmpty()) {
+            // Use a placeholder password for OAuth2 users
+            password = "{noop}oauth2";
+        }
+        
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
-                .password(user.getPassword())
+                .password(password)
                 .authorities("ROLE_" + user.getRole())
                 .accountLocked(user.isAccountLocked())
                 .build();

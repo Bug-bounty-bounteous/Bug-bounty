@@ -110,8 +110,13 @@ class AuthServiceTest {
         when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(false);
         when(developerRepository.existsByUsername(registerRequest.getUsername())).thenReturn(false);
         when(passwordEncoder.encode(registerRequest.getPassword())).thenReturn("encodedPassword");
-        when(userRepository.save(any(Developer.class))).thenReturn(developer);
-        when(jwtTokenProvider.generateToken(developer.getEmail())).thenReturn("jwt-token");
+        
+        when(userRepository.save(any(Developer.class))).thenAnswer(invocation -> {
+            Developer savedDeveloper = invocation.getArgument(0);
+            savedDeveloper.setId(1L); 
+            return savedDeveloper;
+        });
+        when(jwtTokenProvider.generateToken(anyString())).thenReturn("jwt-token");
 
         // When
         JwtResponse response = authService.register(registerRequest);
@@ -120,16 +125,16 @@ class AuthServiceTest {
         assertNotNull(response);
         assertEquals("jwt-token", response.getToken());
         assertEquals("Bearer", response.getType());
-        assertEquals(developer.getId(), response.getId());
-        assertEquals(developer.getEmail(), response.getEmail());
-        assertEquals(developer.getUsername(), response.getUsername());
-        assertEquals(developer.getRole(), response.getRole());
+        assertEquals(1L, response.getId());
+        assertEquals(registerRequest.getEmail(), response.getEmail());
+        assertEquals(registerRequest.getUsername(), response.getUsername());
+        assertEquals("DEVELOPER", response.getRole());
 
         verify(userRepository).existsByEmail(registerRequest.getEmail());
         verify(developerRepository).existsByUsername(registerRequest.getUsername());
         verify(passwordEncoder).encode(registerRequest.getPassword());
         verify(userRepository).save(any(Developer.class));
-        verify(jwtTokenProvider).generateToken(developer.getEmail());
+        verify(jwtTokenProvider).generateToken(registerRequest.getEmail());
     }
 
     @Test
@@ -204,8 +209,13 @@ class AuthServiceTest {
 
         when(userRepository.existsByEmail(companyRequest.getEmail())).thenReturn(false);
         when(passwordEncoder.encode(companyRequest.getPassword())).thenReturn("encodedPassword");
-        when(userRepository.save(any(Company.class))).thenReturn(company);
-        when(jwtTokenProvider.generateToken(company.getEmail())).thenReturn("jwt-token");
+        
+        when(userRepository.save(any(Company.class))).thenAnswer(invocation -> {
+            Company savedCompany = invocation.getArgument(0);
+            savedCompany.setId(2L); 
+            return savedCompany;
+        });
+        when(jwtTokenProvider.generateToken(anyString())).thenReturn("jwt-token");
 
         // When
         JwtResponse response = authService.register(companyRequest);
@@ -214,10 +224,10 @@ class AuthServiceTest {
         assertNotNull(response);
         assertEquals("jwt-token", response.getToken());
         assertEquals("Bearer", response.getType());
-        assertEquals(company.getId(), response.getId());
-        assertEquals(company.getEmail(), response.getEmail());
-        assertEquals(company.getCompanyName(), response.getUsername());
-        assertEquals(company.getRole(), response.getRole());
+        assertEquals(2L, response.getId());
+        assertEquals(companyRequest.getEmail(), response.getEmail());
+        assertEquals(companyRequest.getUsername(), response.getUsername());
+        assertEquals("COMPANY", response.getRole());
 
         verify(userRepository).save(any(Company.class));
     }
@@ -268,13 +278,16 @@ class AuthServiceTest {
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(user));
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Invalid password"));
+        when(userRepository.save(user)).thenReturn(user);
 
         // When & Then
         UnauthorizedException exception = assertThrows(UnauthorizedException.class, 
             () -> authService.login(loginRequest));
         
         assertTrue(exception.getMessage().contains("Wrong password"));
-        verify(authService).incrementFailedAttempts(user);
+        
+        assertEquals(1, user.getFailedAttempts());
+        verify(userRepository).save(user);
     }
 
     @Test
@@ -325,7 +338,8 @@ class AuthServiceTest {
         // Then
         assertEquals(3, user.getFailedAttempts());
         assertTrue(user.isAccountLocked());
-        verify(userRepository).save(user);
+        
+        verify(userRepository, times(2)).save(user);
     }
 
     @Test

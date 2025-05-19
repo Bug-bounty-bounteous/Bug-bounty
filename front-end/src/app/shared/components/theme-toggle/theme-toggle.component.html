@@ -1,0 +1,13 @@
+<button 
+  class="theme-toggle"
+  (click)="toggleTheme()"
+  [attr.aria-label]="(theme$ | async) === 'light' ? 'Switch to dark mode' : 'Switch to light mode'"
+>
+  <div class="toggle-container">
+    <div class="toggle-slider" [class.light-mode]="(theme$ | async) === 'light'">
+      <span class="toggle-icon">
+        {{ (theme$ | async) === 'light' ? '🌙' : '☀️' }}
+      </span>
+    </div>
+  </div>
+</button>

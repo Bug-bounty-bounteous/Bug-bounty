@@ -2,9 +2,12 @@ package com.bounteous.bug_bounty_backend.config;
 
 import com.bounteous.bug_bounty_backend.security.JwtAuthenticationFilter;
 import com.bounteous.bug_bounty_backend.security.UserDetailsServiceImpl;
+import com.bounteous.bug_bounty_backend.security.OAuth2AuthenticationSuccessHandler;
+import com.bounteous.bug_bounty_backend.security.OAuth2AuthenticationFailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -34,22 +37,36 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            @Lazy OAuth2AuthenticationSuccessHandler successHandler,
+            @Lazy OAuth2AuthenticationFailureHandler failureHandler) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Allow OAuth2 endpoints
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/feedback/submit").hasRole("COMPANY")
                 .requestMatchers(HttpMethod.GET, "/api/solutions/developer/**").hasAnyRole("DEVELOPER", "COMPANY")
-                .requestMatchers(HttpMethod.GET, "/api/resources/*/download").permitAll() // Allow public access to downloads
+                .requestMatchers(HttpMethod.GET, "/api/resources/*/download").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/solutions/*/file").permitAll() // Allow public access to downloads
                 .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY")
                 .requestMatchers(HttpMethod.GET, "/api/bugs/**").authenticated()
                 .anyRequest().authenticated())
+            // Add OAuth2 configuration with @Lazy handlers
+            .oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(authorization -> 
+                    authorization.baseUri("/oauth2/authorization"))
+                .redirectionEndpoint(redirection -> 
+                    redirection.baseUri("/oauth2/callback/*"))
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
+            )
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -72,10 +89,8 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-        
         return authProvider;
     }
 

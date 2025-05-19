@@ -44,4 +44,6 @@ export class SolutionService {
   acceptSolution(id: number): Observable<any> {
     return this.http.post<Solution>(`${this.apiUrl}/${id}/verdict`, "ACCEPTED");
   }
+
+
 }

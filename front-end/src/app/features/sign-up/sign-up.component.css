@@ -73,10 +73,11 @@
 .input-group input[type="password"] {
   flex: 1;
   padding: 8px;
-  background-color: black;
-  color: var(--green-1, #00FF00);
-  border: 1px solid #333;
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--form-border);
 }
+
 
 .input-error {
   border-color: red !important;

@@ -1,41 +1,181 @@
-/* Pre-defined varaiables*/
-:root {
-  --background: #222;
+@import './app/styles/light-mode-improvements.css';
+
+/* Light theme variables */
+:root[data-theme="light"] {
+  /* Primary colors */
+  --background: #f8f9fa;
+  --background-section: #ffffff;
+  --background-tech-stack: #e9ecef;
+  --black: #ffffff;
+  --white: #212529;
+  --outline: #ced4da;
+  
+  /* Green colors */
+  --green-1: #198754;
+  --green-2: #157347;
+  --green-3: #0f5132;
+  --green-4: #198754;
+  --green-5: #0f5132;
+  --green-6: #d1e7dd;
+  
+  /* Other colors */
+  --blue-1: #0d6efd;
+  --red-1: #dc3545;
+  --red-outline: #f5c2c7;
+  --yellow-1: #fd7e14;
+  
+  /* Section colors */
+  --background-section-hover: #f8f9fa;
+  
+  /* Text colors for better contrast */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+}
+
+/* Dark theme variables */
+:root,
+:root[data-theme="dark"] {
+  /* Primary colors */
+  --background: #1a1a1a;
   --background-section: #000;
-  --background-section-hover: #3c3c3c;
-
-  --outline: #444;
-  --background-tech-stack: #333;
-
+  --background-tech-stack: #2a2a2a;
   --black: #000;
-
   --white: #fff;
-
-  --green-1: #00ff00;
-  --green-2: #00cc00;
-  --green-3: #00b300;
-  --green-4: #38b000;
-  --green-5: #009900;
-  --green-6: #003300;
-
-  --yellow-1: #f4ff00;
-  --yellow-2: #c3cc00;
-  --blue-1: #3366cc;
-  --blue-2: #2952a3;
-
-  --red-1: #ff0000;
-  --red-2: #c00;
-  --red-outline: #dd0000;
+  --outline: #333;
+  
+  /* Green colors */
+  --green-1: #00FF00;
+  --green-2: #00CC00;
+  --green-3: #00B300;
+  --green-4: #009900;
+  --green-5: #008000;
+  --green-6: #001a00;
+  
+  /* Other colors */
+  --blue-1: #3366CC;
+  --red-1: #FF0000;
+  --red-outline: #660000;
+  --yellow-1: #F4FF00;
+  
+  /* Section colors */
+  --background-section-hover: #1a1a1a;
+  
+  /* Text colors */
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #666666;
 }
 
-/* Reset some default browser styles */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* Theme-specific adjustments */
+:root[data-theme="light"] {
+  /* Adjust specific components for light mode */
+  --tech-chip-bg: #f8f9fa;
+  --tech-chip-border: #ced4da;
+  --tech-chip-selected-bg: #d1e7dd;
+  --tech-chip-selected-border: #198754;
+  
+  /* Form elements */
+  --form-bg: #ffffff;
+  --form-border: #ced4da;
+  --form-focus-border: #198754;
+  --form-focus-shadow: rgba(25, 135, 84, 0.25);
+  
+  /* Cards and sections */
+  --card-bg: #ffffff;
+  --card-border: #ced4da;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: rgba(0, 0, 0, 0.15);
+  
+  /* Buttons */
+  --btn-primary-bg: #198754;
+  --btn-primary-border: #198754;
+  --btn-primary-hover-bg: #157347;
+  --btn-secondary-bg: #6c757d;
+  --btn-secondary-border: #6c757d;
+  --btn-secondary-hover-bg: #5c636a;
+}
+
+:root[data-theme="dark"] {
+  /* Tech stack chips */
+  --tech-chip-bg: #2a2a2a;
+  --tech-chip-border: #333;
+  --tech-chip-selected-bg: #001a00;
+  --tech-chip-selected-border: #00B300;
+  
+  /* Form elements */
+  --form-bg: #000;
+  --form-border: #333;
+  --form-focus-border: #00B300;
+  --form-focus-shadow: rgba(0, 179, 0, 0.25);
+  
+  /* Cards and sections */
+  --card-bg: #000;
+  --card-border: #333;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: rgba(0, 0, 0, 0.4);
+  
+  /* Buttons */
+  --btn-primary-bg: #00B300;
+  --btn-primary-border: #00B300;
+  --btn-primary-hover-bg: #009900;
+  --btn-secondary-bg: #333;
+  --btn-secondary-border: #333;
+  --btn-secondary-hover-bg: #404040;
+}
+
+body {
   margin: 0;
-  padding: 0;
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--white);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Additional light mode specific styles */
+:root[data-theme="light"] .bug-card:hover,
+:root[data-theme="light"] .resource-card:hover {
+  box-shadow: 0 8px 25px var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Light mode improvements for readability */
+:root[data-theme="light"] {
+  /* Better shadows for depth */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Alert colors */
+  --alert-success-bg: #d1e7dd;
+  --alert-success-border: #badbcc;
+  --alert-success-text: #0f5132;
+  --alert-danger-bg: #f8d7da;
+  --alert-danger-border: #f5c2c7;
+  --alert-danger-text: #842029;
+  --alert-warning-bg: #fff3cd;
+  --alert-warning-border: #ffecb5;
+  --alert-warning-text: #664d03;
+}
+
+:root[data-theme="dark"] {
+  /* Shadows for dark mode */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  
+  /* Alert colors */
+  --alert-success-bg: rgba(0, 255, 0, 0.1);
+  --alert-success-border: #00B300;
+  --alert-success-text: #00FF00;
+  --alert-danger-bg: rgba(255, 0, 0, 0.1);
+  --alert-danger-border: #FF0000;
+  --alert-danger-text: #FF0000;
+  --alert-warning-bg: rgba(244, 255, 0, 0.1);
+  --alert-warning-border: #F4FF00;
+  --alert-warning-text: #F4FF00;
+}
+
 
 /* Set a base font size and family */
 html {
@@ -43,75 +183,60 @@ html {
   font-family: "Source Code Pro", monospace;
 }
 
-/* Ensure body takes full height and width */
-body {
-  min-height: 100vh;
-  line-height: 1.6;
+/* Scrollbar styling for both themes */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-3);
+}
+
+:root[data-theme="light"] .form,
+:root[data-theme="light"] .form-body,
+:root[data-theme="light"] .tab-content {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+:root[data-theme="light"] .input-group input[type="text"],
+:root[data-theme="light"] .input-group input[type="email"],
+:root[data-theme="light"] .input-group input[type="password"] {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--form-border);
+}
+
+:root[data-theme="light"] .input-group label {
+  color: var(--green-1);
+}
+
+:root[data-theme="light"] .main {
   background-color: var(--background);
-  color: var(--green-2);
 }
 
-/* Make images responsive */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Remove default list styles */
-ul,
-ol {
-  list-style: none;
-}
-
-li {
-  display: block;
-}
-
-/* Anchor tag styles */
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Basic styling for common elements */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-p {
-  margin-bottom: 1rem;
-}
-
-/* Utility classes for spacing */
-.mt-1 {
-  margin-top: 1rem;
-}
-.mb-1 {
-  margin-bottom: 1rem;
-}
-.mt-2 {
-  margin-top: 2rem;
-}
-.mb-2 {
-  margin-bottom: 2rem;
-}
-
-button {
-  all: unset;
-  display: inline-block;
-  cursor: pointer;
-  text-align: center;
-  border: none;
-  background: none;
-  padding: 0;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
-  font: inherit;
-  color: inherit;
-  line-height: normal;
+  padding: 0;
 }

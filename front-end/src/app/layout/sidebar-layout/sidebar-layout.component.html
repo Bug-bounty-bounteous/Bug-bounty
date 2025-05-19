@@ -1,6 +1,73 @@
-<div class="layout">
-  <app-side-bar [activeSection]="activeSection" />
+<div class="layout-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img 
+          [src]="(theme$ | async) === 'light' ? 'assets/images/logo-light.png' : 'assets/images/logo.png'" 
+          alt="Bug Bounty Logo" 
+          class="logo-icon" 
+        />
+        <h2 class="sidebar-title">Bug Bounty</h2>
+      </div>
+      <app-theme-toggle></app-theme-toggle>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a 
+        routerLink="/dashboard" 
+        class="sidebar-link"
+        [class.active]="activeSection === 'User Space'"
+      >
+        <span class="sidebar-icon">🏠</span>
+        Dashboard
+      </a>
+      
+      <a 
+        routerLink="/marketplace" 
+        class="sidebar-link"
+        [class.active]="activeSection === 'Bug Marketplace'"
+      >
+        <span class="sidebar-icon">🐛</span>
+        Bug Marketplace
+      </a>
+      
+      <a 
+        routerLink="/leaderboard" 
+        class="sidebar-link"
+        [class.active]="activeSection === 'Leaderboard'"
+      >
+        <span class="sidebar-icon">🏆</span>
+        Leaderboard
+      </a>
+      
+      <a 
+        routerLink="/resources" 
+        class="sidebar-link"
+        [class.active]="activeSection === 'Resources'"
+      >
+        <span class="sidebar-icon">📚</span>
+        Learning Resources
+      </a>
+      
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="userInfo">
+        <div class="user-name">{{ userInfo.username }}</div>
+        <div class="user-role">{{ userInfo.role }}</div>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <span class="sidebar-icon">🚪</span>
+        Logout
+      </button>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
   <main class="main-content">
-    <ng-content></ng-content>
+    <div class="content-wrapper">
+      <ng-content></ng-content>
+    </div>
   </main>
 </div>
