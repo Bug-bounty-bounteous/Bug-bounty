@@ -58,6 +58,11 @@ public class BugController {
         return ResponseEntity.ok(bugService.getBugById(id));
     }
 
+    @GetMapping("/{id}/claimer")
+    public ResponseEntity<Long> getClaimerId(@PathVariable Long id) {
+        return ResponseEntity.ok(bugService.getClaimerId(id));
+    }
+
     /**
      * Get all available difficulty levels
      * 

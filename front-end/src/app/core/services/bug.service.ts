@@ -86,6 +86,10 @@ export class BugService {
         return this.http.get<any[]>(`${this.apiUrl}/tech-stacks`);
     }
 
+    getBugClaimerId(bugId): Observable<number> {
+        return this.http.get<number>(`${this.apiUrl}/${bugId}/claimer`);
+    }
+
     /**
     * Claim a bug
     */

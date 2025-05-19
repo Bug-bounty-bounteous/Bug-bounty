@@ -92,4 +92,5 @@ public class SolutionController {
         String email = authentication.getName();
         return ResponseEntity.status(HttpStatus.OK).body(solutionService.postSolution(request, email));
     }
+
 }

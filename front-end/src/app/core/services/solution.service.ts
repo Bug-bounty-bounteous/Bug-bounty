@@ -17,6 +17,10 @@ export class SolutionService {
 }
 
 
+  getSolutionsForBug(bugId): Observable<Solution[]> {
+    return this.http.get<Solution[]>(`${this.apiUrl}/bugs/${bugId}`)
+  }
+
   getSolutionsByCompany(companyId: number): Observable<Solution[]> {
     return this.http.get<Solution[]>(`${this.apiUrl}/company/${companyId}`);
   }
