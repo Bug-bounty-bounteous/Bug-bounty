@@ -4,9 +4,9 @@ import com.bounteous.bug_bounty_backend.data.dto.requests.bug.BugCreateRequest;
 import com.bounteous.bug_bounty_backend.data.dto.requests.solution.SolutionRequest;
 import com.bounteous.bug_bounty_backend.services.SolutionService;
 import jakarta.validation.Valid;
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -36,6 +38,53 @@ public class SolutionController {
         return ResponseEntity.ok(solutions);
     }
 
+    /**
+     * If publisher company, return all solutions for this bug event past claimers
+     *  if claimer return only those that you submitted.
+     * @param bugId
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/bugs/{bugId}")
+    public ResponseEntity<List<SolutionResponse>> getSolutionsForBug(
+            @PathVariable Long bugId,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+        List<SolutionResponse> solutions = solutionService.getSolutionsForBug(bugId, email);
+        return ResponseEntity.ok(solutions);
+    }
+
+
+    @GetMapping("/{solutionId}")
+    public ResponseEntity<SolutionResponse> getSolutionById(
+            @PathVariable Long solutionId
+    ) {
+        return ResponseEntity.ok(solutionService.getSolutionById(solutionId));
+    }
+
+    @GetMapping("/{solutionId}/file")
+    public ResponseEntity<byte[]> getSolutionFile(
+            @PathVariable Long solutionId
+    ) throws SQLException {
+        Pair<byte[], String> solutionFile = solutionService.getSolutionFile(solutionId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + solutionFile.b + "\"")
+                .body(solutionFile.a);
+    }
+
+    @PostMapping("/{solutionId}/verdict")
+    public ResponseEntity<Void> setVerdict(
+            @PathVariable Long solutionId,
+            @RequestBody @Valid String request,
+            Authentication authentication) throws Exception {
+        String email = authentication.getName();
+        solutionService.setVerdict(solutionId, request, email);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     @PostMapping
     public ResponseEntity<Long> postSolution(
@@ -44,11 +93,12 @@ public class SolutionController {
         String email = authentication.getName();
         return ResponseEntity.status(HttpStatus.OK).body(solutionService.postSolution(request, email));
     }
-    @GetMapping("/bug/{bugId}")
-    public ResponseEntity<List<SolutionResponse>> getSolutionsByBug(@PathVariable Long bugId) {
-        List<SolutionResponse> solutions = solutionService.getSolutionsByBugId(bugId);
-        return ResponseEntity.ok(solutions);
-    }
+
+    // @GetMapping("/bug/{bugId}")
+    // public ResponseEntity<List<SolutionResponse>> getSolutionsByBug(@PathVariable Long bugId) {
+    //     List<SolutionResponse> solutions = solutionService.getSolutionsByBugId(bugId);
+    //     return ResponseEntity.ok(solutions);
+    // }
     @GetMapping("/company/{companyId}")
     public ResponseEntity<List<SolutionResponse>> getSolutionsByCompany(@PathVariable Long companyId) {
         List<SolutionResponse> solutions = solutionService.getSolutionsByCompanyId(companyId);

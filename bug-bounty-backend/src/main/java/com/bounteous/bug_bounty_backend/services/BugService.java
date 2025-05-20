@@ -1,11 +1,7 @@
 package com.bounteous.bug_bounty_backend.services;
 
 import com.bounteous.bug_bounty_backend.data.dto.responses.bug.BugResponse;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.BugStatus;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.Difficulty;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.TechStack;
-import com.bounteous.bug_bounty_backend.data.entities.bugs.VerificationStatus;
+import com.bounteous.bug_bounty_backend.data.entities.bugs.*;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.BugRepository;
 import com.bounteous.bug_bounty_backend.data.repositories.bugs.TechStackRepository;
 import com.bounteous.bug_bounty_backend.exceptions.ResourceNotFoundException;
@@ -238,5 +234,12 @@ public class BugService {
         }
 
         throw new ResourceNotFoundException("User not found with identifier: " + identifier);
+    }
+
+    public Long getClaimerId(Long id) {
+        Bug bug = bugRepository.findById(id).orElseThrow(() -> new BadRequestException(String.format("No bug with id %d", id)));
+        List<BugClaim> claims = bug.getBugClaims();
+        if (claims.isEmpty()) return -1L;
+        else return claims.get(0).getDeveloper().getId();
     }
 }

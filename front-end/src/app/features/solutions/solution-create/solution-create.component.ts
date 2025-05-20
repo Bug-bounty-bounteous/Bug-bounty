@@ -46,12 +46,14 @@ export class SolutionCreateComponent implements OnInit {
       // codeLink: ['', Validators.required],
       codeLink: [''],
       // file: ['', Validators.required],
-      file: ['']
+      file: [''],
+      filename: ['']
     });
   }
 
   onFileChange(event: Event) {
     this.solutionForm.patchValue({file: ''});
+    this.solutionForm.patchValue({filename: ''});
     let reader = new FileReader();
     this.validFile = false;
     if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files.length)  {
@@ -61,11 +63,15 @@ export class SolutionCreateComponent implements OnInit {
         this.errorMessage = 'File is too big, max size is 10 MBs, use a code link instead';
         (event.target as HTMLInputElement).value = null;
       } else {
+        console.log(file);
         this.validFile = true;
         reader.readAsText(file);
         reader.onload = () => {
           this.solutionForm.patchValue({
             file: reader.result.toString()
+          })
+          this.solutionForm.patchValue({
+            filename: file.name
           })
         }
 
@@ -137,7 +143,7 @@ export class SolutionCreateComponent implements OnInit {
         this.solutionForm.reset();
         setTimeout(() => {
           // TODO: Go to solution shower screen
-          this.router.navigate(['/marketplace']);
+          this.router.navigate(['/solutions/', response])
         }, 2000);
       },
       error: (error) => {

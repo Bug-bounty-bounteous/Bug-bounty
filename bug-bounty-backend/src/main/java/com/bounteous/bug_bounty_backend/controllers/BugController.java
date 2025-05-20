@@ -58,6 +58,11 @@ public class BugController {
         return ResponseEntity.ok(bugService.getBugById(id));
     }
 
+    @GetMapping("/{id}/claimer")
+    public ResponseEntity<Long> getClaimerId(@PathVariable Long id) {
+        return ResponseEntity.ok(bugService.getClaimerId(id));
+    }
+
     /**
      * Get all available difficulty levels
      * 
@@ -97,7 +102,6 @@ public class BugController {
     }
 
     @PostMapping("/{id}/claim")
-    @PreAuthorize("hasRole('DEVELOPER')")
     public ResponseEntity<ApiResponse> claimBug(
             @PathVariable Long id,
             @RequestBody(required = false) BugClaimRequest request,
@@ -110,7 +114,6 @@ public class BugController {
     }
 
     @DeleteMapping("/{id}/claim")
-    @PreAuthorize("hasRole('DEVELOPER')")
     public ResponseEntity<ApiResponse> unclaimBug(
             @PathVariable Long id,
             Authentication authentication

@@ -1,0 +1,67 @@
+.solution-review-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.not-allowed {
+    color: red;
+}
+.solution-info {
+    border-color: var(--outline);
+    border-width: 1px;
+    border-style: solid;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.actions {
+    border-color: var(--outline);
+    border-width: 1px;
+    border-style: solid;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.feedbacks-container {
+    border: 1px var(--outline) solid;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.status {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+
+}
+.status-submitted {
+    background-color: rgba(0, 204, 0, 0.2);
+    color: var(--green-2);
+}
+.status-under_review {
+    background-color: rgba(51, 102, 204, 0.2);
+    color: var(--blue-1);
+}
+.status-accepted {
+    background-color: rgba(0, 204, 0, 0.2);
+    color: var(--green-1);
+}
+.status-rejected,
+.status-revision_requested {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: var(--red-1);
+
+}
+.feedback-container {
+    border: 1px var(--outline) solid;
+    padding: 1rem;
+}

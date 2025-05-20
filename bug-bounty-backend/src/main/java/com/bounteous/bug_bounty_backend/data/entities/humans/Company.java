@@ -4,6 +4,7 @@ import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Feedback;
 import com.bounteous.bug_bounty_backend.data.entities.others.LearningResource;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ import java.util.List;
 public class Company extends User {
     private String companyName;
 
-    @OneToMany(mappedBy = "publisher")
+    @OneToMany(mappedBy = "publisher", fetch = FetchType.EAGER)
     @Builder.Default 
     private List<Bug> bugs = new ArrayList<>();
 
@@ -35,4 +36,8 @@ public class Company extends User {
     @OneToMany(mappedBy = "company")
     @Builder.Default 
     private List<Feedback> feedbacks = new ArrayList<>();
+
+    public boolean publishedBug(Bug bug) {
+        return getBugs().contains(bug);
+    }
 }

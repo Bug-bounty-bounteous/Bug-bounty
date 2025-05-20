@@ -24,6 +24,7 @@ public class Solution {
     private String description;
     private String codeLink;
     private Blob file;
+    private String filename;
     
     @Enumerated(EnumType.STRING)
     private SolutionStatus status;
@@ -31,11 +32,11 @@ public class Solution {
     private LocalDateTime submittedAt;
     private LocalDateTime reviewedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Developer developer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Bug bug;
 

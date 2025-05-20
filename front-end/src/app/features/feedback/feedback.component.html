@@ -2,6 +2,13 @@
   <div class="feedback-section">
     <div class="feedback-form">
       <h2>Submit Feedback</h2>
+      @if (successMessage) {
+        <app-alert
+          type="success"
+          [message]="successMessage"
+          (close)="successMessage = ''"
+        ></app-alert>
+      }
 
       <div class="form-group">
         <label for="feedback">Feedback:</label>

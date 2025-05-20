@@ -1,5 +1,39 @@
+<app-sidebar-layout activeSection="Bug Marketplace">
 <div class="solution-list-container">
     <h2>Solutions</h2>
+    @if (errorMessage) {
+      <app-alert
+        type="danger"
+        [message]="errorMessage"
+        (close)="errorMessage = ''"
+      ></app-alert>
+    }
+    @if (isLoading) {
+      <app-loader
+        [isLoading]="isLoading"
+        message="Loading solutions..."
+      ></app-loader>
+    } @else {
+      @if (solutions.length == 0) {
+        <h3>No solutions for you to see</h3>
+      } @else {
+        <div class="solutions-container">
+          @for (solution of solutions; track solution.id) {
+            <a class="hovering-effect" (click)="sendOpened(solution.id)">
+              <div class="solution-container"> 
+                <div class="top-bar">
+                  <div class="little-pod status" [ngClass]="'status-' + solution.status.toLowerCase()">{{solution.status}}</div>
+                  <div class="little-pod claimer" *ngIf="isByCurrentClaimer(solution.developer.id)">Claimer</div>
+                </div>
+                <h4>{{solution.description.length < 50 ?
+                solution.description : solution.description.substring(0, 40) + " ..."}}</h4>
+              </div>
+            </a>
+          }
+        </div> 
+    }
+  }
     <!-- Content will be added here -->
   </div>
+</app-sidebar-layout>
   

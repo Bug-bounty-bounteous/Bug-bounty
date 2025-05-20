@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Feedback } from '../models/feedback.model';
 
@@ -19,6 +19,10 @@ export class FeedbackService {
     rating: number;
   }): Observable<any> {
     return this.http.post(`${this.apiUrl}/submit`, payload);
+  }
+
+  getFeedbacksForSolution(id: number): Observable<Feedback[]> {
+    return this.http.get<Feedback[]>(`${this.apiUrl}/solution/${id}`);
   }
 
 }

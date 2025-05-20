@@ -1,8 +1,10 @@
 package com.bounteous.bug_bounty_backend.data.entities.humans;
 
+import com.bounteous.bug_bounty_backend.data.entities.bugs.Bug;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.BugClaim;
 import com.bounteous.bug_bounty_backend.data.entities.bugs.Solution;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -24,11 +26,17 @@ public class Developer extends User {
     private Float rating;
     private Integer points;
 
-    @OneToMany(mappedBy = "developer")
+    @OneToMany(mappedBy = "developer", fetch = FetchType.EAGER)
     @Builder.Default
     private List<BugClaim> bugClaims = new ArrayList<>();
 
-    @OneToMany(mappedBy = "developer")
+    @OneToMany(mappedBy = "developer", fetch = FetchType.EAGER)
     @Builder.Default
     private List<Solution> solutions = new ArrayList<>();
+
+    public boolean isClaiming(Bug bug) {
+        return ! (getBugClaims().stream().filter(
+                bugClaim -> bugClaim.getBug().equals(bug)
+        ).toList().isEmpty());
+    }
 }

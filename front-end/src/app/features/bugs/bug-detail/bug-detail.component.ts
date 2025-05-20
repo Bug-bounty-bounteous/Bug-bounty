@@ -12,6 +12,7 @@ import { Solution } from '../../../core/models/solution.model';
 import { SidebarLayoutComponent } from '../../../layout/sidebar-layout/sidebar-layout.component';
 import { UserService } from '../../../core/services/user.service';
 import { catchError, map, of } from 'rxjs';
+import { SolutionService } from '../../../core/services/solution.service';
 
 @Component({
   selector: 'app-bug-detail',
@@ -43,7 +44,8 @@ export class BugDetailComponent implements OnInit{
     private router: Router,
     private bugService: BugService,
     private userService: UserService,
-    private tokenService: TokenStorageService
+    private tokenService: TokenStorageService,
+    private solutionService: SolutionService
   ) {
     // Get current user ID
     const user = this.tokenService.getUser();
@@ -53,6 +55,22 @@ export class BugDetailComponent implements OnInit{
 
   ngOnInit(): void {
     this.loadBugDetails();
+  }
+
+  checkForSolutions() {
+    this.solutionService.getSolutionsForBug(this.bug.id).subscribe(
+      {
+        next: (response) => {
+          this.solutions = response
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading solutions', error);
+          this.errorMessage = 'Failed to load solutions. Please try again later.';
+          this.isLoading = false;
+        }
+      }
+    )
   }
 
   loadBugDetails(): void {
@@ -68,8 +86,7 @@ export class BugDetailComponent implements OnInit{
     this.bugService.getBugById(Number(bugId)).subscribe({
       next: (bug) => {
         this.bug = bug;
-        this.isLoading = false;
-        this.loadSolutions(bug.id);
+        this.checkForSolutions();
       },
       error: (error) => {
         console.error('Error loading bug details', error);
@@ -80,16 +97,6 @@ export class BugDetailComponent implements OnInit{
     this.checkIfClaimedByUser();
   }
 
-  loadSolutions(bugId: number): void {
-  this.bugService.getSolutionsByBugId(bugId).subscribe({
-    next: (solutions) => {
-      this.solutions = solutions;
-    },
-    error: (error) => {
-      console.error('Error loading solutions', error);
-    }
-  });
-}
 
   goBack(): void {
     this.router.navigate(['/marketplace']);
@@ -194,5 +201,9 @@ export class BugDetailComponent implements OnInit{
 
   submitSolution() {
     this.router.navigate(["/", "bugs", this.bug.id, "solutions", "create"]);
+  }
+
+  openSolutions() {
+    this.router.navigate(["/", "bugs", this.bug.id, "solutions"])
   }
 }

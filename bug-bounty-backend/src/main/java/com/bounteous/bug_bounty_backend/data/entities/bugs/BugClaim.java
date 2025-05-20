@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
 @Builder
 public class BugClaim {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Developer developer;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Bug bug;
 
     private LocalDateTime date;

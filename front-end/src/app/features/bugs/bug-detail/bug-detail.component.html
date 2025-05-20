@@ -80,7 +80,7 @@
             </div>
           </div>
 
-          <div class="info-card solution-feedback-card" *ngIf="solutions.length > 0">
+          <!-- <div class="info-card solution-feedback-card" *ngIf="solutions.length > 0">
           <h3>Submitted Solutions & Feedback</h3>
 
           <div *ngFor="let solution of solutions" class="solution-card">
@@ -104,7 +104,7 @@
               <em>No feedback submitted yet.</em>
             </div>
           </div>
-        </div>
+        </div> -->
 
           
           <div class="info-card bug-actions-card">
@@ -113,6 +113,12 @@
               <div 
                 class="action-buttons-container"
               >
+              @if (solutions.length != 0) {
+                <app-button
+                type="secondary"
+                (onClicked)="openSolutions()"
+                >View solutions</app-button>
+              }
               @if (userRole == "DEVELOPER") {
               @if (isClaimable() && !isOwnedByCurrentUser()) {
                 <app-button 
@@ -124,7 +130,9 @@
                 </app-button>
 
                 }
-                @else if (!isClaimable() && isClaimedByYou) {
+                @else if (!isClaimable() && isClaimedByYou && 
+                  ["CLAIMED", "IN_PROGRESS", "SUBMITTED"].indexOf(this.bug.status) != -1
+                ) {
                 <app-button 
                   type="primary" 
                   (onClicked)="submitSolution()"
@@ -145,12 +153,12 @@
                 }
               }
               @else {
-                @if (isOwnedByCurrentUser()) {
+                @if (isOwnedByCurrentUser() && solutions.length == 0) {
                 <div class="action-message">
-                  You cannot claim your own bugs.
+                  No solutions yet for this bug.
                 </div>
                 }
-                @else {
+                @else if (!isOwnedByCurrentUser()) {
                   <div class="action-message">
                     As a company, you can create bugs but not claim them.
                   </div>

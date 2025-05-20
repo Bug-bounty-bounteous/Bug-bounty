@@ -20,6 +20,7 @@ public class SolutionRequest {
     private String codeLink;
 
     private String file;
+    private String filename;
 
 
 }

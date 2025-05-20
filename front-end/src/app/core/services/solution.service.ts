@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Solution } from '../models/solution.model';
 
@@ -16,14 +16,34 @@ export class SolutionService {
   return this.http.get<Solution[]>(`${this.apiUrl}/developer/${developerId}`);
 }
 
-  postSolution(solutionData: any): Observable<Solution> {
-    return this.http.post<Solution>(this.apiUrl, solutionData);
+
+  getSolutionsForBug(bugId): Observable<Solution[]> {
+    return this.http.get<Solution[]>(`${this.apiUrl}/bugs/${bugId}`)
   }
 
-getSolutionsByCompany(companyId: number): Observable<Solution[]> {
-  return this.http.get<Solution[]>(`${this.apiUrl}/company/${companyId}`);
-}
+  getSolutionsByCompany(companyId: number): Observable<Solution[]> {
+    return this.http.get<Solution[]>(`${this.apiUrl}/company/${companyId}`);
+  }
 
+  postSolution(solutionData: any): Observable<number> {
+    return this.http.post<number>(this.apiUrl, solutionData);
+  }
+
+  getSolutionById(solutionId: number): Observable<Solution> {
+    return this.http.get<Solution>(`${this.apiUrl}/${solutionId}`);
+  }
+
+  downloadSolutionFile(solutionId: number) {
+    window.open(`${this.apiUrl}/${solutionId}/file`, '_blank');
+  }
+
+  refuseSolution(id: number): Observable<any> {
+    return this.http.post<Solution>(`${this.apiUrl}/${id}/verdict`, "REJECTED");
+  }
+
+  acceptSolution(id: number): Observable<any> {
+    return this.http.post<Solution>(`${this.apiUrl}/${id}/verdict`, "ACCEPTED");
+  }
 
 
 }

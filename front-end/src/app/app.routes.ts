@@ -53,6 +53,16 @@ export const routes: Routes = [
     data: { roles: ['DEVELOPER'] }
   },
   {
+    path: 'bugs/:id/solutions',
+    loadComponent: () => import('./features/solutions/solution-list/solution-list.component').then(m => m.SolutionListComponent),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'solutions/:id',
+    loadComponent: () => import('./features/solutions/solution-review/solution-review.component').then(m => m.SolutionReviewComponent),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./features/user/dashboard/dashboard.component').then(
@@ -88,7 +98,7 @@ export const routes: Routes = [
     component: OAuth2CallbackComponent
   },
   {
-  path: 'my-feedback',
+  path: "solutions/:solutionId/feedback/create",
   loadComponent: () => import('./features/feedback/feedback.component').then(m => m.FeedbackComponent)
   },
   {
