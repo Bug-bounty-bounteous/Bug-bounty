@@ -55,7 +55,7 @@ public class SolutionService {
     @Autowired
     private UserRepository userRepository;
     @Value("${spring.servlet.multipart.max-file-size}")
-    private int maxFileSizeBytes;
+    public int maxFileSizeBytes;
 
 
 
