@@ -21,7 +21,7 @@
             [isLoading]="true"
             message="Loading solution...">
         </app-loader>
-        } @else if (!isLoading && !isPublisher && !isClaimer) {
+        } @else if (!isLoading && !isPublisher && !isSolutionPublisher) {
             <h3 class="not-allowed">You are not allowed to view this page</h3>
         }
         @else {
@@ -32,7 +32,7 @@
                 <h4>Solution:</h4>
                 <p>Decription: {{solution.description}}</p>
             @if (solution.codeLink) {
-                <p>Code Link: <a [href]="solution.codeLink">{{solution.codeLink}}</a></p>
+                <p>Code Link: <a [href]="solution.codeLink" target="_blank">{{solution.codeLink}}</a></p>
             } @else {
                 <app-button 
                     type="primary"
@@ -44,7 +44,9 @@
             </div>
             <div class="solution-actions">
             <!-- If company, then actions -->
-            @if (isPublisher && ["REJECTED", "ACCEPTED"].indexOf(solution.status) == -1) {
+            @if (isPublisher && ["REJECTED", "ACCEPTED"].indexOf(solution.status) == -1
+                && ["CLAIMED", "IN_PROGRESS", "SUBMITTED"].indexOf(this.bug.status) != -1
+            ) {
                 <div class="actions">
                     <app-button
                         type="primary"
@@ -80,7 +82,7 @@
             } @else {
                 @for (feedback of feedbacks; track feedback.id) {
                     <div class="feedback-container">
-                        <p>Feedback: {{feedback.feedbackText}}</p>
+                        <p>Feedback: {{feedback.feedbackMessage}}</p>
                         <p>Rating: {{feedback.rating}}</p>
                     </div>
                     }

@@ -50,11 +50,11 @@ public class Bug {
     @Builder.Default
     private List<TechStack> stack = new ArrayList<>();
 
-    @OneToMany(mappedBy = "bug")
+    @OneToMany(mappedBy = "bug", fetch = FetchType.EAGER)
     @Builder.Default
     private List<BugClaim> bugClaims = new ArrayList<>();
 
-    @OneToMany(mappedBy = "bug")
+    @OneToMany(mappedBy = "bug", fetch = FetchType.EAGER)
     @Builder.Default
     private List<Solution> solutions = new ArrayList<>();
 

@@ -15,6 +15,7 @@ import { Feedback } from '../../../core/models/feedback.model';
 import { FeedbackService } from '../../../core/services/feedback.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { Bug } from '../../../core/models/bug.model';
 
 @Component({
   selector: 'app-solution-review',
@@ -35,13 +36,14 @@ export class SolutionReviewComponent implements OnInit {
   solution: Solution;
   isDownloading: boolean = false;
   isPublisher: boolean = false;
-  isClaimer: boolean = false;
+  isSolutionPublisher: boolean = false;
   user: User;
   isSendingAccept: boolean = false;
   isSendingRefuse: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
   feedbacks: Feedback[] = [];
+  bug: Bug;
 
   constructor(
     private router: Router,
@@ -49,7 +51,8 @@ export class SolutionReviewComponent implements OnInit {
     private solutionService: SolutionService,
     private userService: UserService,
     private feedbackService: FeedbackService,
-    private tokenService: TokenStorageService
+    private tokenService: TokenStorageService,
+    private bugService: BugService
   ) {
     this.user = this.tokenService.getUser();
   }
@@ -67,10 +70,21 @@ export class SolutionReviewComponent implements OnInit {
         this.solution = response;
         this.checkAllowedToViewOrAct();
         this.loadFeedbacks();
+        this.loadBug();
       },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = error.error?.message || error.error?.error?.message || "Failed to load solution";
+      }
+    })
+  }
+
+  loadBug() {
+    this.bugService.getBugById(this.solution.bug.id).subscribe({
+      next: (bug) => this.bug = bug,
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || error.error?.error?.message || "Failed to load bug";
       }
     })
   }
@@ -96,26 +110,27 @@ export class SolutionReviewComponent implements OnInit {
   }
   
   checkAllowedToViewOrAct() {
-    this.isClaimer = false;
+    this.isSolutionPublisher = false;
     this.isPublisher = false;
     if (this.user.role == 'DEVELOPER') {
-      this.userService.getClaimedBugs().subscribe(
+      this.solutionService.getSolutionsByDeveloper(this.user.id).subscribe(
         {
-          next: (bugs) => {
-            for (let bug of bugs) {
-              if (bug.id == this.solution.bug.id) {
-                this.isClaimer = true;
+          next: (solutions) => {
+            for (let solution of solutions) {
+              if (solution.id == this.solution.id) {
+                this.isSolutionPublisher = true;
                 return;
               }
-              this.isClaimer = false;
+              this.isSolutionPublisher = false;
             }
           },
           error: (error) => {
-            this.isClaimer = false;
+            this.isSolutionPublisher = false;
             this.errorMessage = error.error?.message || error.error?.error?.message || "You are not the claimer for this bug";
           }
         }
-      )
+
+      );
     } else {
       this.userService.getUploadedBugs().subscribe(
         {
@@ -155,7 +170,7 @@ export class SolutionReviewComponent implements OnInit {
   }
 
   sendFeedback() {
-    this.router.navigate(["/", "my-feedback", this.solution.id]);
+    this.router.navigate(["/", "solutions", this.solution.id, "feedback", "create"]);
   }
 
   sendRefuseSolution() {

@@ -56,6 +56,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/resources/*/download").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/solutions/*/file").permitAll() // Allow public access to downloads
                 .requestMatchers(HttpMethod.POST, "/api/bugs").hasRole("COMPANY")
+                .requestMatchers(HttpMethod.POST, "/api/bugs/*/claim").hasRole("DEVELOPER")
+                .requestMatchers(HttpMethod.DELETE, "/api/bugs/*/claim").hasRole("DEVELOPER")
                 .requestMatchers(HttpMethod.GET, "/api/bugs/**").authenticated()
                 .anyRequest().authenticated())
             // Add OAuth2 configuration with @Lazy handlers

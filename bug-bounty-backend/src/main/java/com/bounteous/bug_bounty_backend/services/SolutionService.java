@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // Handles solution-related business logic
@@ -73,6 +74,9 @@ public class SolutionService {
                 () -> new ResourceNotFoundException("No developer with email: " + email)
         );
         // check if the bug has been claimed by the developer
+        if (!Set.of(BugStatus.CLAIMED, BugStatus.IN_PROGRESS, BugStatus.SUBMITTED).contains(bug.getBugStatus())) {
+            throw new BadRequestException("This bug isn't open for submissions");
+        }
         if (!developer
                 .getBugClaims()
                 .stream().map((e) -> e.getBug() == bug)
@@ -239,8 +243,7 @@ public class SolutionService {
                         String.format("No bug with id: %d", bugId))
         );
 
-        if (user instanceof Developer
-                && ((Developer) user).isClaiming(bug)) {
+        if (user instanceof Developer) {
             return getDeveloperSolutionsForBug(bug, (Developer) user);
         }
         else if (

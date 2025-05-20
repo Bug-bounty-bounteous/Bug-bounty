@@ -32,11 +32,11 @@ public class Solution {
     private LocalDateTime submittedAt;
     private LocalDateTime reviewedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Developer developer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Bug bug;
 

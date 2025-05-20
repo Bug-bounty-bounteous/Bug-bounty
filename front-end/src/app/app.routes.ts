@@ -98,7 +98,7 @@ export const routes: Routes = [
     component: OAuth2CallbackComponent
   },
   {
-  path: 'my-feedback',
+  path: "solutions/:solutionId/feedback/create",
   loadComponent: () => import('./features/feedback/feedback.component').then(m => m.FeedbackComponent)
   },
   {

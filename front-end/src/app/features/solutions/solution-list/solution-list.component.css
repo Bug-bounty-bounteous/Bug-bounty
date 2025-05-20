@@ -28,7 +28,7 @@
 
 .hovering-effect:hover {
   cursor: pointer;
-  background-color: var(--background-section-hover);
+  background-color: hsl(from var(--background-section-hover) h s calc(l * 0.5));
 }
 
 .status {

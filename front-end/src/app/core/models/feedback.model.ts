@@ -1,7 +1,7 @@
 export interface Feedback {
     id: number;
     rating: number;
-    feedbackText: string;
+    feedbackMessage: string;
     flagged: boolean;
     date: string;
     solution: any;

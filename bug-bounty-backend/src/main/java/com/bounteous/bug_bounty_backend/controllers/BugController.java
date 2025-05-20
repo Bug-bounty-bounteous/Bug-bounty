@@ -102,7 +102,6 @@ public class BugController {
     }
 
     @PostMapping("/{id}/claim")
-    @PreAuthorize("hasRole('DEVELOPER')")
     public ResponseEntity<ApiResponse> claimBug(
             @PathVariable Long id,
             @RequestBody(required = false) BugClaimRequest request,
@@ -115,7 +114,6 @@ public class BugController {
     }
 
     @DeleteMapping("/{id}/claim")
-    @PreAuthorize("hasRole('DEVELOPER')")
     public ResponseEntity<ApiResponse> unclaimBug(
             @PathVariable Long id,
             Authentication authentication

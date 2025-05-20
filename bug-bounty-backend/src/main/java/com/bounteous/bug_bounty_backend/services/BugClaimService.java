@@ -76,7 +76,6 @@ public class BugClaimService {
             bugClaimRepository.save(claim);
             
             // Update the bug status
-            bug.setBugClaims(List.of(claim));
             bug.setBugStatus(BugStatus.CLAIMED);
             bugRepository.save(bug);
             
@@ -115,7 +114,6 @@ public class BugClaimService {
             // delete the claim
             bugClaimRepository.delete(bugclaim);
             // Update the bug status
-            bug.setBugClaims(List.of());
             bug.setBugStatus(BugStatus.OPEN);
             bugRepository.save(bug);
 
